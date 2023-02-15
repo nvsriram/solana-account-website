@@ -1,91 +1,57 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
+"use client";
 
-const inter = Inter({ subsets: ['latin'] })
+import { DataTypeOption } from "@/types";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const dataTypeDescription = new Map<DataTypeOption, string>();
+  dataTypeDescription.set(DataTypeOption.CUSTOM, "A default datatype to store custom data");
+  dataTypeDescription.set(DataTypeOption.JSON, "Datatype to store JSON data that will be parsed and pretty-printed");
+  dataTypeDescription.set(DataTypeOption.BORSH, "Datatype to store BORSH data; currently treated as CUSTOM");
+  dataTypeDescription.set(DataTypeOption.PNG, "Datatype to store PNG data as Base64 encoded string that will be output as a PNG");
+
+  const router = useRouter();
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
+    <>
+      <section>
+        <h1 className="text-lg">
+          Enter the <code className="text-solana-purple">PublicKey</code> of the Data Account you wish to inspect above...
+        </h1>
+        <br />
+        <p className="text-lg pb-2">
+          Currently the supported data types are:
         </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+        <table className="table-auto">
+          <tbody>
+            {Object.keys(DataTypeOption)
+              .filter((key) => isNaN(Number(key)))
+              .map((dataType, idx) => {
+                return (
+                  <tr key={idx}>
+                    <th scope="row" className=" text-md text-left text-solana-purple"
+                    >
+                        {dataType}
+                    </th>
+                    <td className="text-stone-200 px-2">:</td>
+                    <td className="text-md text-stone-200">
+                        {dataTypeDescription.get(idx)}
+                    </td>
+                  </tr>
+                );
+              }
+              )}
+          </tbody>
+        </table>
+      </section>
+      <section className="flex flex-col mt-8 justify-center">
+        <p className="text-lg pt-3 pb-5">You can also make use you the Data Program and upload your custom data to the Solana blockchain. Click the button below to get started! 🎉</p>
+        <button 
+          className="m-auto bg-solana-green/80 hover:bg-emerald-600 text-white text-lg font-semibold py-2 px-4 border-b-4 border-emerald-600 hover:border-solana-green/80 rounded-sm"
+          onClick={() => router.push(`/upload`)}
         >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+          Get Started!
+        </button>
+      </section> 
+    </>
+  );
 }
