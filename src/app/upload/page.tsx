@@ -1,15 +1,15 @@
 "use client";
 
-import { ApiError, ClusterContextType, DataTypeOption, MAX_FILE_SIZE } from "@/types";
-import { ClusterContext, isBase58 } from "@/utils";
-import { Keypair } from "@solana/web3.js";
+import { ClusterContextType, ClusterNames, DataTypeOption, MAX_FILE_SIZE } from "@/types";
+import { ClusterContext, initializeDataAccount, isBase58, uploadDataPart } from "@/utils";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import Link from "next/link";
 import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import CopyToClipboard from "../copy";
 import Tooltip from "../tooltip";
 
 const UploadPage = () => {
-    const [feePayer, setFeePayer] = useState<Uint8Array | undefined>();
+    const [feePayer, setFeePayer] = useState<Keypair | undefined>();
     const [feePayerStatus, setFeePayerStatus] = useState<{ hasError: boolean, message: string }>({ hasError: true, message: "" });
     const [authority, setAuthority] = useState<string>("");
     const [isDynamic, setIsDynamic] = useState(true);
@@ -17,10 +17,10 @@ const UploadPage = () => {
     const [dataType, setDataType] = useState<DataTypeOption>(DataTypeOption.CUSTOM);
     const [file, setFile] = useState<File | undefined>();
 
-    const controller = new AbortController();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [dataAccount, setDataAccount] = useState<string | null>(null);
+    const [dataAccountStatus, setDataAccountStatus] = useState<number>(0);
 
     const { cluster } = useContext(ClusterContext) as ClusterContextType;
 
@@ -39,7 +39,7 @@ const UploadPage = () => {
                 const secret = JSON.parse(e.target.result.toString()) as number[];
                 const secretKey = Uint8Array.from(secret);
                 const keypair = Keypair.fromSecretKey(secretKey)
-                setFeePayer(keypair.secretKey);        
+                setFeePayer(keypair);        
                 setFeePayerStatus({ hasError: false, message: keypair.publicKey.toBase58() });
             }
             catch(err) {
@@ -60,7 +60,7 @@ const UploadPage = () => {
             return;
         }
 
-        reader.addEventListener('load', (e) => {
+        reader.addEventListener('load', async (e) => {
             if (!e.target || !e.target.result) {
                 return;
             }
@@ -70,38 +70,42 @@ const UploadPage = () => {
                     fileData = JSON.stringify(JSON.parse(fileData));
                 }
 
-                const formData = new FormData();
-                formData.append("cluster", cluster);
-                formData.append("feePayer", feePayer.toString());
-                formData.append("authority", authority);
-                formData.append("dynamic", isDynamic ? "true" : "false");
-                formData.append("space", space.toString());
-                formData.append("dataType", dataType.toString());
-                formData.append("file", fileData);
-
                 setError(null);
-                if (loading) {
-                    controller.abort();
-                }
                 setLoading(true);
 
-                fetch("/api/upload", { method: "POST", body: formData, signal: controller.signal })
-                .then((res) => {
-                    if (!res.ok) {
-                        res.json().then(({ error } : ApiError) => {
-                            setError(error);
-                            setDataAccount(null);
-                            return;
-                        });
-                    } else {
-                        res.json().then((data) => {
-                            setDataAccount(data);
-                            setError(null);
-                        });
+                const clusterURL = Object.values(ClusterNames).find(({name}) => name === cluster)?.url;
+                if (!clusterURL) {
+                    setError("Invalid cluster");
+                    return;
+                }
+                const clusterConnection = new Connection(clusterURL);
+                const authorityPK = new PublicKey(authority);
+
+                initializeDataAccount(clusterConnection, feePayer, authorityPK, isDynamic, space)
+                .then(async (dataKP) => {
+                    setDataAccount(dataKP.publicKey.toBase58());
+                    setError(null);
+
+                    const PART_SIZE = 800;
+                    const parts = fileData.length / PART_SIZE;
+                    let current = 0;
+                    setDataAccountStatus(0);
+                    while (current < parts) {    
+                        const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
+                        const offset = current * PART_SIZE;
+                        await uploadDataPart(clusterConnection, feePayer, dataKP, dataType, part, offset);
+                        ++current;
+                        setDataAccountStatus(current / parts);
                     }
+                    setLoading(false);
                 })
-                .catch((err) => setError(err))
-                .finally(() => setLoading(false));
+                .catch((err) => {
+                    console.log(err);
+                    if (err instanceof Error) {
+                        setError(err.message)
+                    }
+                    setLoading(false);
+                });      
             }
             catch(err) {
                 if (err instanceof Error) {
@@ -268,28 +272,35 @@ const UploadPage = () => {
             </table>
             <div className="flex flex-row items-center mt-10">
                 <button type="submit" disabled={dataAccount != null} className="m-auto justify-self-center bg-solana-green/80 hover:bg-emerald-600 text-white text-md font-semibold py-1 px-4 border-b-4 border-emerald-600 hover:border-solana-green/80 disabled:bg-emerald-600 disabled:hover:border-emerald-600 disabled:cursor-not-allowed rounded-md">
-                    {loading ? 
+                    {loading && dataAccountStatus < 1 ? 
                     <>  
                         {`Uploading `}
                         <svg className="inline-flex ml-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                         </svg>
-                    </>: dataAccount ? "Upload Complete" : "Confirm Upload"}
+                    </>: dataAccount && dataAccountStatus >= 1 ? "Upload Complete" : "Confirm Upload"}
                 </button>
             </div>
+            {dataAccount && 
+                <div className="text-lg">
+                    <h1 className="text-md">
+                        <p className="text-solana-green/80 font-semibold">Data Account initialized: </p> 
+                        <Link href={`/${dataAccount}?cluster=${cluster}`} className="underline text-md">{dataAccount}</Link>
+                    </h1>
+                    {dataAccountStatus < 1 &&
+                        <div className="w-96 my-5 bg-stone-200 rounded-md h-5 ring-2 ring-stone-400">
+                            <div className="px-1 ease-in duration-300 flex justify-center bg-solana-green h-5 rounded-md ring-2 ring-emerald-600" style={{ width: `${Math.min(dataAccountStatus*100, 100)}%` }}>
+                                <span className="animate-[bounce_3s_infinite] text-sm text-emerald-600 overflow-hidden">Uploading...</span>
+                            </div>
+                        </div>}
+                    {dataAccountStatus >= 1 && <div className="text-md mt-3 text-emerald-600">Upload Complete!</div>}
+                </div>}
             {error && 
                 <div className="text-lg">
                     <h1 className="text-md">
                         <p className="text-rose-500 font-semibold">An error occurred while uploading...</p> 
                         {error}
-                    </h1>
-                </div>}
-            {dataAccount && 
-                <div className="text-lg">
-                    <h1 className="text-md">
-                        <p className="text-solana-green/80 font-semibold">Click here to view more details: </p> 
-                        <Link href={`/${dataAccount}?cluster=${cluster}`} className="underline text-md">{dataAccount}</Link>
                     </h1>
                 </div>}
           </form>

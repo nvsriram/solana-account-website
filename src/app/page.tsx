@@ -44,9 +44,9 @@ export default function Home() {
         </table>
       </section>
       <section className="flex flex-col mt-8 justify-center">
-        <p className="text-lg pt-3 pb-5">You can also make use you the Data Program and upload your custom data to the Solana blockchain. Click the button below to get started! 🎉</p>
+        <p className="text-lg pt-3 pb-5">You can also make use of the Data Program and upload your custom data to the Solana blockchain. Click the button below to get started! 🎉</p>
         <button 
-          className="m-auto bg-solana-green/80 hover:bg-emerald-600 text-white text-lg font-semibold py-2 px-4 border-b-4 border-emerald-600 hover:border-solana-green/80 rounded-sm"
+          className="m-auto rounded-md bg-solana-green/80 hover:bg-emerald-600 text-white text-lg font-semibold py-2 px-4 border-b-4 border-emerald-600 hover:border-solana-green/80"
           onClick={() => router.push(`/upload`)}
         >
           Get Started!
