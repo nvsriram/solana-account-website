@@ -2,15 +2,14 @@
 
 import { ClusterContextType, ClusterNames, DataTypeOption, MAX_FILE_SIZE } from "@/types";
 import { ClusterContext, initializeDataAccount, isBase58, uploadDataPart } from "@/utils";
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { ConfirmOptions, Connection, PublicKey, Transaction } from "@solana/web3.js";
 import Link from "next/link";
-import { ChangeEvent, FormEvent, useContext, useState } from "react";
-import CopyToClipboard from "../copy";
+import { FormEvent, useContext, useState } from "react";
 import Tooltip from "../tooltip";
 
 const UploadPage = () => {
-    const [feePayer, setFeePayer] = useState<Keypair | undefined>();
-    const [feePayerStatus, setFeePayerStatus] = useState<{ hasError: boolean, message: string }>({ hasError: true, message: "" });
     const [authority, setAuthority] = useState<string>("");
     const [isDynamic, setIsDynamic] = useState(true);
     const [space, setSpace] = useState(0);
@@ -23,43 +22,14 @@ const UploadPage = () => {
     const [dataAccountStatus, setDataAccountStatus] = useState<number>(0);
 
     const { cluster } = useContext(ClusterContext) as ClusterContextType;
-
-    const reader = new FileReader();
-    const handleFeePayer = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || !e.target.files[0]) {
-            setFeePayer(undefined);
-            setFeePayerStatus({ hasError: true, message: "" })
-            return;
-        }
-        reader.addEventListener('load', (e) => {
-            if (!e.target || !e.target.result) {
-                return;
-            }
-            try {
-                const secret = JSON.parse(e.target.result.toString()) as number[];
-                const secretKey = Uint8Array.from(secret);
-                const keypair = Keypair.fromSecretKey(secretKey)
-                setFeePayer(keypair);        
-                setFeePayerStatus({ hasError: false, message: keypair.publicKey.toBase58() });
-            }
-            catch(err) {
-                if (err instanceof Error) {
-                    setFeePayerStatus({ hasError: true, message: err.message });
-                }
-            }
-        })
-        reader.addEventListener("error", () => {
-            setFeePayerStatus({ hasError: true, message: "Error reading file" });
-        })
-        reader.readAsText(e.target.files[0]);
-    }
-
+    const { publicKey: feePayer, signTransaction, signAllTransactions } = useWallet();
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!feePayer || !authority || !isBase58(authority) || !file) {
             return;
         }
-
+        
+        const reader = new FileReader();
         reader.addEventListener('load', async (e) => {
             if (!e.target || !e.target.result) {
                 return;
@@ -78,43 +48,78 @@ const UploadPage = () => {
                     setError("Invalid cluster");
                     return;
                 }
+                if (!signAllTransactions || !signTransaction) {
+                    return;
+                }
                 const clusterConnection = new Connection(clusterURL);
                 const authorityPK = new PublicKey(authority);
 
-                initializeDataAccount(clusterConnection, feePayer, authorityPK, isDynamic, space)
-                .then(async (dataKP) => {
-                    setDataAccount(dataKP.publicKey.toBase58());
-                    setError(null);
+                let recentBlockhash = await clusterConnection.getLatestBlockhash();
+                const [tx, dataKP] = initializeDataAccount(feePayer, authorityPK, isDynamic, space);
+                tx.recentBlockhash = recentBlockhash.blockhash;
+                tx.sign(dataKP);
+                const signedTx = await signTransaction(tx);             
+                const txid = await clusterConnection.sendRawTransaction(
+                    signedTx.serialize(), 
+                    {
+                        skipPreflight: true,
+                        preflightCommitment: "confirmed",
+                        confirmation: "confirmed",
+                    } as ConfirmOptions,
+                );
+                await clusterConnection.confirmTransaction({
+                    blockhash: recentBlockhash.blockhash,
+                    lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+                    signature: txid,
+                }, "confirmed");
+                console.log(`https://explorer.solana.com/tx/${txid}?cluster=devnet`);
+            
+                setDataAccount(dataKP.publicKey.toBase58());
+                setError(null);
 
-                    const PART_SIZE = 800;
-                    const parts = fileData.length / PART_SIZE;
-                    let current = 0;
-                    setDataAccountStatus(0);
-                    while (current < parts) {    
-                        const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
-                        const offset = current * PART_SIZE;
-                        await uploadDataPart(clusterConnection, feePayer, dataKP, dataType, part, offset);
-                        ++current;
-                        setDataAccountStatus(current / parts);
-                    }
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    if (err instanceof Error) {
-                        setError(err.message)
-                    }
-                    setLoading(false);
-                });      
+                const PART_SIZE = 914;
+                const parts = Math.ceil(fileData.length / PART_SIZE);
+                let current = 0;
+                const allTxs: Transaction[] = [];
+                recentBlockhash = await clusterConnection.getLatestBlockhash();
+                while (current < parts) {    
+                    const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
+                    const offset = current * PART_SIZE;
+                    const tx = uploadDataPart(feePayer, dataKP, dataType, part, offset);
+                    tx.recentBlockhash = recentBlockhash.blockhash;
+                    tx.sign(dataKP);
+                    allTxs.push(tx);    
+                    ++current;
+                }
+                const signedTxs = await signAllTransactions(allTxs);
+                setDataAccountStatus(0);
+                for (let i = 0; i < parts; ++i) {
+                    const txid = await clusterConnection.sendRawTransaction(
+                    signedTxs[i].serialize(), 
+                    {
+                        skipPreflight: true,
+                        preflightCommitment: "confirmed",
+                        confirmation: "confirmed",
+                    } as ConfirmOptions,
+                    );
+                    await clusterConnection.confirmTransaction({
+                        blockhash: recentBlockhash.blockhash,
+                        lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+                        signature: txid,
+                    }, "confirmed");
+                    console.log(`${(i + 1)/parts * 100}%: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
+                    setDataAccountStatus((i + 1) / parts);
+                }
+                setLoading(false);
             }
             catch(err) {
                 if (err instanceof Error) {
-                    setError("Could not load file");
+                    setError(err.message);
                 }
             }
         })
         reader.addEventListener("error", () => {
-            setFeePayerStatus({ hasError: true, message: "Error reading file" });
+            setError("Error reading file");
         })
         if (dataType === DataTypeOption.PNG) {
             reader.readAsDataURL(file);
@@ -139,16 +144,7 @@ const UploadPage = () => {
                         </th>
                         <td className="p-2 text-stone-200">:</td>
                         <td>
-                            <input 
-                                type="file" 
-                                onChange={handleFeePayer} 
-                                required 
-                                className="text-sm text-stone-100 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-solana-purple file:text-white hover:file:bg-solana-purple/70 file:hover:text-stone-100"
-                            />
-                            <p className={`text-md w-full flex flex-row items-center ${feePayerStatus.hasError ? "text-rose-500" : "text-solana-green/80"}`}>
-                                {feePayerStatus.message}
-                                {!feePayerStatus.hasError && <CopyToClipboard message={feePayerStatus.message} />}
-                            </p>
+                            <WalletMultiButton className="h-8 text-sm px-2 py-1 text-white bg-solana-purple rounded-md hover:bg-solana-purple/70 [&:not([disabled]):hover]:bg-solana-purple/70 hover:text-stone-100 disabled:bg-stone-700 disabled:hover:text-stone-100 focus:outline-none focus:ring-2 focus:ring-solana-purple/70" />
                         </td>
                     </tr>
                     <tr>
@@ -294,7 +290,7 @@ const UploadPage = () => {
                                 <span className="animate-[bounce_3s_infinite] text-sm text-emerald-600 overflow-hidden">Uploading...</span>
                             </div>
                         </div>}
-                    {dataAccountStatus >= 1 && <div className="text-md mt-3 text-emerald-600">Upload Complete!</div>}
+                    {dataAccountStatus >= 1 && <div className="text-md mt-3 text-solana-green/80">Upload Complete!</div>}
                 </div>}
             {error && 
                 <div className="text-lg">

@@ -15,7 +15,6 @@ export default async function handler(
 
   const { dataPK, cluster } = req.query;
   const clusterURL = Object.values(ClusterNames).find(({name}) => name === cluster)?.url;
-  
   if (!clusterURL) {
     res.status(400).json({ error: "Invalid Cluster" });
     return;

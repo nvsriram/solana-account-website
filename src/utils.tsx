@@ -1,4 +1,4 @@
-import { ConfirmOptions, Connection, Keypair, PublicKey, sendAndConfirmTransaction, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { ConfirmOptions, Connection, Keypair, PublicKey, sendAndConfirmRawTransaction, sendAndConfirmTransaction, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 import BN from "bn.js";
 import { createContext } from "react";
 import { ClusterContextType } from "./types";
@@ -7,9 +7,9 @@ export const isBase58 = (value: string): boolean => /^[A-HJ-NP-Za-km-z1-9]*$/.te
 
 export const ClusterContext = createContext<ClusterContextType | null>(null);
 
-const PROGRAM_ID = "ABAciQAKubTBfYZeCKZcUihhYUuh3Ffg7NDtRcLYa9gC";
+const PROGRAM_ID = "9MwkYTEwkKifZKT2aY1pbHAxJDXq8a3yw29n1AhAvW6k";
 
-export const initializeDataAccount = async (connection: Connection, feePayer: Keypair, authorityPK: PublicKey, isDynamic: boolean, initialSize: number): Promise<Keypair> => {
+export const initializeDataAccount = (feePayer: PublicKey, authorityPK: PublicKey, isDynamic: boolean, initialSize: number): [Transaction, Keypair] => {
     const programId = new PublicKey(PROGRAM_ID);
 
     const dataAccount = new Keypair();
@@ -20,7 +20,7 @@ export const initializeDataAccount = async (connection: Connection, feePayer: Ke
     const initializeIx = new TransactionInstruction({
         keys: [
         {
-            pubkey: feePayer.publicKey,
+            pubkey: feePayer,
             isSigner: true,
             isWritable: true,
         },
@@ -41,23 +41,11 @@ export const initializeDataAccount = async (connection: Connection, feePayer: Ke
     
     const tx = new Transaction();
     tx.add(initializeIx);
-    
-    const txid = await sendAndConfirmTransaction(
-        connection,
-        tx,
-        [feePayer, dataAccount],
-        {
-        skipPreflight: true,
-        preflightCommitment: "confirmed",
-        confirmation: "confirmed",
-        } as ConfirmOptions,
-    );
-    console.log(`https://explorer.solana.com/tx/${txid}?cluster=devnet`);
-
-    return dataAccount;
+    tx.feePayer = feePayer;
+    return [tx, dataAccount];
 }
 
-export const uploadDataPart = async (connection: Connection, feePayer: Keypair, dataAccount: Keypair, dataType: number, part: string, offset: number) => {
+export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, dataType: number, part: string, offset: number): Transaction => {
     const programId = new PublicKey(PROGRAM_ID);
 
     const idx1 = Buffer.from(new Uint8Array([1]));
@@ -73,7 +61,7 @@ export const uploadDataPart = async (connection: Connection, feePayer: Keypair, 
     const updateIx = new TransactionInstruction({
       keys: [
         {
-          pubkey: feePayer.publicKey,
+          pubkey: feePayer,
           isSigner: true,
           isWritable: true,
         },
@@ -94,16 +82,6 @@ export const uploadDataPart = async (connection: Connection, feePayer: Keypair, 
 
     const tx = new Transaction();
     tx.add(updateIx);
-
-    const txid = await sendAndConfirmTransaction(
-      connection,
-      tx,
-      [feePayer, dataAccount],
-      {
-        skipPreflight: true,
-        preflightCommitment: "confirmed",
-        confirmation: "confirmed",
-      } as ConfirmOptions
-    );
-    console.log(`https://explorer.solana.com/tx/${txid}?cluster=devnet`);
+    tx.feePayer = feePayer;
+    return tx;
 }

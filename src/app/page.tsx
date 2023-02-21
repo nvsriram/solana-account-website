@@ -8,7 +8,7 @@ export default function Home() {
   dataTypeDescription.set(DataTypeOption.CUSTOM, "A default datatype to store custom data");
   dataTypeDescription.set(DataTypeOption.JSON, "Datatype to store JSON data that will be parsed and pretty-printed");
   dataTypeDescription.set(DataTypeOption.BORSH, "Datatype to store BORSH data; currently treated as CUSTOM");
-  dataTypeDescription.set(DataTypeOption.PNG, "Datatype to store PNG data as Base64 encoded string that will be output as a PNG");
+  dataTypeDescription.set(DataTypeOption.PNG, "Datatype to store image data as Base64 encoded string that will be output as an image");
 
   const router = useRouter();
   return (

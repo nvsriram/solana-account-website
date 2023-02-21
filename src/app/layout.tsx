@@ -8,6 +8,7 @@ import { ClusterNames } from '@/types';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ClusterContext } from '@/utils';
+import { Wallet } from './wallet';
 
 export default function RootLayout({
   children,
@@ -42,7 +43,9 @@ export default function RootLayout({
               <Search />
             </section>
             <section className="w-full h-full flex-row mt-5 mx-auto content-center justify-content-center text-solana-blue">
-              {children}
+              <Wallet>
+                {children}
+              </Wallet>
             </section>
           </div>
         </body>
