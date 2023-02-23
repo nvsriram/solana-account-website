@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 
 const LOCALHOST = "http://localhost:8899";
-export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 export type ApiError = {
     error: string;
@@ -35,23 +34,20 @@ export enum SerializationStatusOption {
 export enum DataTypeOption {
     CUSTOM = 0,
     JSON = 1,
-    BORSH = 2,
-    PNG = 3,
+    IMG = 2,
 }
 
-export interface IDataAccountData {
-    data_type: number;
-    data?: {
-        len: number;
-        data: Buffer;
-    };
-};
-    
-export interface IDataAccountState {
+export interface IDataAccountMeta {
     data_status: DataStatusOption;
     serialization_status: SerializationStatusOption;
     authority: string;
     is_dynamic: boolean;
     data_version: number;
-    account_data: IDataAccountData;
-};
+    data_type: number;
+    bump_seed: number;
+}
+
+export interface IDataAccount {
+    meta: IDataAccountMeta;
+    data?: Buffer | string;
+}

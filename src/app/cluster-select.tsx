@@ -1,30 +1,41 @@
 "use client"
 
-import { ClusterContextType, ClusterNames } from "@/types";
-import { ClusterContext } from "@/utils";
-import { useState, useRef, useEffect, useContext } from "react";
+import { ClusterNames } from "@/types";
+import { useCluster } from "@/utils";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ClusterOption } from "./cluster-option";
 
 export const ClusterSelect = () => {
     const [open, setOpen] = useState(false);
     const clusterRef = useRef<HTMLDivElement>(null);
-    const { cluster, setCluster } = useContext(ClusterContext) as ClusterContextType;
+    const { cluster, setCluster } = useCluster();
+
+    const toggleClusterMenu = useCallback(() => {
+        setOpen(o => !o);
+    }, []);
+
+    const closeClusterMenu = useCallback(() => {
+        setOpen(false);
+    }, []);
 
     useEffect(() => {
-        const closeClusterMenu = ({target}: MouseEvent) => {
+        const listener = ({target}: MouseEvent | TouchEvent) => {
             if (!clusterRef?.current?.contains(target as Node)) {
-                setOpen(false);
+                closeClusterMenu();
             }
-        }
-        document.addEventListener("mousedown", closeClusterMenu);
+        };
+        document.addEventListener("mousedown", listener);
+        document.addEventListener('touchstart', listener);
+        
         return () => {
-            document.removeEventListener("mousedown", closeClusterMenu);
+            document.removeEventListener("mousedown", listener);
+            document.removeEventListener('touchstart', listener);
         }
-    }, [clusterRef]);
+    }, [clusterRef, closeClusterMenu]);
 
     const handleClick = (clusterName: string) => {
-        setOpen(o => !o);
         setCluster(clusterName);
+        toggleClusterMenu();
     }
 
     return (

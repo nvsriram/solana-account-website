@@ -1,16 +1,15 @@
 "use client";
 
-import { ClusterContextType } from '@/types';
-import { ClusterContext } from '@/utils';
+import { useCluster } from '@/utils';
 import { usePathname, useRouter } from 'next/navigation';
-import { FormEvent, useContext, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import Tooltip from './tooltip';
 
 export const Search = () => {
     const PREFIX = "sol://"
     const pathname = usePathname();
     const [search, setSearch] = useState(PREFIX + pathname?.substring(1));
-    const { cluster } = useContext(ClusterContext) as ClusterContextType;
+    const { cluster } = useCluster();
 
     const isUpload = pathname?.substring(1) === "upload";
 
@@ -59,7 +58,6 @@ export const Search = () => {
                     </button>
                 </Tooltip>
             </div>
-            
         </form>
     );
 }

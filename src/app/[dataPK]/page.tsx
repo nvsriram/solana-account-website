@@ -1,8 +1,8 @@
 "use client";
 
-import { ApiError, DataStatusOption, DataTypeOption, IDataAccountState, SerializationStatusOption } from "@/types";
+import { ApiError, DataStatusOption, DataTypeOption, IDataAccount, SerializationStatusOption } from "@/types";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DataDisplay from "./display-data";
 import Loading from './loading';
 
@@ -11,8 +11,9 @@ const DataAccountInfoPage = () => {
     const dataPK = pathname?.substring(1);
     const searchParams = useSearchParams();
 
-    const [data, setData] = useState<IDataAccountState | null>(null);
+    const [dataAccountInfo, setDataAccountInfo] = useState<IDataAccount | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const { meta, data }  = useMemo(() => dataAccountInfo ?? {} as IDataAccount, [dataAccountInfo]);
 
     useEffect(() => {
         fetch(`/api/${pathname}?${searchParams.toString()}`)
@@ -20,16 +21,13 @@ const DataAccountInfoPage = () => {
             if (!res.ok) {
                 res.json().then(({ error } : ApiError) => {
                     setError(error);
-                    setData(null);
+                    setDataAccountInfo(null);
                     return;
                 })
             } else {
-                res.json().then((account_state: IDataAccountState) => {
+                res.json().then((account_state: IDataAccount) => {
                     if (account_state) {
-                        if (account_state.account_data.data) {
-                            account_state.account_data.data.data = Buffer.from(account_state.account_data.data?.data);
-                        }
-                        setData(account_state);
+                        setDataAccountInfo(account_state);
                         setError(null);
                     }
                 });
@@ -48,7 +46,7 @@ const DataAccountInfoPage = () => {
         );
     }
 
-    if (!data) {
+    if (!dataAccountInfo || !dataAccountInfo.data) {
         if (!error) {
             return <Loading />;
         }
@@ -76,7 +74,7 @@ const DataAccountInfoPage = () => {
                         </th>
                         <td className="px-2 text-stone-200">:</td>
                         <td className="text-md">
-                            {data.authority}
+                            {meta.authority}
                         </td>
                     </tr>
                     <tr>
@@ -85,8 +83,8 @@ const DataAccountInfoPage = () => {
                             Data Status
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className={`text-md ${data.data_status % 2 ? "text-solana-green": "text-rose-500"}`}>
-                            {DataStatusOption[data.data_status]}
+                        <td className={`text-md ${meta.data_status % 2 ? "text-solana-green": "text-rose-500"}`}>
+                            {DataStatusOption[meta.data_status]}
                         </td>
                     </tr>
                     <tr>
@@ -95,8 +93,8 @@ const DataAccountInfoPage = () => {
                             Serialization
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className={`text-md ${data.serialization_status === SerializationStatusOption.VERIFIED ? "text-solana-green": "text-rose-500"}`}>
-                            {SerializationStatusOption[data.serialization_status]}
+                        <td className={`text-md ${meta.serialization_status === SerializationStatusOption.VERIFIED ? "text-solana-green": "text-rose-500"}`}>
+                            {SerializationStatusOption[meta.serialization_status]}
                         </td>
                     </tr>
                     <tr>
@@ -105,8 +103,8 @@ const DataAccountInfoPage = () => {
                             Dynamic
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className={`text-md ${data.is_dynamic ? "text-solana-green": "text-rose-500"}`}>
-                            {data.is_dynamic ? "TRUE" : "FALSE"}
+                        <td className={`text-md ${meta.is_dynamic ? "text-solana-green": "text-rose-500"}`}>
+                            {meta.is_dynamic ? "TRUE" : "FALSE"}
                         </td>
                     </tr>
                     <tr>
@@ -116,7 +114,7 @@ const DataAccountInfoPage = () => {
                         </th>
                         <td className="px-2 text-stone-200">:</td>
                         <td className="text-md">
-                            {DataTypeOption[data.account_data.data_type]}
+                            {DataTypeOption[meta.data_type]}
                         </td>
                     </tr>
                     <tr><td>&nbsp;</td></tr>
@@ -127,10 +125,9 @@ const DataAccountInfoPage = () => {
                         </th>
                         <td className="px-2 text-stone-200">:</td>
                     </tr>
-
                 </tbody>
             </table>
-            <DataDisplay data_type={data.account_data.data_type} data={data.account_data.data} />
+            <DataDisplay data_type={meta.data_type} data={data?.toString()} />
         </div>
     )
 }

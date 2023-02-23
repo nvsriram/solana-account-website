@@ -1,8 +1,8 @@
-import { DataTypeOption, IDataAccountData } from "@/types";
+import { DataTypeOption } from "@/types";
 import Image from "next/image";
 
-const DataDisplay = ({ data, data_type }: IDataAccountData) => {
-    if (!data || data.len <= 0) {
+const DataDisplay = ({ data, data_type }: { data: string | undefined, data_type: number}) => {
+    if (!data || data.length <= 0) {
         return (
             <h1 className="text-lg">-</h1>
         );
@@ -10,7 +10,7 @@ const DataDisplay = ({ data, data_type }: IDataAccountData) => {
     switch (data_type) {
         case DataTypeOption.JSON:
             try {
-                const dataJSON = JSON.parse(data.data.toString());
+                const dataJSON = JSON.parse(data);
                 return (
                     <div className="mb-2 p-2 bg-stone-900 rounded-lg">
                         <pre className="text-sm font-mono text-amber-200 break-words">
@@ -24,22 +24,22 @@ const DataDisplay = ({ data, data_type }: IDataAccountData) => {
                     <div className="text-lg">
                         <h1 className="text-lg break-words">
                             <p className="text-rose-500 font-semibold">There was an error parsing the JSON data:</p>
-                            {data.data.toString()}
+                            {data}
                         </h1>
                     </div>
                 );
             }
-        case DataTypeOption.PNG:
+        case DataTypeOption.IMG:
             return (
                 <div className="w-full text-lg">
-                    <Image src={data.data.toString()} height={300} width={300} alt="nft-image"/>
+                    <Image src={data} height={300} width={300} alt="nft-image"/>
                 </div>
             );
         default:
             return (
                 <div className="text-lg">
                     <h1 className="text-lg break-words">
-                        {data.data.toString()}
+                        {data}
                     </h1>
                 </div>
             );

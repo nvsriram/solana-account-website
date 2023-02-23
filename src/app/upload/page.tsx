@@ -1,13 +1,18 @@
 "use client";
 
-import { ClusterContextType, ClusterNames, DataTypeOption, MAX_FILE_SIZE } from "@/types";
-import { ClusterContext, initializeDataAccount, isBase58, uploadDataPart } from "@/utils";
+import { ClusterNames, DataTypeOption } from "@/types";
+import { createDataAccount, handleUpload, initializeDataAccount, isBase58, uploadDataPart, useCluster } from "@/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { ConfirmOptions, Connection, PublicKey, Transaction } from "@solana/web3.js";
 import Link from "next/link";
-import { FormEvent, useContext, useState } from "react";
-import Tooltip from "../tooltip";
+import { FormEvent, useState } from "react";
+import AuthorityRow from "./authority-row";
+import DataTypeRow from "./datatype-row";
+import DynamicRow from "./dynamic-row";
+import FeePayerRow from "./feepayer-row";
+import FileRow from "./file-row";
+import UploadButton from "./upload-button";
+import UploadStatusBar from "./upload-status-bar";
 
 const UploadPage = () => {
     const [authority, setAuthority] = useState<string>("");
@@ -19,10 +24,11 @@ const UploadPage = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [dataAccount, setDataAccount] = useState<string | null>(null);
-    const [dataAccountStatus, setDataAccountStatus] = useState<number>(0);
+    const [dataAccountStatus, setDataAccountStatus] = useState<number>(-1);
 
-    const { cluster } = useContext(ClusterContext) as ClusterContextType;
-    const { publicKey: feePayer, signTransaction, signAllTransactions } = useWallet();
+    const { cluster } = useCluster();
+    const { publicKey: feePayer, signAllTransactions } = useWallet();
+
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!feePayer || !authority || !isBase58(authority) || !file) {
@@ -48,67 +54,115 @@ const UploadPage = () => {
                     setError("Invalid cluster");
                     return;
                 }
-                if (!signAllTransactions || !signTransaction) {
+                if (!signAllTransactions) {
                     return;
                 }
                 const clusterConnection = new Connection(clusterURL);
                 const authorityPK = new PublicKey(authority);
 
-                let recentBlockhash = await clusterConnection.getLatestBlockhash();
-                const [tx, dataKP] = initializeDataAccount(feePayer, authorityPK, isDynamic, space);
-                tx.recentBlockhash = recentBlockhash.blockhash;
-                tx.sign(dataKP);
-                const signedTx = await signTransaction(tx);             
-                const txid = await clusterConnection.sendRawTransaction(
-                    signedTx.serialize(), 
-                    {
-                        skipPreflight: true,
-                        preflightCommitment: "confirmed",
-                        confirmation: "confirmed",
-                    } as ConfirmOptions,
-                );
-                await clusterConnection.confirmTransaction({
-                    blockhash: recentBlockhash.blockhash,
-                    lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
-                    signature: txid,
-                }, "confirmed");
-                console.log(`https://explorer.solana.com/tx/${txid}?cluster=devnet`);
-            
-                setDataAccount(dataKP.publicKey.toBase58());
-                setError(null);
-
-                const PART_SIZE = 914;
+                const PART_SIZE = 881;
                 const parts = Math.ceil(fileData.length / PART_SIZE);
-                let current = 0;
                 const allTxs: Transaction[] = [];
-                recentBlockhash = await clusterConnection.getLatestBlockhash();
+                let recentBlockhash = await clusterConnection.getLatestBlockhash();
+
+                console.log(fileData.length);
+                
+                // create data account
+                const [cTx, dataKP] = await createDataAccount(clusterConnection, feePayer, space);
+                allTxs.push(cTx);
+                // initialize data account + create pda
+                const [iTx, pda] = initializeDataAccount(feePayer, dataKP, authorityPK, isDynamic, space);
+                allTxs.push(iTx); 
+                // data part txs
+                let current = 0;
                 while (current < parts) {    
                     const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
                     const offset = current * PART_SIZE;
-                    const tx = uploadDataPart(feePayer, dataKP, dataType, part, offset);
-                    tx.recentBlockhash = recentBlockhash.blockhash;
-                    tx.sign(dataKP);
+                    const tx = uploadDataPart(feePayer, dataKP, pda, dataType, part, offset);
                     allTxs.push(tx);    
                     ++current;
                 }
-                const signedTxs = await signAllTransactions(allTxs);
-                setDataAccountStatus(0);
-                for (let i = 0; i < parts; ++i) {
-                    const txid = await clusterConnection.sendRawTransaction(
-                    signedTxs[i].serialize(), 
-                    {
-                        skipPreflight: true,
-                        preflightCommitment: "confirmed",
-                        confirmation: "confirmed",
-                    } as ConfirmOptions,
-                    );
-                    await clusterConnection.confirmTransaction({
-                        blockhash: recentBlockhash.blockhash,
-                        lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
-                        signature: txid,
-                    }, "confirmed");
-                    console.log(`${(i + 1)/parts * 100}%: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
-                    setDataAccountStatus((i + 1) / parts);
+                // send and confirm txs
+                let signedTxs: Transaction[] = [];
+                let initialized = null;
+                while (!initialized) {
+                    allTxs.map((tx) => {
+                        tx.recentBlockhash = recentBlockhash.blockhash;
+                        tx.sign(dataKP);
+                        return tx;
+                    });
+                    signedTxs = await signAllTransactions(allTxs);
+                    // create and initialize data account + pda
+                    setDataAccountStatus(0);
+                    current = 0;
+                    for (const tx of signedTxs.slice(0, 2)) {
+                        const txid = await clusterConnection.sendRawTransaction(
+                            tx.serialize(),
+                            {
+                                skipPreflight: false,
+                                preflightCommitment: "confirmed",
+                                confirmation: "confirmed",
+                            } as ConfirmOptions,
+                        ).catch((err) => {
+                            if (err instanceof Error) {
+                                console.log(err.message);
+                            }
+                            initialized = false;
+                        })
+                        if (!txid) {
+                            recentBlockhash = await clusterConnection.getLatestBlockhash();
+                            break;
+                        }
+                        await clusterConnection.confirmTransaction(
+                            {
+                                blockhash: recentBlockhash.blockhash,
+                                lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+                                signature: txid,
+                            }, 
+                            "confirmed"
+                        ).then(() => {
+                            console.log(`${current ? "created" : "initialized"}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
+                            setDataAccountStatus(++current/(parts + 2) * 100);
+                            setDataAccount(dataKP.publicKey.toBase58());            
+                        });
+                    }
+                    if (initialized === null) initialized = true;
+                }
+                // upload data parts
+                let partTxs = signedTxs.slice(2);
+                const completedTxs = new Set<number>();
+                const handleUploadStatus = (tx: Transaction) => {
+                    setDataAccountStatus((prev) => prev + 100/(parts + 2));
+                    completedTxs.add(partTxs.indexOf(tx));
+                }
+                while (completedTxs.size < partTxs.length) {
+                    await Promise.allSettled(handleUpload(clusterConnection, recentBlockhash, partTxs, handleUploadStatus))
+                    .then(async () => {
+                        if (completedTxs.size === partTxs.length) return;
+                        // remake and sign all incomplete txs with new blockhash
+                        recentBlockhash = await clusterConnection.getLatestBlockhash();
+                        const allTxs: Transaction[] = [];
+                        let current = 0;
+                        while (current < parts) {
+                            if (completedTxs.has(current)) {
+                                ++current;
+                                continue;
+                            }
+                            const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
+                            const offset = current * PART_SIZE;
+                            const tx = uploadDataPart(feePayer, dataKP, pda, dataType, part, offset);
+                            tx.recentBlockhash = recentBlockhash.blockhash;
+                            tx.sign(dataKP);
+                            allTxs.push(tx);    
+                            ++current;
+                        }
+                        partTxs = await signAllTransactions(allTxs);
+                    })
+                    .catch((err) => {
+                        if (err instanceof Error) {
+                            console.log(err.message);
+                        }
+                    });
                 }
                 setLoading(false);
             }
@@ -121,7 +175,7 @@ const UploadPage = () => {
         reader.addEventListener("error", () => {
             setError("Error reading file");
         })
-        if (dataType === DataTypeOption.PNG) {
+        if (dataType === DataTypeOption.IMG) {
             reader.readAsDataURL(file);
         }
         else {
@@ -134,164 +188,25 @@ const UploadPage = () => {
           <form onSubmit={handleSubmit}>
             <table className="table-auto w-full h-full border-spacing-y-8">
                 <tbody>
-                    <tr>
-                        <th
-                            scope="row" className="text-lg text-left text-solana-purple"
-                        >
-                            <span>
-                                Fee Payer <code>Keypair</code>
-                            </span>
-                        </th>
-                        <td className="p-2 text-stone-200">:</td>
-                        <td>
-                            <WalletMultiButton className="h-8 text-sm px-2 py-1 text-white bg-solana-purple rounded-md hover:bg-solana-purple/70 [&:not([disabled]):hover]:bg-solana-purple/70 hover:text-stone-100 disabled:bg-stone-700 disabled:hover:text-stone-100 focus:outline-none focus:ring-2 focus:ring-solana-purple/70" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th
-                            scope="row" className="text-lg text-left text-solana-purple"
-                        >
-                            <span>
-                                Authority <code>PublicKey</code>
-                            </span>
-                        </th>
-                        <td className="p-2 text-stone-200">:</td>
-                        <td>
-                            <input 
-                                type="text"
-                                required
-                                value={authority}
-                                onChange={(e) => setAuthority(e.target.value)}
-                                minLength={32}
-                                maxLength={44}
-                                pattern={"^[A-HJ-NP-Za-km-z1-9]*$"}
-                                className="w-[28rem] text-black text-md px-1 bg-stone-200 focus-within:ring-2 hover:ring-solana-purple focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-400 shadow-sm focus:outline-none caret-solana-purple appearance-none invalid:ring-rose-700"
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <th
-                            scope="row" className="text-lg text-left text-solana-purple"
-                        >
-                            <span>
-                               Data Type
-                            </span>
-                        </th>
-                        <td className="p-2 text-stone-200">:</td>
-                        <td>
-                            <select 
-                                className="text-black text-md px-1 bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400" 
-                                required
-                                aria-required
-                                value={dataType}
-                                onChange={(e) => {
-                                    if (!isNaN(Number(e.target.value))) {
-                                        setDataType(Number(e.target.value));
-                                    }
-                                }}>
-                                {Object.keys(DataTypeOption)
-                                    .filter((key) => isNaN(Number(key)))
-                                    .map((dataType, idx) => {
-                                        return (
-                                            <option key={idx} value={idx}>
-                                                {dataType}
-                                            </option>
-                                        );
-                                    })
-                                }
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th
-                            scope="row" className="text-lg text-left text-solana-purple"
-                        >
-                            <span>
-                               Dynamic/Static + Initial size
-                            </span>
-                        </th>
-                        <td className="p-2 text-stone-200">:</td>
-                        <td className="flex flex-row h-full items-center">
-                            <input 
-                                type="checkbox" 
-                                checked={isDynamic} 
-                                onChange={() => setIsDynamic(prev => !prev)} 
-                                className="mr-2 w-4 h-4 accent-solana-green"
-                            />
-                            <input 
-                                type="number"
-                                required
-                                aria-required
-                                min={0}
-                                max={MAX_FILE_SIZE}
-                                className="text-black text-md px-1 bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400 invalid:ring-rose-700" 
-                                value={space}
-                                onChange={(e) => {
-                                    const num = Number(e.target.value);
-                                    if (isNaN(num) || num < 0) {
-                                        setSpace(0);
-                                    }
-                                    else {
-                                        setSpace(Number(e.target.value));
-                                    }
-                                }}    
-                            />
-                            <Tooltip message={<><b>{isDynamic ? "Dynamic" : "Static"}</b><br />Initial size:<br />{space > 1e9 ? space.toExponential(7) : space}B<br />{space > MAX_FILE_SIZE ? <p className="text-rose-700">{`> MAX (${MAX_FILE_SIZE.toExponential(2)})`}</p> : null}</>} condition={true} sx={`w-32 right-0 top-0 left-9`}>
-                                <svg className="ml-2 w-5 h-5 text-solana-green" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                                </svg>
-                            </Tooltip>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th
-                            scope="row" className="text-lg text-left text-solana-purple"
-                        >
-                            <span>
-                               Upload File
-                            </span>
-                        </th>
-                        <td className="p-2 text-stone-200">:</td>
-                        <td>
-                            <input 
-                                type="file" 
-                                onChange={(e) => {
-                                    if (e.target.files) {
-                                        setFile(e.target.files[0])
-                                    }
-                                }} 
-                                required 
-                                className="w-full text-sm text-stone-100 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-solana-purple file:text-white hover:file:bg-solana-purple/70 file:hover:text-stone-100"/>
-                        </td>
-                    </tr>
+                    <FeePayerRow />
+                    <AuthorityRow authority={authority} setAuthority={setAuthority} />
+                    <DataTypeRow dataType={dataType} setDataType={setDataType} />
+                    <DynamicRow isDynamic={isDynamic} setIsDynamic={setIsDynamic} space={space} setSpace={setSpace} />
+                    <FileRow setFile={setFile} />
                 </tbody>
             </table>
             <div className="flex flex-row items-center mt-10">
-                <button type="submit" disabled={dataAccount != null} className="m-auto justify-self-center bg-solana-green/80 hover:bg-emerald-600 text-white text-md font-semibold py-1 px-4 border-b-4 border-emerald-600 hover:border-solana-green/80 disabled:bg-emerald-600 disabled:hover:border-emerald-600 disabled:cursor-not-allowed rounded-md">
-                    {loading && dataAccountStatus < 1 ? 
-                    <>  
-                        {`Uploading `}
-                        <svg className="inline-flex ml-1 animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                    </>: dataAccount && dataAccountStatus >= 1 ? "Upload Complete" : "Confirm Upload"}
-                </button>
+                <UploadButton dataAccount={dataAccount} loading={loading} dataAccountStatus={dataAccountStatus} />
             </div>
-            {dataAccount && 
-                <div className="text-lg">
+            <div className="text-lg">
+                {dataAccount && 
                     <h1 className="text-md">
                         <p className="text-solana-green/80 font-semibold">Data Account initialized: </p> 
                         <Link href={`/${dataAccount}?cluster=${cluster}`} className="underline text-md">{dataAccount}</Link>
                     </h1>
-                    {dataAccountStatus < 1 &&
-                        <div className="w-96 my-5 bg-stone-200 rounded-md h-5 ring-2 ring-stone-400">
-                            <div className="px-1 ease-in duration-300 flex justify-center bg-solana-green h-5 rounded-md ring-2 ring-emerald-600" style={{ width: `${Math.min(dataAccountStatus*100, 100)}%` }}>
-                                <span className="animate-[bounce_3s_infinite] text-sm text-emerald-600 overflow-hidden">Uploading...</span>
-                            </div>
-                        </div>}
-                    {dataAccountStatus >= 1 && <div className="text-md mt-3 text-solana-green/80">Upload Complete!</div>}
-                </div>}
+                }
+                <UploadStatusBar dataAccountStatus={dataAccountStatus} />
+            </div>
             {error && 
                 <div className="text-lg">
                     <h1 className="text-md">
@@ -302,6 +217,12 @@ const UploadPage = () => {
           </form>
         </section>
     )
+
+
 }
 
 export default UploadPage;
+
+
+
+
