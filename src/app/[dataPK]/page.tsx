@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import DataDisplay from "../components/display-data";
 import CopyToClipboard from "../components/helpers/copy";
+import DataTypeSelect from "../components/upload/datatype-select";
 import Loading from './loading';
 
 const DataAccountInfoPage = () => {
@@ -12,6 +13,7 @@ const DataAccountInfoPage = () => {
     const dataPK = pathname?.substring(1);
     const searchParams = useSearchParams();
 
+    const [dataType, setDataType] = useState<DataTypeOption>(DataTypeOption.CUSTOM);
     const [dataAccountInfo, setDataAccountInfo] = useState<IDataAccount | null>(null);
     const [error, setError] = useState<string | null>(null);
     const { meta, data }  = useMemo(() => dataAccountInfo ?? {} as IDataAccount, [dataAccountInfo]);
@@ -23,14 +25,12 @@ const DataAccountInfoPage = () => {
                 res.json().then(({ error } : ApiError) => {
                     setError(error);
                     setDataAccountInfo(null);
-                    return;
                 })
             } else {
                 res.json().then((account_state: IDataAccount) => {
-                    if (account_state) {
-                        setDataAccountInfo(account_state);
-                        setError(null);
-                    }
+                    setDataAccountInfo(account_state);
+                    setDataType(account_state.meta.data_type);
+                    setError(null);
                 });
             }
         });
@@ -111,8 +111,9 @@ const DataAccountInfoPage = () => {
                             Data Type
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className="text-md">
-                            {DataTypeOption[meta.data_type]}
+                        <td className="text-md flex">
+                            <p className="mr-5">{DataTypeOption[meta.data_type]}</p>
+                            {meta.data_type && <DataTypeSelect dataType={dataType} setDataType={setDataType} />}
                         </td>
                     </tr>
                     <tr><td>&nbsp;</td></tr>
@@ -125,7 +126,7 @@ const DataAccountInfoPage = () => {
                     </tr>
                 </tbody>
             </table>
-            <DataDisplay data_type={meta.data_type} data={data?.toString()} />
+            <DataDisplay data_type={dataType} data={data?.toString()} />
         </div>
     )
 }
