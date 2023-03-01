@@ -1,4 +1,4 @@
-import { ClusterNames } from "@/types";
+import { ClusterNames } from "@/app/utils/types";
 
 export const ClusterOption = (
     {

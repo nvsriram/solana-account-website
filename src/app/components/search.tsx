@@ -1,9 +1,9 @@
 "use client";
 
-import { useCluster } from '@/utils';
+import { useCluster } from '@/app/utils/utils';
 import { usePathname, useRouter } from 'next/navigation';
-import { FormEvent, useState } from 'react';
-import Tooltip from './tooltip';
+import { FormEvent, useRef, useState } from 'react';
+import Tooltip from './helpers/tooltip';
 
 export const Search = () => {
     const PREFIX = "sol://"
@@ -28,12 +28,15 @@ export const Search = () => {
         }
     }
 
+    const focusRef = useRef<HTMLInputElement>(null);
+
     return (
         <form onSubmit={handleSubmit}>
             <div className="flex items-center bg-stone-200 focus-within:ring-2 hover:ring-solana-purple focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-400 shadow-sm">
                 <input 
                     className="bg-transparent focus:outline-none appearance-none w-full text-lg py-2 pl-2 caret-solana-purple"
                     type="text"
+                    ref={focusRef}
                     aria-label="Search for data accounts"
                     value={search}
                     onChange={(e) => {
@@ -42,7 +45,7 @@ export const Search = () => {
                         }
                     }}
                 />
-                <button type="reset" className="h-full p-2 rounded-sm text-stone-500 hover:text-rose-700 focus:text-rose-700 focus:outline-none" onClick={() => setSearch(PREFIX)}>
+                <button type="reset" className="h-full p-2 rounded-sm text-stone-500 hover:text-rose-700 focus:text-rose-700 focus:outline-none" onClick={() => { setSearch(PREFIX); focusRef.current?.focus(); }}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>

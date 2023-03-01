@@ -1,7 +1,7 @@
 "use client"
 
-import { ClusterNames } from "@/types";
-import { useCluster } from "@/utils";
+import { ClusterNames } from "@/app/utils/types";
+import { useCluster } from "@/app/utils/utils";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ClusterOption } from "./cluster-option";
 

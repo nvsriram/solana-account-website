@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-const WalletButtonDynamic = dynamic(() => import("./wallet-button"), { ssr: false });
+const WalletButtonDynamic = dynamic(() => import("../wallet/wallet-button"), { ssr: false });
 
 const FeePayerRow = () => {
     return (

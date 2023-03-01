@@ -1,9 +1,10 @@
 "use client";
 
-import { ApiError, DataStatusOption, DataTypeOption, IDataAccount, SerializationStatusOption } from "@/types";
+import { ApiError, DataStatusOption, DataTypeOption, IDataAccount, SerializationStatusOption } from "@/app/utils/types";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import DataDisplay from "./display-data";
+import DataDisplay from "../components/display-data";
+import CopyToClipboard from "../components/helpers/copy";
 import Loading from './loading';
 
 const DataAccountInfoPage = () => {
@@ -46,11 +47,8 @@ const DataAccountInfoPage = () => {
         );
     }
 
-    if (!dataAccountInfo || !dataAccountInfo.data) {
-        if (!error) {
-            return <Loading />;
-        }
-        return null;
+    if (!dataAccountInfo && !error) {
+        return <Loading />;
     }
 
     return (
@@ -63,8 +61,8 @@ const DataAccountInfoPage = () => {
                             Data Account
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className="text-md">
-                            {dataPK}
+                        <td className="text-md flex">
+                            {dataPK}{dataPK && <CopyToClipboard message={dataPK} />}
                         </td>
                     </tr>
                     <tr>
@@ -73,8 +71,8 @@ const DataAccountInfoPage = () => {
                             Authority
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className="text-md">
-                            {meta.authority}
+                        <td className="text-md flex">
+                            {meta.authority}{meta.authority && <CopyToClipboard message={meta.authority} />}
                         </td>
                     </tr>
                     <tr>
@@ -104,7 +102,7 @@ const DataAccountInfoPage = () => {
                         </th>
                         <td className="px-2 text-stone-200">:</td>
                         <td className={`text-md ${meta.is_dynamic ? "text-solana-green": "text-rose-500"}`}>
-                            {meta.is_dynamic ? "TRUE" : "FALSE"}
+                            {meta.is_dynamic == undefined ? null : meta.is_dynamic ? "TRUE" : "FALSE"}
                         </td>
                     </tr>
                     <tr>

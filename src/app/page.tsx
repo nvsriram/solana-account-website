@@ -1,6 +1,6 @@
 "use client";
 
-import { DataTypeOption } from "@/types";
+import { DataTypeOption } from "@/app/utils/types";
 import { useRouter } from "next/navigation";
 
 export default function Home() {

@@ -1,4 +1,4 @@
-import { DataTypeOption } from "@/types";
+import { DataTypeOption } from "@/app/utils/types";
 import { Dispatch, SetStateAction } from "react";
 
 const DataTypeRow = ({ dataType, setDataType } : { dataType: DataTypeOption, setDataType: Dispatch<SetStateAction<DataTypeOption>>}) => {

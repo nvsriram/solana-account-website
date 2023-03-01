@@ -1,4 +1,4 @@
-import { ConfirmOptions, Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 import BN from "bn.js";
 import { createContext, useContext, } from "react";
 import { ClusterContextType, IDataAccount, IDataAccountMeta } from "./types";
@@ -13,6 +13,16 @@ export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const PROGRAM_ID = "5tbhGyvffZ3XEC6BbFP1ZJy8gtm3sWtVDjwb7HjLN5eU";
 const PDA_SEED = "data_account_metadata";
 const programId = new PublicKey(PROGRAM_ID);
+
+export const displaySize = (space: number): string => {
+  let displaySize = space.toString() + " B";
+  if (space > 1e6) {
+      displaySize = space/1e6 + " MB";
+  } else if (space > 1e3) {
+      displaySize = space/1e3 + " KB";
+  }
+  return displaySize;
+};
 
 const getPDAFromDataAccount = (dataKey: PublicKey):  [PublicKey, number] => {
   return PublicKey.findProgramAddressSync(
@@ -177,25 +187,18 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: P
 }
 
 export const handleUpload = (connection: Connection, recentBlockhash: Readonly<{ blockhash: string; lastValidBlockHeight: number; }>, txs: Transaction[], handleUploadStatus: (tx: Transaction) => void): Promise<void>[] => {
-  return txs.map(async (tx, idx) => {
-    const txid = await connection.sendRawTransaction(
-      tx.serialize(),
-      {
-        skipPreflight: false,
-        preflightCommitment: "confirmed",
-        confirmation: "confirmed",
-      } as ConfirmOptions,
-    );
+  return txs.map(async (tx, idx, allTxs) => {
+    const txid = await connection.sendRawTransaction(tx.serialize())
     await connection.confirmTransaction(
-      {
-        blockhash: recentBlockhash.blockhash,
-        lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
-        signature: txid,
-      }, 
-      "confirmed"
-    ).then(() => {
-      handleUploadStatus(tx);
-      console.log(`${idx}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
-    });
+        {
+          blockhash: recentBlockhash.blockhash,
+          lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+          signature: txid,
+        }, 
+        "confirmed"
+      ).then(() => {
+        handleUploadStatus(tx);
+        console.log(`${idx + 1}/${allTxs.length}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
+      });
   });
 }
