@@ -21,7 +21,7 @@ This website acts as a visualizer for the [Solana Data Program V0](https://githu
   1. Sign in with your wallet that will act as the `Fee Payer` for the transactions
   2. Enter the `Authority` of the Data Account. Only the `Authority` can make changes to the Data Account
   3. Choose the file you wish to upload
-  4. On uploading the file, the [`Data Type`](## "CUSTOM, JSON, or IMG") and [`Initial Size`](## "Initial size is autopopulated after zlib compression") will autopopulate based on the file, however they can be overridden
+  4. On uploading the file, the <i title="CUSTOM, JSON, or IMG">`Data Type`</i> and <i title="Initial size is autopopulated after zlib compression">`Initial Size`</i> will autopopulate based on the file, however they can be overridden
   5. If not satisfied with the autopopulated `Data Type`, you may choose a different type
   6. If you wish for the account to not be realloc-ed and remain a static size, leave the `Dynamic/Static` checkbox unchecked
   7. Enter the initial size in bytes to allocate to the Data Account
