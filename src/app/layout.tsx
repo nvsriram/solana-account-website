@@ -36,7 +36,7 @@ export default function RootLayout({
                 <span className='h-full flex items-center'><Image src={Logo} alt="logo" className="h-7 w-7 object-bottom"/></span>
                 {` : `}
                 <p className="pl-2 text-3xl self-center">
-                  A <span className="underline underline-offset-3 decoration-solana-green">Sol</span>ana URI <span className="underline underline-offset-3 decoration-solana-green">D</span>ata visualizer
+                  A <span className="underline underline-offset-3 decoration-solana-green">Sol</span>ana URI <span className="underline underline-offset-3 decoration-solana-green">D</span>ata Editor
                 </p>
               </Link>
               <ClusterSelect />

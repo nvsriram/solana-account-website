@@ -1,7 +1,6 @@
 import { DataTypeOption } from "@/app/utils/types";
 import { displaySize } from "@/app/utils/utils";
 import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from "react";
-import { deflateSync } from "zlib";
 import Tooltip from "../helpers/tooltip";
 
 const FileRow = ({
@@ -13,10 +12,10 @@ const FileRow = ({
      setError 
     }: { 
     dataType: DataTypeOption, 
-    fileData: string | null,
+    fileData: Buffer | null,
     setDataType: Dispatch<SetStateAction<DataTypeOption>>,
+    setFileData: Dispatch<SetStateAction<Buffer | null>>, 
     setSpace: Dispatch<SetStateAction<number>>,
-    setFileData: Dispatch<SetStateAction<string | null>>, 
     setError: Dispatch<SetStateAction<string | null>>
 }) => {
     const [file, setFile] = useState<File | undefined>();
@@ -29,23 +28,22 @@ const FileRow = ({
 
         const loadListener = (e: ProgressEvent<FileReader>) => {
             setError(null);
-            let fileData = "";
             if (!e.target || !e.target.result) {
                 return;
             }
             try {
-                fileData = e.target.result.toString();
+                const arrayBuffer = e.target.result as ArrayBuffer;
+                const buffer = Buffer.from(arrayBuffer);
                 if (dataType === DataTypeOption.JSON) {
-                    fileData = JSON.stringify(JSON.parse(fileData));
+                    JSON.stringify(JSON.parse(buffer.toString()));
                 }
+                setFileData(buffer);
+                setSpace(buffer.length);
             } catch(err) {
                 if (err instanceof Error) {
                     setError(err.message);
                 }
             }
-            const deflated = deflateSync(fileData).toString("base64");
-            setSpace(deflated.length);
-            setFileData(deflated);
         };
         const errorListener = () => {
             setError("Error reading file");
@@ -56,13 +54,10 @@ const FileRow = ({
         setFileType(file.type);
         if (file.type.indexOf("json") !== -1) {
             setDataType(DataTypeOption.JSON);
-            reader.readAsText(file);
         } else if (file.type.startsWith("image") || dataType === DataTypeOption.IMG) {
             setDataType(DataTypeOption.IMG);
-            reader.readAsDataURL(file);
-        } else {
-            reader.readAsText(file);
-        }
+        }  
+        reader.readAsArrayBuffer(file);
         return () => {
             reader.removeEventListener('load', loadListener);
             reader.removeEventListener('error', errorListener);

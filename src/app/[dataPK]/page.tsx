@@ -1,8 +1,8 @@
 "use client";
 
-import { ApiError, DataStatusOption, DataTypeOption, IDataAccount, SerializationStatusOption } from "@/app/utils/types";
+import { ApiError, DataStatusOption, DataTypeOption, IDataAccountMeta, SerializationStatusOption } from "@/app/utils/types";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import DataDisplay from "../components/display-data";
 import CopyToClipboard from "../components/helpers/copy";
 import DataTypeSelect from "../components/upload/datatype-select";
@@ -14,29 +14,47 @@ const DataAccountInfoPage = () => {
     const searchParams = useSearchParams();
 
     const [dataType, setDataType] = useState<DataTypeOption>(DataTypeOption.CUSTOM);
-    const [dataAccountInfo, setDataAccountInfo] = useState<IDataAccount | null>(null);
+    const [dataAccountMeta, setDataAccountMeta] = useState<IDataAccountMeta | null>(null);
+    const [data, setData] = useState<string>();
     const [error, setError] = useState<string | null>(null);
-    const { meta, data }  = useMemo(() => dataAccountInfo ?? {} as IDataAccount, [dataAccountInfo]);
 
     useEffect(() => {
-        fetch(`/api/${pathname}?${searchParams.toString()}`)
-        .then((res) => {
-            if (!res.ok) {
-                res.json().then(({ error } : ApiError) => {
-                    setError(error);
-                    setDataAccountInfo(null);
-                })
-            } else {
-                res.json().then((account_state: IDataAccount) => {
-                    setDataAccountInfo(account_state);
-                    setDataType(account_state.meta.data_type);
-                    setError(null);
-                });
+        Promise.allSettled([
+            fetch(`/api/meta/${pathname}?${searchParams.toString()}`)
+            .then((res) => {
+                if (!res.ok) {
+                    res.json().then(({ error }: ApiError) => {
+                        setDataAccountMeta(null);
+                        setError(error);
+                    })
+                } else {
+                    res.json().then((account_meta: IDataAccountMeta) => {
+                        setDataAccountMeta(account_meta);
+                        setDataType(account_meta.data_type);
+                    });
+                }
+            }),
+            fetch(`/api/data/${pathname}?${searchParams.toString()}`)
+            .then((res) => {
+                if (!res.ok) {
+                    res.json().then(({ error }: ApiError) => {
+                        setError(error);
+                    })
+                } else {
+                    res.text().then((data: string) => {
+                        setData(data);
+                    });
+                }
+            })
+        ])
+        .then((ps) => {
+            if (ps.every((p) => p.status === "fulfilled")) {
+                setError(null);
             }
         });
     }, [pathname, searchParams])
 
-    if (error != null) {
+    if (error) {
         return (
             <div className="text-lg">
                 <h1 className="text-lg">
@@ -47,10 +65,9 @@ const DataAccountInfoPage = () => {
         );
     }
 
-    if (!dataAccountInfo && !error) {
+    if (!dataAccountMeta) {
         return <Loading />;
     }
-
     return (
         <div className="pb-2">
             <table className="table-auto">
@@ -72,7 +89,7 @@ const DataAccountInfoPage = () => {
                         </th>
                         <td className="px-2 text-stone-200">:</td>
                         <td className="text-md flex">
-                            {meta.authority}{meta.authority && <CopyToClipboard message={meta.authority} />}
+                            {dataAccountMeta.authority}{dataAccountMeta.authority && <CopyToClipboard message={dataAccountMeta.authority} />}
                         </td>
                     </tr>
                     <tr>
@@ -81,8 +98,8 @@ const DataAccountInfoPage = () => {
                             Data Status
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className={`text-md ${meta.data_status % 2 ? "text-solana-green": "text-rose-500"}`}>
-                            {DataStatusOption[meta.data_status]}
+                        <td className={`text-md ${dataAccountMeta.data_status % 2 ? "text-solana-green": "text-rose-500"}`}>
+                            {DataStatusOption[dataAccountMeta.data_status]}
                         </td>
                     </tr>
                     <tr>
@@ -91,8 +108,8 @@ const DataAccountInfoPage = () => {
                             Serialization
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className={`text-md ${meta.serialization_status === SerializationStatusOption.VERIFIED ? "text-solana-green": "text-rose-500"}`}>
-                            {SerializationStatusOption[meta.serialization_status]}
+                        <td className={`text-md ${dataAccountMeta.serialization_status === SerializationStatusOption.VERIFIED ? "text-solana-green": "text-rose-500"}`}>
+                            {SerializationStatusOption[dataAccountMeta.serialization_status]}
                         </td>
                     </tr>
                     <tr>
@@ -101,8 +118,8 @@ const DataAccountInfoPage = () => {
                             Dynamic
                         </th>
                         <td className="px-2 text-stone-200">:</td>
-                        <td className={`text-md ${meta.is_dynamic ? "text-solana-green": "text-rose-500"}`}>
-                            {meta.is_dynamic == undefined ? null : meta.is_dynamic ? "TRUE" : "FALSE"}
+                        <td className={`text-md ${dataAccountMeta.is_dynamic ? "text-solana-green": "text-rose-500"}`}>
+                            {dataAccountMeta.is_dynamic == undefined ? null : dataAccountMeta.is_dynamic ? "TRUE" : "FALSE"}
                         </td>
                     </tr>
                     <tr>
@@ -112,8 +129,8 @@ const DataAccountInfoPage = () => {
                         </th>
                         <td className="px-2 text-stone-200">:</td>
                         <td className="text-md flex">
-                            <p className="mr-5">{DataTypeOption[meta.data_type]}</p>
-                            {meta.data_type && <DataTypeSelect dataType={dataType} setDataType={setDataType} />}
+                            <p className="mr-5">{DataTypeOption[dataAccountMeta.data_type]}</p>
+                            {dataAccountMeta.data_type != undefined && <DataTypeSelect dataType={dataType} setDataType={setDataType} />}
                         </td>
                     </tr>
                     <tr><td>&nbsp;</td></tr>
@@ -126,7 +143,7 @@ const DataAccountInfoPage = () => {
                     </tr>
                 </tbody>
             </table>
-            <DataDisplay data_type={dataType} data={data?.toString()} />
+            <DataDisplay data_type={dataType} data={data} />
         </div>
     )
 }

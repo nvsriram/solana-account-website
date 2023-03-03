@@ -1,112 +1,182 @@
-# SolD: A Solana URI Data Visualizer
+# SolD: A Solana URI Data Editor
 
-This website acts as a visualizer for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-account). It allows the user to view the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
+This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-account). It allows the user to view the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
 
 ## Usage instructions
+
 ### To view Data Account details
+
 - Select the Solana cluster (`Mainnet Beta`, `Devnet`, `Testnet`, `Custom`) on the top right
 - To view the details regarding the Data Account:
-    - Enter the `PublicKey` of the data account in the search bar and search for it
-    - Navigate to `/<Data Account PublicKey>?cluster=<Cluster Name>`
+  - Enter the `PublicKey` of the data account in the search bar and search for it
+  - Navigate to `/<Data Account PublicKey>?cluster=<Cluster Name>`
 - If the Data Account is valid, you should be able to view the metadata associated with the Data Account like its `Authority`, `Data Status`, `Serialization Status`, etc., and its `Data` will be displayed in the format as specified by the `Data Type`
 - On error, you will be met with an informative error message
 
 ### To upload your own file
+
 - Select the Solana cluster (`Mainnet Beta`, `Devnet`, `Testnet`, `Custom`) on the top right
 - To access the _Upload_ page:
   - Click on the `Get Started!` button on the home page
-   - Search for `upload` in the search bar
-   - Navigate to `/upload`
+  - Search for `upload` in the search bar
+  - Navigate to `/upload`
 - In the _Upload_ page, you will be met with various options:
   1. Sign in with your wallet that will act as the `Fee Payer` for the transactions
   2. Enter the `Authority` of the Data Account. Only the `Authority` can make changes to the Data Account
   3. Choose the file you wish to upload
-  4. On uploading the file, the <i title="CUSTOM, JSON, or IMG">`Data Type`</i> and <i title="Initial size is autopopulated after zlib compression">`Initial Size`</i> will autopopulate based on the file, however they can be overridden
+  4. On uploading the file, the <i title="CUSTOM, JSON, or IMG">`Data Type`</i> and `Initial Size`</i> will autopopulate based on the file, however they can be overridden
   5. If not satisfied with the autopopulated `Data Type`, you may choose a different type
   6. If you wish for the account to not be realloc-ed and remain a static size, leave the `Dynamic/Static` checkbox unchecked
   7. Enter the initial size in bytes to allocate to the Data Account
   8. Once satisfied with all the options, click on the `Confirm Upload` button to upload the file
   9. You should receive a prompt to sign the transactions
   10. Once signed, the Data Account will be created (and the created Data Account `PublicKey` will be displayed) and initialized (with the PDA) and finally the file would be uploaded in chunks together. You should be able to track the progress via the progress bar
-  11. Once, the upload is complete, you can navigate to the link to view the Data Account details
+  11. Once the upload is complete, you can navigate to the link to view the Data Account details
   12. On error, you will be met with an informative error message
 
 ## API route(s)
+
 With the website running, you can also navigate to the following API route(s):
 
-### Get Data Account Details
-Use this API route to get the zlib-encoded data and associated metadata (extracted from the PDA) for a given Data Account
-* **URL**
+### Get Data Account Metadata
 
-  `/api/{dataAccount}?cluster={clusterName}`
+Use this API route to get the associated metadata (extracted from the PDA) for a given Data Account
 
-* **Method:**
+- **URL**
+
+  `/api/meta/{dataAccount}?cluster={clusterName}`
+
+- **Method:**
 
   `GET`
-  
-*  **URL Params**
 
-   **Required:**
- 
-   `dataAccount=<PublicKey>` 
-   
-* **Query String Params**
-   
-   **Required:**
-   
-   `clusterName=<"Mainnet Beta" | "Devnet" | "Testnet" | "Custom">`
+- **URL Params**
 
-* **Success Response:**
-  
-  * **Code:** 200 <br />
-    **Content:** 
+  **Required:**
+
+  `dataAccount=<PublicKey>`
+
+- **Query String Params**
+
+  **Required:**
+
+  `clusterName=<"Mainnet Beta" | "Devnet" | "Testnet" | "Custom">`
+
+- **Success Response:**
+
+  - **Code:** 200 <br />
+    **Content:**
     ```javascript
-    { 
-      meta: {
-        data_status: DataStatusOption;
-        serialization_status: SerializationStatusOption;
-        authority: string;
-        is_dynamic: boolean;
-        data_version: number;
-        data_type: number;
-        bump_seed: number;
-      };
-      data?: Buffer | string;
+    {
+    	data_status: DataStatusOption;
+    	serialization_status: SerializationStatusOption;
+    	authority: string;
+    	is_dynamic: boolean;
+    	data_version: number;
+    	data_type: number;
+    	bump_seed: number;
     }
     ```
-* **Error Response:**
 
-  * **Code:** 400 BAD REQUEST <br />
-    **Content:** 
-      * `{ error: "Invalid Cluster" }`: if the clusterName is invalid **OR**
-      * `{ error: "Invalid Data Account PublicKey" }`: if no dataAccount was provided or if the data account is not a valid base58 PublicKey **OR**
-      * `{ error: "No data corresponding to the Data Account" }`: if the dataAccount does not exist or if it has no data
+- **Error Response:**
+
+  - **Code:** 400 BAD REQUEST <br />
+    **Content:**
+    - `{ error: "Invalid Cluster" }`: if the clusterName is invalid **OR**
+    - `{ error: "Invalid Data Account PublicKey" }`: if no dataAccount was provided or if the data account is not a valid base58 PublicKey **OR**
+    - `{ error: "No metadata corresponding to the Data Account" }`: if the dataAccount does not exist or if it has no metadata
 
   **OR**
 
-  * **Code:** 405 METHOD NOT ALLOWED <br />
+  - **Code:** 405 METHOD NOT ALLOWED <br />
     **Content:** `{ error : "Unsupported Method" }`: if the API is accessed by any method other than GET
 
-* **Sample Call:**
+- **Sample Call:**
 
   ```javascript
-  fetch(`/api/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet`)
-    .then((res) => {
-      if (!res.ok) {
-        res.json().then(({ error } : ApiError) => {
-          console.error(error);
-        });
-      } else {
-        res.json().then((account_state: IDataAccount) => {
-          if (account_state) {
-            console.log(account_state);
-          }
-        });
-      }
-   });
-   ```
+  fetch(
+  	`/api/meta/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet`
+  ).then((res) => {
+  	if (!res.ok) {
+  		res.json().then(({ error }: ApiError) => {
+  			console.error(error);
+  		});
+  	} else {
+  		res.json().then((account_meta: IDataAccountMeta) => {
+  			console.log(account_meta);
+  		});
+  	}
+  });
+  ```
+
+### Get Data Account Data
+
+Use this API route to get the data for a given Data Account.
+
+- **URL**
+
+  `/api/data/{dataAccount}?cluster={clusterName}`
+
+- **Method:**
+
+  `GET`
+
+- **URL Params**
+
+  **Required:**
+
+  `dataAccount=<PublicKey>`
+
+- **Query String Params**
+
+  **Required:**
+
+  `clusterName=<"Mainnet Beta" | "Devnet" | "Testnet" | "Custom">`
+
+- **Success Response:**
+
+  - **Code:** 200 <br />
+    **Content:**
+    ```javascript
+    string;
+    ```
+
+- **Error Response:**
+
+  - **Code:** 400 BAD REQUEST <br />
+    **Content:**
+    - `{ error: "Invalid Cluster" }`: if the clusterName is invalid **OR**
+    - `{ error: "Invalid Data Account PublicKey" }`: if no dataAccount was provided or if the data account is not a valid base58 PublicKey **OR**
+    - `{ error: "No data corresponding to the Data Account" }`: if the dataAccount does not exist or if it has no data
+
+  **OR**
+
+  - **Code:** 405 METHOD NOT ALLOWED <br />
+    **Content:** `{ error : "Unsupported Method" }`: if the API is accessed by any method other than GET
+
+- **Sample Call:**
+
+  ```javascript
+  fetch(
+  	`/api/data/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet`
+  ).then((res) => {
+  	if (!res.ok) {
+  		res.json().then(({ error }: ApiError) => {
+  			console.error(error);
+  		});
+  	} else {
+  		res.text().then((data: string) => {
+  			console.log(data);
+  		});
+  	}
+  });
+  ```
+
+- **Note:**
+  If the data is for a Data Account having `IMG` data type, the data is returned as a Base64-encoded string
 
 ## Instructions for running the project locally
+
 1. Install the dependencies: `npm install`
 2. Run the development server: `npm run dev`
 3. Navigate to [http://localhost:3000](http://localhost:3000)

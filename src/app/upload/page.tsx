@@ -19,7 +19,7 @@ const UploadPage = () => {
     const [isDynamic, setIsDynamic] = useState(false);
     const [space, setSpace] = useState(0);
     const [dataType, setDataType] = useState<DataTypeOption>(DataTypeOption.CUSTOM);
-    const [fileData, setFileData] = useState<string | null>(null);
+    const [fileData, setFileData] = useState<Buffer | null>(null);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -62,8 +62,8 @@ const UploadPage = () => {
             allTxs.push(iTx); 
             // data part txs
             let current = 0;
-            while (current < parts) {    
-                const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
+            while (current < parts) {
+                const part = fileData.subarray(current * PART_SIZE, (current + 1) * PART_SIZE);
                 const offset = current * PART_SIZE;
                 const tx = uploadDataPart(feePayer, dataKP, pda, dataType, part, offset);
                 allTxs.push(tx);    

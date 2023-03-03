@@ -24,6 +24,25 @@ export const displaySize = (space: number): string => {
   return displaySize;
 };
 
+const signatures = new Map<string, string>([
+  ["JVBERi0", "application/pdf"],
+  ["R0lGODdh", "image/gif"],
+  ["R0lGODlh", "image/gif"],
+  ["iVBORw0KGgo", "image/png"],
+  ["/9j/", "image/jpg"],
+  ["PD", "image/svg+xml"]
+]);
+
+export const getMimeType = (base64: string): string => {
+  let mime = "text/plain";
+  signatures.forEach((v, k) => {
+    if (base64.startsWith(k)) {
+      mime = v;
+    }
+  });
+  return mime;   
+};
+
 const getPDAFromDataAccount = (dataKey: PublicKey):  [PublicKey, number] => {
   return PublicKey.findProgramAddressSync(
     [
@@ -142,7 +161,7 @@ export const initializeDataAccount = (feePayer: PublicKey, dataAccount: Keypair,
     return [tx, pda];
 }
 
-export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: PublicKey, dataType: number, part: string, offset: number): Transaction => {
+export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: PublicKey, dataType: number, data: Buffer, offset: number): Transaction => {
   const idx1 = Buffer.from(new Uint8Array([1]));
   const offset_buffer = Buffer.from(new Uint8Array(new BN(offset).toArray("le", 8)));    
   const true_flag = Buffer.from(new Uint8Array([1]));
@@ -150,9 +169,8 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: P
   
   const data_type = Buffer.from(new Uint8Array(new BN(dataType).toArray("le", 1)));
   const data_len = Buffer.from(
-    new Uint8Array(new BN(part.length).toArray("le", 4))
+    new Uint8Array(new BN(data.length).toArray("le", 4))
   );
-  const data = Buffer.from(part, "ascii");
   const updateIx = new TransactionInstruction({
     keys: [
       {

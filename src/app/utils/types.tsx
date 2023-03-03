@@ -49,5 +49,5 @@ export interface IDataAccountMeta {
 
 export interface IDataAccount {
     meta: IDataAccountMeta;
-    data?: Buffer | string;
+    data?: Buffer;
 }
