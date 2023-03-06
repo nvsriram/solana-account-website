@@ -56,7 +56,9 @@ const FileRow = ({
             setDataType(DataTypeOption.JSON);
         } else if (file.type.startsWith("image") || dataType === DataTypeOption.IMG) {
             setDataType(DataTypeOption.IMG);
-        }  
+        }  else if (file.type.indexOf("html") !== -1) {
+            setDataType(DataTypeOption.HTML);
+        } 
         reader.readAsArrayBuffer(file);
         return () => {
             reader.removeEventListener('load', loadListener);

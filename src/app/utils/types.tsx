@@ -35,6 +35,7 @@ export enum DataTypeOption {
     CUSTOM = 0,
     JSON = 1,
     IMG = 2,
+    HTML = 3,
 }
 
 export interface IDataAccountMeta {

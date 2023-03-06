@@ -24,7 +24,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
   1. Sign in with your wallet that will act as the `Fee Payer` for the transactions
   2. Enter the `Authority` of the Data Account. Only the `Authority` can make changes to the Data Account
   3. Choose the file you wish to upload
-  4. On uploading the file, the <i title="CUSTOM, JSON, or IMG">`Data Type`</i> and `Initial Size`</i> will autopopulate based on the file, however they can be overridden
+  4. On uploading the file, the <i title="CUSTOM, JSON, IMG, or HTML">`Data Type`</i> and `Initial Size`</i> will autopopulate based on the file, however they can be overridden
   5. If not satisfied with the autopopulated `Data Type`, you may choose a different type
   6. If you wish for the account to not be realloc-ed and remain a static size, leave the `Dynamic/Static` checkbox unchecked
   7. Enter the initial size in bytes to allocate to the Data Account
@@ -84,7 +84,7 @@ Use this API route to get the associated metadata (extracted from the PDA) for a
     **Content:**
     - `{ error: "Invalid Cluster" }`: if the clusterName is invalid **OR**
     - `{ error: "Invalid Data Account PublicKey" }`: if no dataAccount was provided or if the data account is not a valid base58 PublicKey **OR**
-    - `{ error: "No metadata corresponding to the Data Account" }`: if the dataAccount does not exist or if it has no metadata
+    - `{ error: "No metadata corresponding to the Data Account" }`: if the dataAccount PDA does not exist or if it has no metadata
 
   **OR**
 
@@ -138,7 +138,7 @@ Use this API route to get the data for a given Data Account.
   - **Code:** 200 <br />
     **Content:**
     ```javascript
-    string;
+    Buffer;
     ```
 
 - **Error Response:**
@@ -171,9 +171,6 @@ Use this API route to get the data for a given Data Account.
   	}
   });
   ```
-
-- **Note:**
-  If the data is for a Data Account having `IMG` data type, the data is returned as a Base64-encoded string
 
 ## Instructions for running the project locally
 

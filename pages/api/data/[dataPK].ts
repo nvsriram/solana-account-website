@@ -1,12 +1,15 @@
 import { Connection, PublicKey } from "@solana/web3.js";
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ApiError, ClusterNames, DataTypeOption } from "@/app/utils/types"
-import { isBase58, parseData } from "@/app/utils/utils";
+import { ApiError, ClusterNames } from "@/app/utils/types"
+import { getMimeType, isBase58, parseData } from "@/app/utils/utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<string | ApiError>
+  res: NextApiResponse<Buffer | ApiError>
 ) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, HEAD, OPTIONS");
+
   if (req.method !== "GET") {
     res.status(405).json({ error: "Unsupported method"});
     return;
@@ -25,16 +28,16 @@ export default async function handler(
   }
 
   try {
-    const account_state = await parseData(new Connection(clusterURL), new PublicKey(dataPK));
-    if (!account_state || !account_state.data) {
+    const account_data = await parseData(new Connection(clusterURL), new PublicKey(dataPK));
+    if (!account_data) {
       res.status(400).json({ error: "No data corresponding to the Data Account" });
       return;
     };
-    if (account_state.meta.data_type === DataTypeOption.IMG) {
-      res.status(200).send(account_state.data.toString("base64"));
-    } else {
-      res.status(200).send(account_state.data.toString());
-    }
+    const base64 = account_data.toString("base64");
+    const type = getMimeType(base64);
+    res.status(200)
+    .setHeader("Content-type", type)
+    .send(account_data);
   } catch(err) {
     if (err instanceof Error) {
       res.status(400).json({ error: err.message });

@@ -7,7 +7,8 @@ export default function Home() {
   const dataTypeDescription = new Map<DataTypeOption, string>();
   dataTypeDescription.set(DataTypeOption.CUSTOM, "A default datatype to store custom data");
   dataTypeDescription.set(DataTypeOption.JSON, "Datatype to store JSON data that will be parsed and pretty-printed");
-  dataTypeDescription.set(DataTypeOption.IMG, "Datatype to store image data as Base64 encoded string that will be output as an image");
+  dataTypeDescription.set(DataTypeOption.IMG, "Datatype to store image data");
+  dataTypeDescription.set(DataTypeOption.HTML, "Datatype to store HTML data that will be output in an iframe");
 
   const router = useRouter();
   return (

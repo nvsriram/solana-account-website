@@ -14,44 +14,30 @@ const DataAccountInfoPage = () => {
     const searchParams = useSearchParams();
 
     const [dataType, setDataType] = useState<DataTypeOption>(DataTypeOption.CUSTOM);
-    const [dataAccountMeta, setDataAccountMeta] = useState<IDataAccountMeta | null>(null);
-    const [data, setData] = useState<string>();
+    const [loading, setLoading] = useState(false);
+    const [dataAccountMeta, setDataAccountMeta] = useState<IDataAccountMeta>({} as IDataAccountMeta);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        Promise.allSettled([
-            fetch(`/api/meta/${pathname}?${searchParams.toString()}`)
-            .then((res) => {
-                if (!res.ok) {
-                    res.json().then(({ error }: ApiError) => {
-                        setDataAccountMeta(null);
-                        setError(error);
-                    })
-                } else {
-                    res.json().then((account_meta: IDataAccountMeta) => {
-                        setDataAccountMeta(account_meta);
-                        setDataType(account_meta.data_type);
-                    });
-                }
-            }),
-            fetch(`/api/data/${pathname}?${searchParams.toString()}`)
-            .then((res) => {
-                if (!res.ok) {
-                    res.json().then(({ error }: ApiError) => {
-                        setError(error);
-                    })
-                } else {
-                    res.text().then((data: string) => {
-                        setData(data);
-                    });
-                }
-            })
-        ])
-        .then((ps) => {
-            if (ps.every((p) => p.status === "fulfilled")) {
-                setError(null);
+        setLoading(true);
+        fetch(`/api/meta/${pathname}?${searchParams.toString()}`)
+        .then((res) => {
+            if (!res.ok) {
+                res.json().then(({ error }: ApiError) => {
+                    setError(error);
+                })
+            } else {
+                res.json().then((account_meta: IDataAccountMeta) => {
+                    setDataAccountMeta(account_meta);
+                    setDataType(account_meta.data_type);
+                    setError(null);
+                });
             }
-        });
+        }).catch((err) => {
+            if (err instanceof Error) {
+                setError(err.message);
+            }
+        }).finally(() => setLoading(false));
     }, [pathname, searchParams])
 
     if (error) {
@@ -65,7 +51,7 @@ const DataAccountInfoPage = () => {
         );
     }
 
-    if (!dataAccountMeta) {
+    if (loading) {
         return <Loading />;
     }
     return (
@@ -143,7 +129,7 @@ const DataAccountInfoPage = () => {
                     </tr>
                 </tbody>
             </table>
-            <DataDisplay data_type={dataType} data={data} />
+            <DataDisplay data_type={dataType} dataPK={dataPK} searchParams={searchParams.toString()} />
         </div>
     )
 }

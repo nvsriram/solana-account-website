@@ -10,16 +10,18 @@ export const useCluster = () => useContext(ClusterContext) as ClusterContextType
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-const PROGRAM_ID = "5tbhGyvffZ3XEC6BbFP1ZJy8gtm3sWtVDjwb7HjLN5eU";
+export const BASE_URL = "http://localhost:3000";
+
+const PROGRAM_ID = "29mQxQrcrxEkSjzSC4DuAorsiSNxAhyNi3vfWgwqVdDf";
 const PDA_SEED = "data_account_metadata";
 const programId = new PublicKey(PROGRAM_ID);
 
 export const displaySize = (space: number): string => {
   let displaySize = space.toString() + " B";
   if (space > 1e6) {
-      displaySize = space/1e6 + " MB";
+    displaySize = space/1e6 + " MB";
   } else if (space > 1e3) {
-      displaySize = space/1e3 + " KB";
+    displaySize = space/1e3 + " KB";
   }
   return displaySize;
 };
@@ -34,7 +36,7 @@ const signatures = new Map<string, string>([
 ]);
 
 export const getMimeType = (base64: string): string => {
-  let mime = "text/plain";
+  let mime = "text/html";
   signatures.forEach((v, k) => {
     if (base64.startsWith(k)) {
       mime = v;
@@ -53,23 +55,13 @@ const getPDAFromDataAccount = (dataKey: PublicKey):  [PublicKey, number] => {
   );
 }
 
-export const parseData = async (connection: Connection, dataKey: PublicKey, debug?: boolean): Promise<IDataAccount> => {
-  const data_account = await connection.getAccountInfo(dataKey, "confirmed");
-
-  const [metaKey] = PublicKey.findProgramAddressSync(
-    [
-      Buffer.from(PDA_SEED, "ascii"),
-      dataKey.toBuffer(),
-    ],
-    programId
-  );
+export const parseMetadata = async (connection: Connection, dataKey: PublicKey, debug?: boolean): Promise<IDataAccountMeta> => {
+  const [metaKey] = getPDAFromDataAccount(dataKey);
   const meta_account = await connection.getAccountInfo(metaKey, "confirmed");
 
   if (debug) {
     console.log("Raw Metadata:");
     console.log(meta_account?.data);
-    console.log("Raw Data:");
-    console.log(data_account?.data);
   }
   
   const account_meta = {} as IDataAccountMeta;
@@ -95,9 +87,23 @@ export const parseData = async (connection: Connection, dataKey: PublicKey, debu
     ).toNumber();
   }
 
+  return account_meta;
+}
+
+export const parseData = async (connection: Connection, dataKey: PublicKey, debug?: boolean): Promise<Buffer | undefined> => {
+  const data_account = await connection.getAccountInfo(dataKey, "confirmed");
+
+  if (debug) {
+    console.log(data_account?.data);
+  }
+  
+  return data_account?.data;
+}
+
+export const parseDetails = async (connection: Connection, dataKey: PublicKey, debug?: boolean): Promise<IDataAccount> => {
   return {
-    meta: account_meta,
-    data: data_account?.data
+    meta: await parseMetadata(connection, dataKey, debug),
+    data: await parseData(connection, dataKey, debug)
   };
 }
 
@@ -106,15 +112,13 @@ export const createDataAccount = async (connection: Connection, feePayer: Public
   const dataAccount = new Keypair();
 
   const rentExemptAmount = await connection.getMinimumBalanceForRentExemption(initialSize);
-  const createIx = SystemProgram.createAccount(
-    {
-      fromPubkey: feePayer,
-      newAccountPubkey: dataAccount.publicKey,
-      lamports: rentExemptAmount,
-      space: initialSize,
-      programId: programId,
-    }
-  );
+  const createIx = SystemProgram.createAccount({
+    fromPubkey: feePayer,
+    newAccountPubkey: dataAccount.publicKey,
+    lamports: rentExemptAmount,
+    space: initialSize,
+    programId: programId,
+  });
   const tx = new Transaction();
   tx.add(createIx);
   tx.feePayer = feePayer;
@@ -122,43 +126,43 @@ export const createDataAccount = async (connection: Connection, feePayer: Public
 }
 
 export const initializeDataAccount = (feePayer: PublicKey, dataAccount: Keypair, authorityPK: PublicKey, isDynamic: boolean, initialSize: number): [Transaction, PublicKey] => {
-    const [pda] = getPDAFromDataAccount(dataAccount.publicKey);
-    const idx0 = Buffer.from(new Uint8Array([0]));
-    const space = Buffer.from(new Uint8Array(new BN(initialSize).toArray("le", 8)));
-    const dynamic = Buffer.from(new Uint8Array([isDynamic ? 1 : 0]));
-    const authority = authorityPK.toBuffer();
-    const is_created = Buffer.from(new Uint8Array([1]));
-    const initializeIx = new TransactionInstruction({
-        keys: [
-        {
-            pubkey: feePayer,
-            isSigner: true,
-            isWritable: true,
-        },
-        {
-            pubkey: dataAccount.publicKey,
-            isSigner: true,
-            isWritable: true,
-        },
-        {
-          pubkey: pda,
-          isSigner: false,
-          isWritable: true,
-        },
-        {
-            pubkey: SystemProgram.programId,
-            isSigner: false,
-            isWritable: false,
-        },
-        ],
-        programId: programId,
-        data: Buffer.concat([idx0, authority, space, dynamic, is_created]),
-    });
-    
-    const tx = new Transaction();
-    tx.add(initializeIx);
-    tx.feePayer = feePayer;
-    return [tx, pda];
+  const [pda] = getPDAFromDataAccount(dataAccount.publicKey);
+  const idx0 = Buffer.from(new Uint8Array([0]));
+  const space = Buffer.from(new Uint8Array(new BN(initialSize).toArray("le", 8)));
+  const dynamic = Buffer.from(new Uint8Array([isDynamic ? 1 : 0]));
+  const authority = authorityPK.toBuffer();
+  const is_created = Buffer.from(new Uint8Array([1]));
+  const initializeIx = new TransactionInstruction({
+    keys: [
+    {
+      pubkey: feePayer,
+      isSigner: true,
+      isWritable: true,
+    },
+    {
+      pubkey: dataAccount.publicKey,
+      isSigner: true,
+      isWritable: true,
+    },
+    {
+      pubkey: pda,
+      isSigner: false,
+      isWritable: true,
+    },
+    {
+      pubkey: SystemProgram.programId,
+      isSigner: false,
+      isWritable: false,
+    },
+    ],
+    programId: programId,
+    data: Buffer.concat([idx0, authority, space, dynamic, is_created]),
+  });
+  
+  const tx = new Transaction();
+  tx.add(initializeIx);
+  tx.feePayer = feePayer;
+  return [tx, pda];
 }
 
 export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: PublicKey, dataType: number, data: Buffer, offset: number): Transaction => {
@@ -173,26 +177,26 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: P
   );
   const updateIx = new TransactionInstruction({
     keys: [
-      {
-        pubkey: feePayer,
-        isSigner: true,
-        isWritable: true,
-      },
-      {
-        pubkey: dataAccount.publicKey,
-        isSigner: true,
-        isWritable: true,
-      },
-      {
-        pubkey: pda,
-        isSigner: false,
-        isWritable: true,
-      },
-      {
-        pubkey: SystemProgram.programId,
-        isSigner: false,
-        isWritable: false,
-      },
+    {
+      pubkey: feePayer,
+      isSigner: true,
+      isWritable: true,
+    },
+    {
+      pubkey: dataAccount.publicKey,
+      isSigner: true,
+      isWritable: true,
+    },
+    {
+      pubkey: pda,
+      isSigner: false,
+      isWritable: true,
+    },
+    {
+      pubkey: SystemProgram.programId,
+      isSigner: false,
+      isWritable: false,
+    },
     ],
     programId: programId,
     data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, false_flag, true_flag, true_flag]),
@@ -208,15 +212,15 @@ export const handleUpload = (connection: Connection, recentBlockhash: Readonly<{
   return txs.map(async (tx, idx, allTxs) => {
     const txid = await connection.sendRawTransaction(tx.serialize())
     await connection.confirmTransaction(
-        {
-          blockhash: recentBlockhash.blockhash,
-          lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
-          signature: txid,
-        }, 
-        "confirmed"
-      ).then(() => {
-        handleUploadStatus(tx);
-        console.log(`${idx + 1}/${allTxs.length}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
-      });
+      {
+        blockhash: recentBlockhash.blockhash,
+        lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+        signature: txid,
+      }, 
+      "confirmed"
+    ).then(() => {
+      handleUploadStatus(tx);
+      console.log(`${idx + 1}/${allTxs.length}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
+    });
   });
 }
