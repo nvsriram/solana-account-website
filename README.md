@@ -115,7 +115,7 @@ Use this API route to get the data for a given Data Account.
 
 - **URL**
 
-  `/api/data/{dataAccount}?cluster={clusterName}`
+  `/api/data/{dataAccount}?cluster={clusterName}&ext={mimeType}`
 
 - **Method:**
 
@@ -132,6 +132,10 @@ Use this API route to get the data for a given Data Account.
   **Required:**
 
   `clusterName=<"Mainnet Beta" | "Devnet" | "Testnet" | "Custom">`
+
+  **Optional**
+
+  `mimeType=<any valid MIME type`
 
 - **Success Response:**
 
@@ -158,7 +162,7 @@ Use this API route to get the data for a given Data Account.
 
   ```javascript
   fetch(
-  	`/api/data/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet`
+  	`/api/data/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet&ext=text/html`
   ).then((res) => {
   	if (!res.ok) {
   		res.json().then(({ error }: ApiError) => {

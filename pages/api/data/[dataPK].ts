@@ -15,8 +15,8 @@ export default async function handler(
     return;
   }
 
-  const { dataPK, cluster } = req.query;
-  const clusterURL = Object.values(ClusterNames).find(({name}) => name === cluster)?.url;
+  const { dataPK, cluster, ext } = req.query;
+  const clusterURL = Object.values(ClusterNames).find(({name}) => name.toLowerCase() === cluster?.toString().toLowerCase())?.url;
   if (!clusterURL) {
     res.status(400).json({ error: "Invalid Cluster" });
     return;
@@ -33,11 +33,17 @@ export default async function handler(
       res.status(400).json({ error: "No data corresponding to the Data Account" });
       return;
     };
-    const base64 = account_data.toString("base64");
-    const type = getMimeType(base64);
-    res.status(200)
-    .setHeader("Content-type", type)
-    .send(account_data);
+    if (ext) {
+      res.status(200)
+      .setHeader("Content-type", ext)
+      .send(account_data);
+    } else {
+      const base64 = account_data.toString("base64");
+      const type = getMimeType(base64);
+      res.status(200)
+      .setHeader("Content-type", type)
+      .send(account_data);
+    }
   } catch(err) {
     if (err instanceof Error) {
       res.status(400).json({ error: err.message });

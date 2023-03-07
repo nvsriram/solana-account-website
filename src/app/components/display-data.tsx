@@ -56,7 +56,7 @@ const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, d
             try {
                 const dataJSON = JSON.parse(data);
                 return (
-                    <div className="mb-2 p-2 bg-stone-900 rounded-lg">
+                    <div className="mt-2 p-2 bg-stone-900 rounded-lg">
                         <pre className="text-sm font-mono text-amber-200 break-words overflow-auto">
                             {JSON.stringify(dataJSON, null, 2)}
                         </pre>
@@ -64,7 +64,7 @@ const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, d
                 );
             } catch(err) {
                 return (
-                    <div className="text-lg">
+                    <div className="text-lg pt-2">
                         <h1 className="text-lg break-words">
                             <p className="text-rose-500 font-semibold">There was an error parsing the JSON data:</p>
                             {data}
@@ -74,17 +74,17 @@ const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, d
             }
         case DataTypeOption.IMG:
             return (
-                <div className="w-full text-lg">
+                <div className="w-full text-lg pt-2">
                     <NextImage src={`${BASE_URL}${url}`} height={300} width={300} style={{ maxHeight: 500, width: "auto" }} alt="nft-image" />
                 </div>
             );
         case DataTypeOption.HTML:
             return (
-                <iframe src={url} height={500} width={500} allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" sandbox="allow-scripts"/>
+                <iframe src={url} height={500} width={500} className="mt-2" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" sandbox="allow-scripts"/>
             );
         default:
             return (
-                <div className="text-lg">
+                <div className="text-lg pt-2">
                     <h1 className="text-lg break-words">
                         {data}
                     </h1>
