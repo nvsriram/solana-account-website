@@ -33,9 +33,9 @@ const FileRow = ({
             }
             try {
                 const arrayBuffer = e.target.result as ArrayBuffer;
-                const buffer = Buffer.from(arrayBuffer);
+                let buffer = Buffer.from(arrayBuffer);
                 if (dataType === DataTypeOption.JSON) {
-                    JSON.stringify(JSON.parse(buffer.toString()));
+                   buffer = Buffer.from(JSON.stringify(JSON.parse(buffer.toString())));
                 }
                 setFileData(buffer);
                 setSpace(buffer.length);

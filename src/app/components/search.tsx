@@ -2,7 +2,7 @@
 
 import { useCluster } from '@/app/utils/utils';
 import { usePathname, useRouter } from 'next/navigation';
-import { FormEvent, useRef, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import Tooltip from './helpers/tooltip';
 
 export const Search = () => {
@@ -28,13 +28,15 @@ export const Search = () => {
         }
     }
 
+    useEffect(() => setSearch(PREFIX + pathname?.substring(1)), [pathname]);
+
     const focusRef = useRef<HTMLInputElement>(null);
 
     return (
         <form onSubmit={handleSubmit}>
             <div className="flex items-center bg-stone-200 focus-within:ring-2 hover:ring-solana-purple focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-400 shadow-sm">
                 <input 
-                    className="bg-transparent focus:outline-none appearance-none w-full text-lg py-2 pl-2 caret-solana-purple"
+                    className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-lg py-2 pl-2 caret-solana-purple"
                     type="text"
                     ref={focusRef}
                     aria-label="Search for data accounts"

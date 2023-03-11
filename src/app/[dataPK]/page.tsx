@@ -4,7 +4,7 @@ import { ApiError, DataStatusOption, DataTypeOption, IDataAccountMeta, Serializa
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import DataDisplay from "../components/display-data";
+import DataDisplay from "../components/display-data/display-data";
 import CopyToClipboard from "../components/helpers/copy";
 import DataTypeSelect from "../components/upload/datatype-select";
 import { BASE_URL } from "../utils/utils";
@@ -56,6 +56,7 @@ const DataAccountInfoPage = () => {
     if (loading) {
         return <Loading />;
     }
+    
     return (
         <div className="pb-2">
             <table className="table-auto">
@@ -145,7 +146,7 @@ const DataAccountInfoPage = () => {
                     </tr>   
                 </tbody>
             </table>
-            <DataDisplay data_type={dataType} dataPK={dataPK} searchParams={searchParams.toString()} />
+            <DataDisplay data_type={dataType} dataPK={dataPK} searchParams={searchParams.toString()} meta={dataAccountMeta} />
         </div>
     )
 }

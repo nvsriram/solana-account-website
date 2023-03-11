@@ -1,13 +1,18 @@
-import { ApiError, DataTypeOption } from "@/app/utils/types";
+import { ApiError, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import NextImage from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { BASE_URL } from "../utils/utils";
-import Loading from "../[dataPK]/loading";
+import { BASE_URL } from "../../utils/utils";
+import Loading from "../../[dataPK]/loading";
+import CustomDisplay from "./display-custom";
+import HTMLDisplay from "./display-html";
+import JSONDisplay from "./display-json";
 
-const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, dataPK?: string, searchParams: string }) => {    
+const DataDisplay = ({ data_type, dataPK, searchParams, meta }: { data_type: number, dataPK?: string, searchParams: string, meta: IDataAccountMeta }) => {    
     const [data, setData] = useState<string>();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
     const url = `/api/data/${dataPK}?${searchParams}`;
 
@@ -30,7 +35,11 @@ const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, d
                 setError(err.message);
             }
         }).finally(() => setLoading(false));
-    }, [url])
+    }, [url]);
+
+    const handleRefresh = () => {
+        setTimeout(() => router.replace(`/${dataPK}?${searchParams}`), 10 * 1000);
+    }
 
     if (error) {
         return (
@@ -47,20 +56,16 @@ const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, d
         return <Loading />;
     }
     
-    if (!data || data.length <= 0) {
+    if (!dataPK || !data || data.length <= 0) {
         return null;
     }
 
     switch (data_type) {
         case DataTypeOption.JSON:
             try {
-                const dataJSON = JSON.parse(data);
+                const dataJSON = JSON.parse(data.split("").filter(char => char.codePointAt(0)).join(""));
                 return (
-                    <div className="mt-2 p-2 bg-stone-900 rounded-lg">
-                        <pre className="text-sm font-mono text-amber-200 break-words overflow-auto">
-                            {JSON.stringify(dataJSON, null, 2)}
-                        </pre>
-                    </div>
+                    <JSONDisplay json={dataJSON} len={data.length} dataPK={dataPK} meta={meta} refresh={handleRefresh}/>
                 );
             } catch(err) {
                 return (
@@ -80,15 +85,11 @@ const DataDisplay = ({ data_type, dataPK, searchParams }: { data_type: number, d
             );
         case DataTypeOption.HTML:
             return (
-                <iframe src={url} height={500} width={500} className="mt-2" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" sandbox="allow-scripts"/>
+                <HTMLDisplay url={url} data={data} dataPK={dataPK} meta={meta} refresh={handleRefresh} />
             );
         default:
             return (
-                <div className="text-lg pt-2">
-                    <h1 className="text-lg break-words">
-                        {data}
-                    </h1>
-                </div>
+                <CustomDisplay data={data} dataType={DataTypeOption.CUSTOM} dataPK={dataPK} meta={meta} refresh={handleRefresh} />
             );
     }
 };

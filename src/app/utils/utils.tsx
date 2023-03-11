@@ -1,18 +1,21 @@
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, TransactionInstruction } from "@solana/web3.js";
 import BN from "bn.js";
 import { createContext, useContext, } from "react";
-import { ClusterContextType, IDataAccount, IDataAccountMeta } from "./types";
+import { ClusterContextType, EditorThemeType, IDataAccount, IDataAccountMeta } from "./types";
 
 export const isBase58 = (value: string): boolean => /^[A-HJ-NP-Za-km-z1-9]*$/.test(value);
 
 export const ClusterContext = createContext<ClusterContextType | null>(null);
 export const useCluster = () => useContext(ClusterContext) as ClusterContextType;
 
+export const EditorThemeContext = createContext<EditorThemeType | null>(null);
+export const useEditorTheme = () => useContext(EditorThemeContext) as EditorThemeType;
+
 export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 export const BASE_URL = "http://localhost:3000";
 
-const PROGRAM_ID = "29mQxQrcrxEkSjzSC4DuAorsiSNxAhyNi3vfWgwqVdDf";
+const PROGRAM_ID = "ECQd7f4sYhcWX5G9DQ7Hgcf3URZTfgwVwjKzH2sMQeFW";
 const PDA_SEED = "data_account_metadata";
 const programId = new PublicKey(PROGRAM_ID);
 
@@ -132,6 +135,7 @@ export const initializeDataAccount = (feePayer: PublicKey, dataAccount: Keypair,
   const dynamic = Buffer.from(new Uint8Array([isDynamic ? 1 : 0]));
   const authority = authorityPK.toBuffer();
   const is_created = Buffer.from(new Uint8Array([1]));
+  const false_flag = Buffer.from(new Uint8Array([0]));
   const initializeIx = new TransactionInstruction({
     keys: [
     {
@@ -156,7 +160,7 @@ export const initializeDataAccount = (feePayer: PublicKey, dataAccount: Keypair,
     },
     ],
     programId: programId,
-    data: Buffer.concat([idx0, authority, space, dynamic, is_created]),
+    data: Buffer.concat([idx0, authority, space, dynamic, is_created, false_flag]),
   });
   
   const tx = new Transaction();
@@ -165,7 +169,12 @@ export const initializeDataAccount = (feePayer: PublicKey, dataAccount: Keypair,
   return [tx, pda];
 }
 
-export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: PublicKey, dataType: number, data: Buffer, offset: number): Transaction => {
+export const uploadDataPart = (feePayer: PublicKey, dataAccount: PublicKey, pdaKey: PublicKey | null, dataType: number, data: Buffer, offset: number, debug?: boolean): Transaction => {
+  let pda = pdaKey;
+  if (!pda) {
+    [pda] = getPDAFromDataAccount(dataAccount);
+  }
+
   const idx1 = Buffer.from(new Uint8Array([1]));
   const offset_buffer = Buffer.from(new Uint8Array(new BN(offset).toArray("le", 8)));    
   const true_flag = Buffer.from(new Uint8Array([1]));
@@ -183,8 +192,8 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: P
       isWritable: true,
     },
     {
-      pubkey: dataAccount.publicKey,
-      isSigner: true,
+      pubkey: dataAccount,
+      isSigner: false,
       isWritable: true,
     },
     {
@@ -199,7 +208,7 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: P
     },
     ],
     programId: programId,
-    data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, false_flag, true_flag, true_flag]),
+    data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, false_flag, true_flag, true_flag, debug ? true_flag : false_flag]),
   });
 
   const tx = new Transaction();
@@ -208,7 +217,7 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: Keypair, pda: P
   return tx;
 }
 
-export const handleUpload = (connection: Connection, recentBlockhash: Readonly<{ blockhash: string; lastValidBlockHeight: number; }>, txs: Transaction[], handleUploadStatus: (tx: Transaction) => void): Promise<void>[] => {
+export const handleUpload = (connection: Connection, recentBlockhash: Readonly<{ blockhash: string; lastValidBlockHeight: number; }>, txs: Transaction[], handleUploadStatus: ((tx: Transaction) => void) | null): Promise<void>[] => {
   return txs.map(async (tx, idx, allTxs) => {
     const txid = await connection.sendRawTransaction(tx.serialize())
     await connection.confirmTransaction(
@@ -219,7 +228,9 @@ export const handleUpload = (connection: Connection, recentBlockhash: Readonly<{
       }, 
       "confirmed"
     ).then(() => {
-      handleUploadStatus(tx);
+      if (handleUploadStatus) {
+        handleUploadStatus(tx);
+      }
       console.log(`${idx + 1}/${allTxs.length}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
     });
   });

@@ -65,7 +65,7 @@ const UploadPage = () => {
             while (current < parts) {
                 const part = fileData.subarray(current * PART_SIZE, (current + 1) * PART_SIZE);
                 const offset = current * PART_SIZE;
-                const tx = uploadDataPart(feePayer, dataKP, pda, dataType, part, offset);
+                const tx = uploadDataPart(feePayer, dataKP.publicKey, pda, dataType, part, offset);
                 allTxs.push(tx);    
                 ++current;
             }
@@ -74,9 +74,11 @@ const UploadPage = () => {
             let initialized = null;
             while (!initialized) {
                 recentBlockhash = await clusterConnection.getLatestBlockhash();
-                allTxs.map((tx) => {
+                allTxs.map((tx, idx) => {
                     tx.recentBlockhash = recentBlockhash.blockhash;
-                    tx.sign(dataKP);
+                    if (idx <= 1) {
+                        tx.sign(dataKP);
+                    }
                     return tx;
                 });
                 signedTxs = await signAllTransactions(allTxs);
@@ -134,11 +136,10 @@ const UploadPage = () => {
                             ++current;
                             continue;
                         }
-                        const part = fileData.slice(current * PART_SIZE, (current + 1) * PART_SIZE);
+                        const part = fileData.subarray(current * PART_SIZE, (current + 1) * PART_SIZE);
                         const offset = current * PART_SIZE;
-                        const tx = uploadDataPart(feePayer, dataKP, pda, dataType, part, offset);
+                        const tx = uploadDataPart(feePayer, dataKP.publicKey, pda, dataType, part, offset);
                         tx.recentBlockhash = recentBlockhash.blockhash;
-                        tx.sign(dataKP);
                         allTxs.push(tx);    
                         ++current;
                     }
