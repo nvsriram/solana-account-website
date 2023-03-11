@@ -1,6 +1,6 @@
 # SolD: A Solana URI Data Editor
 
-This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-account). It allows the user to view the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
+This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-account). It allows the user to view/edit the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
 
 ## Usage instructions
 
@@ -33,6 +33,15 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
   10. Once signed, the Data Account will be created (and the created Data Account `PublicKey` will be displayed) and initialized (with the PDA) and finally the file would be uploaded in chunks together. You should be able to track the progress via the progress bar
   11. Once the upload is complete, you can navigate to the link to view the Data Account details
   12. On error, you will be met with an informative error message
+
+### To update your file
+
+- Go to the [Data Account details page](#to-view-data-account-details)
+- Choose the `Data Type` you wish to set
+- Click on the Edit button and make changes
+- Once satisfied with your changes, click Save
+- This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
+- Once the transaction goes through, you can reload the page to view the changes
 
 ## API route(s)
 
