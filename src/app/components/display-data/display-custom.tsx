@@ -1,20 +1,34 @@
 import { ClusterNames, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import ReactCodeMirror from "@uiw/react-codemirror";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { html } from "@codemirror/lang-html";
 import router from "next/router";
 import { handleUpload, uploadDataPart, useCluster } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
-const CustomDisplay = ({ data, dataType, dataPK, meta, refresh } : { data: string, dataType: DataTypeOption, dataPK: string, meta: IDataAccountMeta, refresh: () => void }) => {
+const CustomDisplay = ({ 
+    data, 
+    dataType, 
+    dataPK, 
+    meta, 
+    refresh,
+    setError
+} : { 
+    data: string, 
+    dataType: DataTypeOption, 
+    dataPK: string, 
+    meta: IDataAccountMeta, 
+    refresh: () => void, 
+    setError?:  Dispatch<SetStateAction<string | null>> 
+}) => {
     const { cluster } = useCluster();
     const { publicKey: authority, signAllTransactions } = useWallet();
     
     const [editable, setEditable] = useState(false);
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [saveState, setSaveState] = useState("Save");
+    const [inlineError, setInlineError] = useState<string | null>(null);
     const [updated, setUpdated] = useState("");
     
     const unsavedChanges = useMemo(() => updated != data, [data, updated]);
@@ -60,24 +74,41 @@ const CustomDisplay = ({ data, dataType, dataPK, meta, refresh } : { data: strin
     const handleCancel = useCallback(() => {
         setEditable(false);
         setUpdated(data);
-        setError(null);
-    }, [data]);
+        setSaveState("Save");
+        if (setError) {
+            setError(null);
+        } else {
+            setInlineError(null);
+        }
+    }, [data, setError]);
 
     const handleSave = async () => {
         if (!authority || meta.authority != authority.toBase58() || !signAllTransactions) {
-            setError("Invalid authority wallet. Please sign in to wallet to continue...");
+            if (setError) {
+                setError("Invalid authority wallet. Please sign in to wallet to continue...");
+            } else {
+                setInlineError("Invalid authority wallet. Please sign in to wallet to continue...");
+            }
             return;
         }
 
         console.log(data.length, updated.length);
         let updateData: Buffer;    
         try {
-            setLoading(true);
-            setError(null);
+            setSaveState("Saving...");
+            if (setError) {
+                setError(null);
+            } else {
+                setInlineError(null);
+            }
 
             const clusterURL = Object.values(ClusterNames).find(({name}) => name === cluster)?.url;
             if (!clusterURL) {
-                setError("Invalid cluster");
+                if (setError) {
+                    setError("Invalid cluster");
+                } else {
+                    setInlineError("Invalid cluster");
+                }
                 return;
             }
             const clusterConnection = new Connection(clusterURL);
@@ -108,7 +139,12 @@ const CustomDisplay = ({ data, dataType, dataPK, meta, refresh } : { data: strin
                 if (meta.is_dynamic) {
                     updateData = Buffer.from(updated.substring(offset), "ascii");
                 } else {
-                    setError("Data account is static so cannot be realloced");
+                    if (setError) {
+                        setError("Data account is static so cannot be realloced");
+                    } else {
+                        setInlineError("Data account is static so cannot be realloced");
+                    }
+                        
                     return;
                 }
             }
@@ -162,11 +198,15 @@ const CustomDisplay = ({ data, dataType, dataPK, meta, refresh } : { data: strin
                     signedTxs = await signAllTransactions(allTxs);
                 });
             }
-            setLoading(false);
+            setSaveState("Saved")
             refresh();
         } catch (err) {
             if (err instanceof Error) {
-                setError(err.message);
+                if (setError) {
+                    setError(err.message);
+                } else {
+                    setInlineError(err.message);
+                }
             }
         }
     }
@@ -174,11 +214,11 @@ const CustomDisplay = ({ data, dataType, dataPK, meta, refresh } : { data: strin
     return (
         <div className="mt-2 justify-end relative">
             <div className="absolute top-2 z-10 right-2 inline-flex">
-                {error &&
-                    <p className="text-rose-500 mr-2">{error}</p>}
+                {inlineError &&
+                    <p className="text-rose-500 mr-2">{inlineError}</p>}
                 {unsavedChanges && 
-                    <button className="text-md mr-2 p-1 rounded-md bg-solana-green/80 hover:bg-emerald-600/90 focus:bg-emerald-600/90 focus:outline-none text-white" onClick={() => handleSave()}>
-                        {loading ? "Saving..." : "Save"}
+                    <button className="text-md mr-2 p-1 rounded-md bg-solana-green/80 hover:bg-emerald-600/90 focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-600/90" disabled={saveState === "Saved"} onClick={() => handleSave()}>
+                        {saveState}
                     </button>}
                 {editable ?
                     <button className="text-md mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white" onClick={() => handleCancel()}>

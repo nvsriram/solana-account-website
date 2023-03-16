@@ -13,7 +13,7 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
     const { cluster } = useCluster();
     const { publicKey: authority, signAllTransactions } = useWallet();
 
-    const [loading, setLoading] = useState(false);
+    const [saveState, setSaveState] = useState("Save");
     const [error, setError] = useState<string | null>(null);
     const [data, setData] = useState({});
     
@@ -59,7 +59,7 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
         const updated = JSON.stringify(data);
         let updateData: Buffer;
         try {
-            setLoading(true);
+            setSaveState("Saving...");
             setError(null);
 
             const clusterURL = Object.values(ClusterNames).find(({name}) => name === cluster)?.url;
@@ -112,7 +112,7 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
             let current = 0;
             while (current < parts) {
                 const part = updateData.subarray(current * PART_SIZE, (current + 1) * PART_SIZE);
-                const tx = uploadDataPart(authority, dataAccount, null, DataTypeOption.JSON, part, offset + current * PART_SIZE, true);
+                const tx = uploadDataPart(authority, dataAccount, null, DataTypeOption.JSON, part, offset + current * PART_SIZE);
                 tx.recentBlockhash = recentBlockhash.blockhash;
                 allTxs.push(tx);
                 ++current;
@@ -149,7 +149,7 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
                     signedTxs = await signAllTransactions(allTxs);
                 });
             }
-            setLoading(false);
+            setSaveState("Saved");
             refresh();
         } catch (err) {
             if (err instanceof Error) {
@@ -169,7 +169,7 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
                         className="text-md mr-2 py-1 px-2 rounded-md bg-solana-green/80 hover:bg-emerald-600 focus:bg-emerald-600 text-white focus:outline-none"
                         onClick={() => handleSave()}
                     >
-                        {loading ? "Saving..." : "Save"}
+                        {saveState}
                     </button>}
                 <p className="text-solana-purple text-md pr-2">Theme:</p>
                 <select

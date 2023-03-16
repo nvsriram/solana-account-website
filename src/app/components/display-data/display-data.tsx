@@ -1,6 +1,5 @@
 import { ApiError, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import NextImage from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../utils/utils";
 import Loading from "../../[dataPK]/loading";
@@ -12,11 +11,13 @@ const DataDisplay = ({ data_type, dataPK, searchParams, meta }: { data_type: num
     const [data, setData] = useState<string>();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+    const [dirty, setDirty] = useState(true);
 
     const url = `/api/data/${dataPK}?${searchParams}`;
 
     useEffect(() => {
+        if (!dirty) return;
+
         setLoading(true);
         fetch(url)
         .then((res) => {
@@ -27,6 +28,7 @@ const DataDisplay = ({ data_type, dataPK, searchParams, meta }: { data_type: num
             } else {
                 res.text().then((data) => {
                     setData(data);
+                    setDirty(false);
                     setError(null);
                 });
             }
@@ -35,10 +37,11 @@ const DataDisplay = ({ data_type, dataPK, searchParams, meta }: { data_type: num
                 setError(err.message);
             }
         }).finally(() => setLoading(false));
-    }, [url]);
+    }, [url, dirty]);
 
     const handleRefresh = () => {
-        setTimeout(() => router.replace(`/${dataPK}?${searchParams}`), 10 * 1000);
+        setDirty(true);
+        console.log("refreshed");
     }
 
     if (error) {
