@@ -131,7 +131,7 @@ export const createDataAccount = async (connection: Connection, feePayer: Public
 export const initializeDataAccount = (feePayer: PublicKey, dataAccount: Keypair, authorityPK: PublicKey, isDynamic: boolean, initialSize: number): [Transaction, PublicKey] => {
   const [pda] = getPDAFromDataAccount(dataAccount.publicKey);
   const idx0 = Buffer.from(new Uint8Array([0]));
-  const space = Buffer.from(new Uint8Array(new BN(initialSize).toArray("le", 8)));
+  const space = new BN(initialSize).toArrayLike(Buffer, "le", 8);
   const dynamic = Buffer.from(new Uint8Array([isDynamic ? 1 : 0]));
   const authority = authorityPK.toBuffer();
   const is_created = Buffer.from(new Uint8Array([1]));
@@ -176,14 +176,12 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: PublicKey, pdaK
   }
 
   const idx1 = Buffer.from(new Uint8Array([1]));
-  const offset_buffer = Buffer.from(new Uint8Array(new BN(offset).toArray("le", 8)));    
+  const offset_buffer = new BN(offset).toArrayLike(Buffer, "le", 8);    
   const true_flag = Buffer.from(new Uint8Array([1]));
   const false_flag = Buffer.from(new Uint8Array([0]));
   
-  const data_type = Buffer.from(new Uint8Array(new BN(dataType).toArray("le", 1)));
-  const data_len = Buffer.from(
-    new Uint8Array(new BN(data.length).toArray("le", 4))
-  );
+  const data_type = new BN(dataType).toArrayLike(Buffer, "le", 1);
+  const data_len = new BN(data.length).toArrayLike(Buffer, "le", 4);
   const updateIx = new TransactionInstruction({
     keys: [
     {

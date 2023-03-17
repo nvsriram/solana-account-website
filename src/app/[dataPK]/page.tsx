@@ -132,7 +132,7 @@ const DataAccountInfoPage = () => {
                         <td>
                             <Link 
                                 className="flex items-start w-fit text-sm font-semibold bg-solana-purple text-white px-2 py-1 rounded-md ring-solana-purple/70 hover:bg-solana-purple/70 hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-solana-purple/70"
-                                href={`${BASE_URL}/api/data/${pathname}?${searchParams.toString()}`} 
+                                href={`${BASE_URL}/api/data${pathname}?${searchParams.toString()}`} 
                                 target="_blank" 
                             >
                                 VIEW ORIGINAL
