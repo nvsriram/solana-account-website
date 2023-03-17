@@ -1,4 +1,4 @@
-import { ClusterNames, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
+import { ClusterNames, DataStatusOption, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import ReactCodeMirror from "@uiw/react-codemirror";
 import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
 import { html } from "@codemirror/lang-html";
@@ -111,6 +111,16 @@ const CustomDisplay = ({
                 }
                 return;
             }
+
+            if (meta.data_status === DataStatusOption.FINALIZED) {
+                if (setError) {
+                    setError("Data account is finalized so cannot be updated");
+                } else {
+                    setInlineError("Data account is finalized so cannot be updated");
+                }
+                return;
+            }
+
             const clusterConnection = new Connection(clusterURL);
             const dataAccount = new PublicKey(dataPK);
 

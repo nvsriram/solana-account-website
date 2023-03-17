@@ -87,8 +87,7 @@ export const EditorThemeKeys = Array.from(EditorThemeMap.keys());
 export enum DataStatusOption {
     UNINITIALIZED,
     INITIALIZED,
-    UPDATED,
-    COMMITTED,
+    FINALIZED
 }
 
 export enum SerializationStatusOption {

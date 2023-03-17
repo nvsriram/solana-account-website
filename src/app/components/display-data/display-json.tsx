@@ -1,4 +1,4 @@
-import { ClusterNames, DataTypeOption, EditorThemeKeys, EditorThemeMap, IDataAccountMeta } from "@/app/utils/types";
+import { ClusterNames, DataStatusOption, DataTypeOption, EditorThemeKeys, EditorThemeMap, IDataAccountMeta } from "@/app/utils/types";
 import { handleUpload, uploadDataPart, useCluster, useEditorTheme } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
@@ -67,6 +67,12 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
                 setError("Invalid cluster");
                 return;
             }
+
+            if (meta.data_status === DataStatusOption.FINALIZED) {
+                setError("Data account is finalized so cannot be updated");
+                return;
+            }
+            
             const clusterConnection = new Connection(clusterURL);
             const dataAccount = new PublicKey(dataPK);
 
