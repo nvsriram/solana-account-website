@@ -206,7 +206,7 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: PublicKey, pdaK
     },
     ],
     programId: programId,
-    data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, false_flag, true_flag, true_flag, debug ? true_flag : false_flag]),
+    data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, true_flag, true_flag, debug ? true_flag : false_flag]),
   });
 
   const tx = new Transaction();
@@ -232,4 +232,42 @@ export const handleUpload = (connection: Connection, recentBlockhash: Readonly<{
       console.log(`${idx + 1}/${allTxs.length}: https://explorer.solana.com/tx/${txid}?cluster=devnet`);
     });
   });
+}
+
+export const finalizeDataAccount = (feePayer: PublicKey, dataAccount: PublicKey, pdaKey: PublicKey | null, debug?: boolean): Transaction => {
+  let pda = pdaKey;
+  if (!pda) {
+    [pda] = getPDAFromDataAccount(dataAccount);
+  }
+
+  const idx3 = Buffer.from(new Uint8Array([3]));
+  const true_flag = Buffer.from(new Uint8Array([1]));
+  const false_flag = Buffer.from(new Uint8Array([0]));
+  
+  const finalizeIx = new TransactionInstruction({
+    keys: [
+    {
+      pubkey: feePayer,
+      isSigner: true,
+      isWritable: true,
+    },
+    {
+      pubkey: dataAccount,
+      isSigner: false,
+      isWritable: false,
+    },
+    {
+      pubkey: pda,
+      isSigner: false,
+      isWritable: true,
+    },
+    ],
+    programId: programId,
+    data: Buffer.concat([idx3, debug ? true_flag : false_flag]),
+  });
+
+  const tx = new Transaction();
+  tx.add(finalizeIx);
+  tx.feePayer = feePayer;
+  return tx;
 }
