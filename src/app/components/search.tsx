@@ -1,68 +1,105 @@
 "use client";
 
-import { useCluster } from '@/app/utils/utils';
-import { usePathname, useRouter } from 'next/navigation';
-import { FormEvent, useEffect, useRef, useState } from 'react';
-import Tooltip from './helpers/tooltip';
+import { useCluster } from "@/app/utils/utils";
+import { usePathname, useRouter } from "next/navigation";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import Tooltip from "./helpers/tooltip";
 
 export const Search = () => {
-    const PREFIX = "sol://"
-    const pathname = usePathname();
-    const [search, setSearch] = useState(PREFIX + pathname?.substring(1));
-    const { cluster } = useCluster();
+	const PREFIX = "sol://";
+	const pathname = usePathname();
+	const [search, setSearch] = useState(PREFIX + pathname?.substring(1));
+	const { cluster } = useCluster();
 
-    const isUpload = pathname?.substring(1) === "upload";
+	const isUpload = pathname?.substring(1) === "upload";
 
-    const router = useRouter();
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const dataPK = search.substring(PREFIX.length);
-        if (dataPK === "upload" && !isUpload) {
-            router.push(`/upload`);
-        }
-        else if (dataPK) {
-            router.push(`${dataPK}?cluster=${cluster}`);
-        }
-        else {
-            setSearch(PREFIX);
-        }
-    }
+	const router = useRouter();
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const dataPK = search.substring(PREFIX.length);
+		if (dataPK === "upload" && !isUpload) {
+			router.push(`/upload`);
+		} else if (dataPK) {
+			router.push(`${dataPK}?cluster=${cluster}`);
+		} else {
+			setSearch(PREFIX);
+		}
+	};
 
-    useEffect(() => setSearch(PREFIX + pathname?.substring(1)), [pathname]);
+	useEffect(() => setSearch(PREFIX + pathname?.substring(1)), [pathname]);
 
-    const focusRef = useRef<HTMLInputElement>(null);
+	const focusRef = useRef<HTMLInputElement>(null);
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <div className="flex items-center bg-stone-200 focus-within:ring-2 hover:ring-solana-purple focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-400 shadow-sm">
-                <input 
-                    className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-lg py-2 pl-2 caret-solana-purple"
-                    type="text"
-                    ref={focusRef}
-                    aria-label="Search for data accounts"
-                    value={search}
-                    onChange={(e) => {
-                        if (e.target.value.startsWith(PREFIX)) {
-                            setSearch(PREFIX + e.target.value.substring(PREFIX.length));
-                        }
-                    }}
-                />
-                <button type="reset" className="h-full p-2 rounded-sm text-stone-500 hover:text-rose-700 focus:text-rose-700 focus:outline-none" onClick={() => { setSearch(PREFIX); focusRef.current?.focus(); }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-                <Tooltip message={<>&quot;<b>upload</b>&quot; is not a valid <code>PublicKey</code></>} condition={search.substring(PREFIX.length) === "upload" && isUpload} sx="top-11 right-0 w-24">
-                    <button 
-                        type="submit" 
-                        disabled={search.substring(PREFIX.length) === "upload" && isUpload}
-                        className="h-full px-3 py-2 rounded-sm border-l-2 border-stone-400 text-stone-500 hover:bg-stone-300 hover:text-solana-purple focus:bg-stone-300 focus:text-solana-purple focus:outline-none disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-500">
-                        <svg aria-hidden="true" className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                </Tooltip>
-            </div>
-        </form>
-    );
-}
+	return (
+		<form onSubmit={handleSubmit}>
+			<div className="flex items-center bg-stone-200 focus-within:ring-2 hover:ring-solana-purple focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-400 shadow-sm">
+				<input
+					className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-lg py-2 pl-2 caret-solana-purple"
+					type="text"
+					ref={focusRef}
+					aria-label="Search for data accounts"
+					value={search}
+					onChange={(e) => {
+						if (e.target.value.startsWith(PREFIX)) {
+							setSearch(PREFIX + e.target.value.substring(PREFIX.length));
+						}
+					}}
+				/>
+				<button
+					type="reset"
+					className="h-full p-2 rounded-sm text-stone-500 hover:text-rose-700 focus:text-rose-700 focus:outline-none"
+					onClick={() => {
+						setSearch(PREFIX);
+						focusRef.current?.focus();
+					}}
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						strokeWidth="1.5"
+						stroke="currentColor"
+						className="w-5 h-5"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M6 18L18 6M6 6l12 12"
+						/>
+					</svg>
+				</button>
+				<Tooltip
+					message={
+						<>
+							&quot;<b>upload</b>&quot; is not a valid <code>PublicKey</code>
+						</>
+					}
+					condition={search.substring(PREFIX.length) === "upload" && isUpload}
+					sx="top-11 right-0 w-24"
+				>
+					<button
+						type="submit"
+						disabled={search.substring(PREFIX.length) === "upload" && isUpload}
+						className="h-full px-3 py-2 rounded-sm border-l-2 border-stone-400 text-stone-500 hover:bg-stone-300 hover:text-solana-purple focus:bg-stone-300 focus:text-solana-purple focus:outline-none disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-500"
+					>
+						<svg
+							aria-hidden="true"
+							className="w-5 h-5"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+							/>
+						</svg>
+					</button>
+				</Tooltip>
+			</div>
+		</form>
+	);
+};
