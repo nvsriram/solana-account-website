@@ -223,21 +223,22 @@ const CustomDisplay = ({
 
     return (
         <div className="mt-2 justify-end relative">
-            <div className="absolute top-2 z-10 right-2 inline-flex">
-                {inlineError &&
-                    <p className="text-rose-500 mr-2">{inlineError}</p>}
-                {unsavedChanges && 
-                    <button className="text-md mr-2 p-1 rounded-md bg-solana-green/80 hover:bg-emerald-600/90 focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-600/90" disabled={saveState === "Saved"} onClick={() => handleSave()}>
-                        {saveState}
-                    </button>}
-                {editable ?
-                    <button className="text-md mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white" onClick={() => handleCancel()}>
-                        Cancel
-                    </button> :
-                    <button className="h-full mr-2 p-1 flex text-md rounded-md bg-stone-100/70 text-stone-500/90 focus:outline-none hover:bg-stone-300/70 hover:text-solana-purple/80 focus:bg-stone-300/70 focus:text-solana-purple/80" onClick={() => handleEdit()}>
-                        Edit
-                    </button>}
-            </div>
+            {meta.data_status != DataStatusOption.FINALIZED &&
+                <div className="absolute top-2 z-10 right-2 inline-flex">
+                    {inlineError &&
+                        <p className="text-rose-500 mr-2">{inlineError}</p>}
+                    {unsavedChanges && 
+                        <button className="text-md mr-2 p-1 rounded-md bg-solana-green/80 hover:bg-emerald-600/90 focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-600/90" disabled={saveState === "Saved"} onClick={() => handleSave()}>
+                            {saveState}
+                        </button>}
+                    {editable ?
+                        <button className="text-md mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white" onClick={() => handleCancel()}>
+                            Cancel
+                        </button> :
+                        <button className="h-full mr-2 p-1 flex text-md rounded-md bg-stone-100/70 text-stone-500/90 focus:outline-none hover:bg-stone-300/70 hover:text-solana-purple/80 focus:bg-stone-300/70 focus:text-solana-purple/80" onClick={() => handleEdit()}>
+                            Edit
+                        </button>}
+                </div>}
             <ReactCodeMirror
                 value={updated} 
                 theme={"dark"} 

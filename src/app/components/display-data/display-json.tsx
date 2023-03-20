@@ -167,10 +167,10 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
     return (
         <div className="mt-2 justify-end relative">
             <div className="absolute top-2 z-10 right-2 inline-flex">
-                {error &&
+                {meta.data_status != DataStatusOption.FINALIZED && error &&
                     <p className="text-rose-500 mr-2">{error}</p> 
                 }
-                {unsavedChanges && 
+                {meta.data_status != DataStatusOption.FINALIZED && unsavedChanges && 
                     <button 
                         className="text-md mr-2 py-1 px-2 rounded-md bg-solana-green/80 hover:bg-emerald-600 focus:bg-emerald-600 text-white focus:outline-none"
                         onClick={() => handleSave()}
@@ -198,9 +198,9 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
                 style={{ padding: "0.5rem", borderRadius: "0.5rem" }}
                 theme={EditorThemeMap.get(editorTheme)}
                 iconStyle="square"
-                onEdit={(e)=> setData(e.updated_src) }
-                onAdd={(e) => setData(e.updated_src) }
-                onDelete={(e) => setData(e.updated_src) }
+                onEdit={meta.data_status != DataStatusOption.FINALIZED ? (e)=> setData(e.updated_src) : undefined}
+                onAdd={meta.data_status != DataStatusOption.FINALIZED ? (e) => setData(e.updated_src) : undefined}
+                onDelete={meta.data_status != DataStatusOption.FINALIZED ? (e) => setData(e.updated_src) : undefined}
             />
         </div>
     )

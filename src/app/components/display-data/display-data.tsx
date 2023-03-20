@@ -16,7 +16,9 @@ const DataDisplay = ({ data_type, dataPK, searchParams, meta }: { data_type: num
     const url = `/api/data/${dataPK}?${searchParams}`;
 
     useEffect(() => {
-        if (!dirty) return;
+        if (!dirty) {
+            return;
+        }
 
         setLoading(true);
         fetch(url)
