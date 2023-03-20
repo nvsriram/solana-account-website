@@ -34,14 +34,24 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
   11. Once the upload is complete, you can navigate to the link to view the Data Account details
   12. On error, you will be met with an informative error message
 
-### To update your file
+### To update your data
 
 - Go to the [Data Account details page](#to-view-data-account-details)
 - Choose the `Data Type` you wish to set
 - Click on the Edit button and make changes
 - Once satisfied with your changes, click Save
 - This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
-- Once the transaction goes through, you can reload the page to view the changes
+- Once the transaction goes through, the page will reload and you can see the changes being reflected
+
+### To finalize your data
+**NOTE: The Finalize action cannot be reverted. Once finalized, the data can no longer be updated.**
+
+- Go to the [Data Account details page](#to-view-data-account-details)
+- Ensure the Data Account `Data Status` is not already `FINALIZED`
+- Ensure you are logged in as the authority. Otherwise, the button will be disabled
+- Once logged in as the authority, click on the Finalize button next to the `Data Status` 
+- This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
+- Once the transaction goes through, the page will reload and can see the changes being reflected
 
 ## API route(s)
 
