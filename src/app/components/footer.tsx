@@ -5,7 +5,7 @@ const Footer = () => {
         <footer className="w-full h-full container mx-auto mt-2">
             <hr className="w-full bg-stone-500 border-0 h-px" />
             <div className="w-full mx-auto py-5 px-4 flex items-center justify-between">
-                <span className="text-sm text-stone-500">© 2023 SolD. All Rights Reserved.</span>
+                <small className="text-sm text-stone-500">{`© ${new Date().getFullYear()} SolD. All Rights Reserved.`}</small>
                 <ul className="h-full flex flex-wrap text-stone-500 justify-center">
                     <li className="pr-2">
                         <Link href="https://twitter.com/snuraniv" target="_blank" className="hover:text-stone-400 ease-in-out duration-200 focus:text-stone-400 focus:ring-0 appearance-none focus:outline-none">

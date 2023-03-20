@@ -206,7 +206,7 @@ export const uploadDataPart = (feePayer: PublicKey, dataAccount: PublicKey, pdaK
     },
     ],
     programId: programId,
-    data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, true_flag, true_flag, debug ? true_flag : false_flag]),
+    data: Buffer.concat([idx1, data_type, data_len, data, offset_buffer, false_flag, true_flag, debug ? true_flag : false_flag]),
   });
 
   const tx = new Transaction();
