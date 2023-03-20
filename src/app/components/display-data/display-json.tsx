@@ -49,6 +49,12 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
         };
     }, [unsavedChanges]);
 
+    const handleCancel = () => {
+        setData(json);
+        setSaveState("Save");
+        setError(null);
+    }
+
     const handleSave = async () => {
         if (!authority || meta.authority != authority.toBase58() || !signAllTransactions) {
             setError("Invalid authority wallet. Please sign in to wallet to continue...");
@@ -171,12 +177,20 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
                     <p className="text-rose-500 mr-2">{error}</p> 
                 }
                 {meta.data_status != DataStatusOption.FINALIZED && unsavedChanges && 
-                    <button 
-                        className="text-md mr-2 py-1 px-2 rounded-md bg-solana-green/80 hover:bg-emerald-600 focus:bg-emerald-600 text-white focus:outline-none"
-                        onClick={() => handleSave()}
-                    >
-                        {saveState}
-                    </button>}
+                    <>
+                        <button 
+                            className="text-md mr-2 py-1 px-2 rounded-md bg-solana-green/80 hover:bg-emerald-600 focus:bg-emerald-600 text-white focus:outline-none"
+                            onClick={() => handleSave()}
+                        >
+                            {saveState}
+                        </button>
+                        <button 
+                            className="text-md mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white" 
+                            onClick={() => handleCancel()}
+                        >
+                            Cancel
+                        </button>
+                    </>}
                 <p className="text-solana-purple text-md pr-2">Theme:</p>
                 <select
                     className="text-black text-md w-fit p-0.5 bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400"
@@ -193,7 +207,7 @@ const JSONDisplay = ({ json, len, dataPK, meta, refresh }: { json: object, len: 
                 </select>
             </div>
             <ReactJsonDynamic
-                src={json} 
+                src={data}
                 name={null}
                 style={{ padding: "0.5rem", borderRadius: "0.5rem" }}
                 theme={EditorThemeMap.get(editorTheme)}
