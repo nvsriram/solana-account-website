@@ -15,16 +15,19 @@ const DynamicRow = ({
 }) => {
 	return (
 		<tr>
-			<th scope="row" className="text-lg text-left text-solana-purple">
+			<th
+				scope="row"
+				className="text-lg text-left text-violet-700 dark:text-solana-purple"
+			>
 				<span>Dynamic/Static + Initial size</span>
 			</th>
-			<td className="p-2 text-stone-200">:</td>
+			<td className="p-2 text-stone-500 dark:text-stone-200">:</td>
 			<td className="flex flex-row h-full items-center">
 				<input
 					type="checkbox"
 					checked={isDynamic}
 					onChange={() => setIsDynamic((prev) => !prev)}
-					className="mr-2 w-4 h-4 accent-solana-green"
+					className="mr-2 w-4 h-4 accent-emerald-500 dark:accent-solana-green hover:ring-violet-700 dark:hover:ring-solana-purple hover:ring-2 focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple"
 				/>
 				<input
 					type="number"
@@ -32,7 +35,7 @@ const DynamicRow = ({
 					aria-required
 					min={0}
 					max={MAX_FILE_SIZE}
-					className="text-black text-md px-1 bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400 invalid:ring-rose-700"
+					className="text-black text-md px-1 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-violet-700 focus:ring-violet-700 ring-2 ring-stone-500 dark:hover:ring-solana-purple dark:focus:ring-solana-purple dark:ring-stone-400 invalid:ring-rose-700"
 					value={space}
 					onChange={(e) => {
 						const num = Number(e.target.value);
@@ -61,7 +64,7 @@ const DynamicRow = ({
 					sx={`w-32 right-0 top-0 left-9`}
 				>
 					<svg
-						className="ml-2 w-5 h-5 text-solana-green"
+						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green"
 						fill="none"
 						stroke="currentColor"
 						strokeWidth={1.5}

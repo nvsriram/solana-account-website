@@ -276,7 +276,7 @@ const CustomDisplay = ({
 					{inlineError && <p className="text-rose-500 mr-2">{inlineError}</p>}
 					{unsavedChanges && (
 						<button
-							className="text-md mr-2 p-1 rounded-md bg-solana-green/80 hover:bg-emerald-600/90 focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-600/90"
+							className="text-md mr-2 p-1 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600/90 focus:bg-emerald-700 dark:focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-700 dark:disabled:bg-emerald-600/90"
 							disabled={saveState === "Saved"}
 							onClick={() => handleSave()}
 						>

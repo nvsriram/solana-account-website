@@ -98,7 +98,7 @@ const WalletButton: FC<ButtonProps> = ({ children, ...props }) => {
 				aria-label="dropdown-list"
 				className={`wallet-adapter-dropdown-list ${
 					active && "wallet-adapter-dropdown-list-active"
-				} bg-solana-purple p-0.5`}
+				} bg-violet-700 dark:bg-solana-purple p-0.5`}
 				ref={ref}
 				role="menu"
 			>

@@ -3,13 +3,16 @@ import Link from "next/link";
 const DataRow = ({ url }: { url: string }) => {
 	return (
 		<tr>
-			<th scope="row" className="text-lg text-left text-solana-purple">
+			<th
+				scope="row"
+				className="text-lg text-left text-violet-700 dark:text-solana-purple"
+			>
 				Data
 			</th>
-			<td className="px-2 text-stone-200">:</td>
+			<td className="px-2 text-stone-500 dark:text-stone-200">:</td>
 			<td>
 				<Link
-					className="flex items-start w-fit text-sm font-semibold bg-solana-purple text-white px-2 py-1 rounded-md ring-solana-purple/70 hover:bg-solana-purple/70 hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-solana-purple/70"
+					className="flex items-start w-fit text-sm font-semibold bg-solana-purple text-white px-2 py-1 rounded-md ring-violet-700 hover:bg-violet-700 dark:ring-solana-purple/70 dark:hover:bg-solana-purple/70 hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple/70"
 					href={url}
 					target="_blank"
 				>

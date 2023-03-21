@@ -46,7 +46,7 @@ export const ClusterSelect = () => {
 				handleClick={handleClick}
 			/>
 			{open && (
-				<div className="absolute right-0 z-10 w-52 mt-11 origin-bottom-right shadow-lg">
+				<div className="absolute right-0 z-10 w-44 mt-11 origin-bottom-right shadow-xl">
 					{Object.values(ClusterNames)
 						.filter((clusterName) => clusterName.name !== cluster)
 						.map((clusterName, idx) => {

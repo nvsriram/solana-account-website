@@ -32,9 +32,9 @@ export const Search = () => {
 
 	return (
 		<form onSubmit={handleSubmit}>
-			<div className="flex items-center bg-stone-200 focus-within:ring-2 hover:ring-solana-purple focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-400 shadow-sm">
+			<div className="flex items-center bg-white dark:bg-stone-200 focus-within:ring-2 hover:ring-violet-700 focus-within:ring-violet-700 dark:hover:ring-solana-purple dark:focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-500 dark:ring-stone-400 shadow-sm">
 				<input
-					className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-lg py-2 pl-2 caret-solana-purple"
+					className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-lg py-2 pl-2 caret-violet-700 dark:caret-solana-purple"
 					type="text"
 					ref={focusRef}
 					aria-label="Search for data accounts"
@@ -80,7 +80,7 @@ export const Search = () => {
 					<button
 						type="submit"
 						disabled={search.substring(PREFIX.length) === "upload" && isUpload}
-						className="h-full px-3 py-2 rounded-sm border-l-2 border-stone-400 text-stone-500 hover:bg-stone-300 hover:text-solana-purple focus:bg-stone-300 focus:text-solana-purple focus:outline-none disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-500"
+						className="h-full px-3 py-2 rounded-sm border-l-2 border-stone-500 dark:border-stone-400 text-stone-500 hover:text-violet-700 dark:hover:text-solana-purple focus:text-violet-700 dark:focus:text-solana-purple focus:outline-none disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-800 dark:disabled:text-stone-500"
 					>
 						<svg
 							aria-hidden="true"

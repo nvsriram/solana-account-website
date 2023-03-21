@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DarkModeSwitch from "./darkmode-switch";
 
 const Footer = () => {
 	return (
@@ -7,11 +8,14 @@ const Footer = () => {
 			<div className="w-full mx-auto py-5 px-4 flex items-center justify-between">
 				<small className="text-sm text-stone-500">{`© ${new Date().getFullYear()} SolD. All Rights Reserved.`}</small>
 				<ul className="h-full flex flex-wrap text-stone-500 justify-center">
+					<li className="pr-3">
+						<DarkModeSwitch />
+					</li>
 					<li className="pr-2">
 						<Link
 							href="https://twitter.com/snuraniv"
 							target="_blank"
-							className="hover:text-stone-400 ease-in-out duration-200 focus:text-stone-400 focus:ring-0 appearance-none focus:outline-none"
+							className="hover:text-violet-700 dark:hover:text-solana-purple/80 ease-in-out duration-200 focus:text-violet-700 dark:focus:text-solana-purple/80 focus:ring-0 appearance-none focus:outline-none"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +31,7 @@ const Footer = () => {
 						<Link
 							href="https://github.com/nvsriram"
 							target="_blank"
-							className="hover:text-stone-400 ease-in-out duration-200 focus:text-stone-400 focus:ring-0 appearance-none focus:outline-none"
+							className="hover:text-violet-700 dark:hover:text-solana-purple/80 ease-in-out duration-200 focus:text-violet-700 dark:focus:text-solana-purple/80 focus:ring-0 appearance-none focus:outline-none"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +47,7 @@ const Footer = () => {
 						<Link
 							href="https://www.linkedin.com/in/nvsriram"
 							target="_blank"
-							className="hover:text-stone-400 ease-in-out duration-200 focus:text-stone-400 focus:ring-0 appearance-none focus:outline-none"
+							className="hover:text-violet-700 dark:hover:text-solana-purple/80 ease-in-out duration-200 focus:text-violet-700 dark:focus:text-solana-purple/80 focus:ring-0 appearance-none focus:outline-none"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +63,7 @@ const Footer = () => {
 						<Link
 							href="mailto:nuranisri01@gmail.com"
 							target="_blank"
-							className="hover:text-stone-400 ease-in-out duration-200 focus:text-stone-400 focus:ring-0 appearance-none focus:outline-none"
+							className="hover:text-violet-700 dark:hover:text-solana-purple/80 ease-in-out duration-200 focus:text-violet-700 dark:focus:text-solana-purple/80 focus:ring-0 appearance-none focus:outline-none"
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"

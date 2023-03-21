@@ -98,14 +98,17 @@ const DataStatusRow = ({
 
 	return (
 		<tr>
-			<th scope="row" className="text-lg text-left text-solana-purple">
+			<th
+				scope="row"
+				className="text-lg text-left text-violet-700 dark:text-solana-purple"
+			>
 				Data Status
 			</th>
-			<td className="px-2 text-stone-200">:</td>
+			<td className="px-2 text-stone-500 dark:text-stone-200">:</td>
 			<td
 				className={`text-md flex items-center ${
 					meta.data_status === DataStatusOption.INITIALIZED
-						? "text-solana-green"
+						? "text-emerald-500 dark:text-solana-green"
 						: "text-rose-500"
 				}`}
 			>
@@ -113,7 +116,7 @@ const DataStatusRow = ({
 				{meta.data_status != DataStatusOption.FINALIZED && (
 					<>
 						<button
-							className="ml-5 px-2 rounded-md bg-solana-green/80 hover:bg-emerald-600 focus:bg-emerald-600 focus:outline-none text-white disabled:bg-stone-500 disabled:cursor-not-allowed"
+							className="ml-5 px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 focus:outline-none text-white disabled:bg-stone-500 disabled:cursor-not-allowed"
 							onClick={() => handleFinalize()}
 							disabled={!isAuthority}
 						>
@@ -131,7 +134,7 @@ const DataStatusRow = ({
 							sx={`w-44 right-0 top-0 left-9`}
 						>
 							<svg
-								className="ml-2 w-5 h-5 text-solana-green"
+								className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green"
 								fill="none"
 								stroke="currentColor"
 								strokeWidth={1.5}

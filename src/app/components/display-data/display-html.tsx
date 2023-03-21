@@ -39,14 +39,14 @@ const HTMLDisplay = ({
 					src={url}
 					height={500}
 					width={500}
-					className="mt-2 bg-stone-200 rounded-md"
+					className="mt-2 bg-white dark:bg-stone-200 rounded-md"
 					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 					sandbox="allow-scripts"
 				/>
 			)}
 			<div className="mt-3 flex">
 				<button
-					className="py-1 px-2 flex text-md rounded-md ring-2 ring-stone-400 bg-stone-200 text-stone-500 focus:outline-none hover:bg-stone-300 hover:text-solana-purple/80 hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple"
+					className="py-1 px-2 flex text-md rounded-md ring-2 ring-stone-500 dark:ring-stone-400 bg-white dark:bg-stone-200 text-stone-500 focus:outline-none hover:bg-stone-300 hover:text-violet-700 dark:hover:text-solana-purple/80 hover:ring-violet-700 dark:hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple"
 					onClick={() => toggleExpanded()}
 				>
 					{expanded ? "View original" : "View source"}

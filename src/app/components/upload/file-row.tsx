@@ -84,16 +84,19 @@ const FileRow = ({
 
 	return (
 		<tr>
-			<th scope="row" className="text-lg text-left text-solana-purple">
+			<th
+				scope="row"
+				className="text-lg text-left text-violet-700 dark:text-solana-purple"
+			>
 				<span>Upload File</span>
 			</th>
-			<td className="p-2 text-stone-200">:</td>
+			<td className="p-2 text-stone-500 dark:text-stone-200">:</td>
 			<td className="h-full flex flex-row items-center">
 				<input
 					type="file"
 					onChange={handleFileChange}
 					required
-					className="text-sm text-stone-100 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-solana-purple file:text-white hover:file:bg-solana-purple/70 file:hover:text-stone-100"
+					className="text-sm text-stone-500 dark:text-stone-100 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-solana-purple file:text-white hover:file:bg-violet-700 dark:hover:file:bg-solana-purple/70 file:hover:text-stone-100 file:focus:bg-violet-700 dark:file:focus:bg-solana-purple/70 file:focus:text-stone-100"
 				/>
 				<Tooltip
 					message={
@@ -111,7 +114,7 @@ const FileRow = ({
 					sx={`w-28 right-0 top-0 left-9`}
 				>
 					<svg
-						className="ml-2 w-5 h-5 text-solana-green"
+						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green"
 						fill="none"
 						stroke="currentColor"
 						strokeWidth={1.5}

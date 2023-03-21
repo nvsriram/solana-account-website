@@ -242,7 +242,7 @@ const UploadPage = () => {
 				<div className="text-lg">
 					{dataAccount && (
 						<h1 className="text-md">
-							<p className="text-solana-green/80 font-semibold">
+							<p className="text-emerald-500 dark:text-solana-green/80 font-semibold">
 								Data Account initialized:{" "}
 							</p>
 							<Link

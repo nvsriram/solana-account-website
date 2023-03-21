@@ -11,11 +11,11 @@ export const ClusterOption = ({
 }) => {
 	return (
 		<button
-			className={`w-52 py-2 justify-between text-md rounded-l-md inline-flex ${
+			className={`w-44 py-2 items-center justify-between text-sm inline-flex ${
 				cluster === ClusterNames.DEVNET.name
-					? "bg-solana-green/80 hover:bg-solana-green/50 focus:bg-solana-green/50"
+					? "bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-solana-green/50 focus:bg-emerald-700 dark:focus:bg-solana-green/50"
 					: "bg-rose-500 hover:bg-rose-700 focus:bg-rose-700"
-			} focus:outline-none border rounded-md border-stone-200 hover:border-stone-300 text-white hover:text-stone-100`}
+			} focus:outline-none rounded-md text-white hover:text-stone-100`}
 			onClick={() => {
 				handleClick(cluster);
 			}}
@@ -25,7 +25,7 @@ export const ClusterOption = ({
 					? ClusterNames.CUSTOM.url
 					: cluster}
 			</p>
-			<span className="flex items-center justify-center h-full pr-2 text-white rounded-r-md">
+			<span className="flex items-center justify-center h-full pr-2 text-white">
 				{isSelected && (
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

@@ -26,7 +26,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-5 h-5 text-solana-green ease-in duration-150"
+					className="w-5 h-5 text-emerald-500 dark:text-solana-green ease-in duration-150"
 				>
 					<path
 						strokeLinecap="round"
@@ -41,7 +41,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-5 h-5 text-stone-100 ease-in duration-150"
+					className="w-5 h-5 text-stone-500 dark:text-stone-100 ease-in duration-150"
 				>
 					<path
 						strokeLinecap="round"

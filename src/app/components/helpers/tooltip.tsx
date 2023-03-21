@@ -14,7 +14,7 @@ export default function Tooltip({
 			{children}
 			{condition && (
 				<span
-					className={`absolute scale-0 transition-all rounded-lg bg-solana-purple p-2 text-sm text-stone-100 group-hover:scale-100 ${sx}`}
+					className={`absolute scale-0 transition-all rounded-lg bg-violet-700 dark:bg-solana-purple p-2 text-sm text-stone-100 group-hover:scale-100 ${sx}`}
 				>
 					{message}
 				</span>

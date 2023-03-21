@@ -24,8 +24,11 @@ export default function Home() {
 		<>
 			<section>
 				<h1 className="text-lg">
-					Enter the <code className="text-solana-purple">PublicKey</code> of the
-					Data Account you wish to inspect above...
+					Enter the{" "}
+					<code className="text-violet-700 dark:text-solana-purple">
+						PublicKey
+					</code>{" "}
+					of the Data Account you wish to inspect above...
 				</h1>
 				<br />
 				<p className="text-lg pb-2">Currently the supported data types are:</p>
@@ -38,12 +41,14 @@ export default function Home() {
 									<tr key={idx}>
 										<th
 											scope="row"
-											className=" text-md text-left text-solana-purple"
+											className=" text-md text-left text-violet-700 dark:text-solana-purple"
 										>
 											{dataType}
 										</th>
-										<td className="text-stone-200 px-2">:</td>
-										<td className="text-md text-stone-200">
+										<td className="text-stone-500 dark:text-stone-200 px-2">
+											:
+										</td>
+										<td className="text-md text-stone-500 dark:text-stone-200">
 											{dataTypeDescription.get(idx)}
 										</td>
 									</tr>
@@ -58,7 +63,7 @@ export default function Home() {
 					to the Solana blockchain. Click the button below to get started! 🎉
 				</p>
 				<button
-					className="m-auto rounded-md bg-solana-green/80 hover:bg-emerald-600 text-white text-lg font-semibold py-2 px-4 border-b-4 border-emerald-600 hover:border-solana-green/80"
+					className="m-auto rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white text-lg font-semibold py-2 px-4 border-b-4 border-emerald-700 dark:border-emerald-600 hover:border-emerald-500 dark:hover:border-solana-green/80 focus:border-emerald-500 dark:focus:border-solana-green/80 disabled:bg-emerald-500 dark:disabled:bg-emerald-600 disabled:hover:border-emerald-500 dark:disabled:hover:border-emerald-600 disabled:focus:border-emerald-500 dark:disabled:focus:border-emerald-600 outline-none"
 					onClick={() => router.push(`/upload`)}
 				>
 					Get Started!
