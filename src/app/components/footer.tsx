@@ -1,5 +1,9 @@
+import dynamic from "next/dynamic";
 import Link from "next/link";
-import DarkModeSwitch from "./darkmode-switch";
+
+const DarkModeSwitchDynamic = dynamic(() => import("./darkmode-switch"), {
+	ssr: false,
+});
 
 const Footer = () => {
 	return (
@@ -9,7 +13,7 @@ const Footer = () => {
 				<small className="text-sm text-stone-500">{`© ${new Date().getFullYear()} SolD. All Rights Reserved.`}</small>
 				<ul className="h-full flex flex-wrap text-stone-500 justify-center">
 					<li className="pr-3">
-						<DarkModeSwitch />
+						<DarkModeSwitchDynamic />
 					</li>
 					<li className="pr-2">
 						<Link
