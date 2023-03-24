@@ -1,4 +1,5 @@
 import { ApiError, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
+import { getBaseURL } from "@/app/utils/utils";
 import NextImage from "next/image";
 import { useEffect, useState } from "react";
 import Loading from "../../[dataPK]/loading";
@@ -110,7 +111,7 @@ const DataDisplay = ({
 			return (
 				<div className="w-full text-lg pt-2">
 					<NextImage
-						src={`${process.env.NEXT_PUBLIC_HOST}${url}`}
+						src={`${getBaseURL()}${url}`}
 						height={300}
 						width={300}
 						style={{ maxHeight: 500, width: "auto" }}

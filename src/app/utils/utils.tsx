@@ -26,6 +26,13 @@ export const EditorThemeContext = createContext<EditorThemeType | null>(null);
 export const useEditorTheme = () =>
 	useContext(EditorThemeContext) as EditorThemeType;
 
+export const getBaseURL = () => {
+	if (process.env.NEXT_PUBLIC_VERCEL_ENV) {
+		return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+	}
+	return process.env.NEXT_PUBLIC_HOST;
+};
+
 export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 const PROGRAM_ID = "ECQd7f4sYhcWX5G9DQ7Hgcf3URZTfgwVwjKzH2sMQeFW";
