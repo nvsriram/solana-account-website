@@ -28,8 +28,6 @@ export const useEditorTheme = () =>
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-export const BASE_URL = "http://localhost:3000";
-
 const PROGRAM_ID = "ECQd7f4sYhcWX5G9DQ7Hgcf3URZTfgwVwjKzH2sMQeFW";
 const PDA_SEED = "data_account_metadata";
 const programId = new PublicKey(PROGRAM_ID);

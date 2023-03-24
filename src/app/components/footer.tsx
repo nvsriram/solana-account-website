@@ -33,7 +33,7 @@ const Footer = () => {
 					</li>
 					<li className="pr-2">
 						<Link
-							href="https://github.com/nvsriram"
+							href="https://github.com/nvsriram/solana-account-website"
 							target="_blank"
 							className="hover:text-violet-700 dark:hover:text-solana-purple/80 ease-in-out duration-200 focus:text-violet-700 dark:focus:text-solana-purple/80 focus:ring-0 appearance-none focus:outline-none"
 						>

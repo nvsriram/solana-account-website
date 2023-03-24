@@ -11,7 +11,6 @@ import DataStatusRow from "../components/[dataPK]/datastatus-row";
 import DataTypeRow from "../components/[dataPK]/datatype-row";
 import DynamicRow from "../components/[dataPK]/dynamic-row";
 import SerializationRow from "../components/[dataPK]/serialization-row";
-import { BASE_URL } from "../utils/utils";
 import Loading from "./loading";
 
 const DataAccountInfoPage = () => {
@@ -102,7 +101,9 @@ const DataAccountInfoPage = () => {
 						<td>&nbsp;</td>
 					</tr>
 					<DataRow
-						url={`${BASE_URL}/api/data${pathname}?${searchParams.toString()}`}
+						url={`${
+							process.env.NEXT_PUBLIC_HOST
+						}/api/data${pathname}?${searchParams.toString()}`}
 					/>
 				</tbody>
 			</table>
