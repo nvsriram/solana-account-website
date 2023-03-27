@@ -76,13 +76,17 @@ const CustomDisplay = ({
 		};
 	}, [unsavedChanges]);
 
-	const handleOnChange = useCallback((value: string) => {
-		setUpdated(value);
-	}, []);
-
 	const handleEdit = useCallback(() => {
 		setEditable(true);
 	}, []);
+
+	const handleOnChange = useCallback(
+		(value: string) => {
+			handleEdit();
+			setUpdated(value);
+		},
+		[handleEdit]
+	);
 
 	const handleCancel = useCallback(() => {
 		setEditable(false);
