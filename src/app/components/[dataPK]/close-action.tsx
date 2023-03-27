@@ -4,6 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import Tooltip from "../helpers/tooltip";
+import ActionModal from "./action-modal";
 
 const CloseAction = ({
 	dataPK,
@@ -21,8 +22,9 @@ const CloseAction = ({
 
 	const [error, setError] = useState<string | null>(null);
 	const [closeState, setCloseState] = useState("Close");
+	const [showModal, setShowModal] = useState(false);
 
-	const handleClose = async () => {
+	const handleCloseConfirmed = async () => {
 		if (!dataPK) {
 			setError("Invalid data account");
 			return;
@@ -84,6 +86,26 @@ const CloseAction = ({
 		}
 	};
 
+	const handleClose = () => {
+		if (!dataPK) {
+			setError("Invalid data account");
+			return;
+		}
+
+		if (
+			!authority ||
+			meta.authority != authority.toBase58() ||
+			!signTransaction
+		) {
+			setError(
+				"Invalid authority wallet. Please sign in to wallet to continue..."
+			);
+			return;
+		}
+
+		setShowModal(true);
+	};
+
 	return (
 		<div className="flex items-center mt-1">
 			<button
@@ -96,15 +118,9 @@ const CloseAction = ({
 			<Tooltip
 				message={
 					<>
-						{isAuthority ? (
-							<>
-								This action closes the data account and the metadata PDA
-								account.
-								<br /> It is <b>NON-REVERSIBLE</b>
-							</>
-						) : (
-							"Login as Authority wallet to close data account"
-						)}
+						{isAuthority
+							? "This action closes the data account and the metadata PDA account and reclaims their SOL"
+							: "Login as Authority wallet to close data account"}
 					</>
 				}
 				condition={true}
@@ -127,6 +143,23 @@ const CloseAction = ({
 				</svg>
 			</Tooltip>
 			{error && <p className="ml-5 text-rose-500">{error}</p>}
+			<ActionModal
+				showModal={showModal}
+				message={
+					<>
+						Are you sure you want to close the data account and associated
+						metadata account?
+						<br /> This action is non-reversible
+					</>
+				}
+				cancel={"No, Cancel"}
+				confirm={"Yes, I'm sure! Close the accounts and reclaim SOL"}
+				handleCloseModal={() => setShowModal(false)}
+				handleSaveChanges={() => {
+					handleCloseConfirmed();
+					setShowModal(false);
+				}}
+			/>
 		</div>
 	);
 };

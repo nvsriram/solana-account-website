@@ -29,7 +29,7 @@ const DataStatusRow = ({
 				}`}
 			>
 				<p className="mr-5">{DataStatusOption[meta.data_status]}</p>
-				{meta.data_status && (
+				{meta.data_status != undefined && (
 					<DataStatusActions dataPK={dataPK} meta={meta} refresh={refresh} />
 				)}
 			</td>

@@ -8,6 +8,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { useState } from "react";
 import Tooltip from "../helpers/tooltip";
+import ActionModal from "./action-modal";
 
 const FinalizeAction = ({
 	dataPK,
@@ -25,8 +26,9 @@ const FinalizeAction = ({
 
 	const [error, setError] = useState<string | null>(null);
 	const [finalizeState, setFinalizeState] = useState("Finalize");
+	const [showModal, setShowModal] = useState(false);
 
-	const handleFinalize = async () => {
+	const handleFinalizeConfirmed = async () => {
 		if (!dataPK) {
 			setError("Invalid data account");
 			return;
@@ -93,6 +95,26 @@ const FinalizeAction = ({
 		}
 	};
 
+	const handleFinalize = () => {
+		if (!dataPK) {
+			setError("Invalid data account");
+			return;
+		}
+
+		if (
+			!authority ||
+			meta.authority != authority.toBase58() ||
+			!signTransaction
+		) {
+			setError(
+				"Invalid authority wallet. Please sign in to wallet to continue..."
+			);
+			return;
+		}
+
+		setShowModal(true);
+	};
+
 	return (
 		<div className="flex items-center mt-1">
 			<button
@@ -106,7 +128,7 @@ const FinalizeAction = ({
 				message={
 					<>
 						{isAuthority
-							? "Finalized accounts can no longer be updated"
+							? "This action finalizes the data in the account to prevent future updates"
 							: "Login as Authority wallet to finalize data account"}
 					</>
 				}
@@ -130,6 +152,22 @@ const FinalizeAction = ({
 				</svg>
 			</Tooltip>
 			{error && <p className="ml-5 text-rose-500">{error}</p>}
+			<ActionModal
+				showModal={showModal}
+				message={
+					<>
+						Are you sure you want to finalize the data?
+						<br /> Finalized data can no longer be updated
+					</>
+				}
+				cancel={"No, Cancel"}
+				confirm={"Yes, I'm sure! Finalize the data"}
+				handleCloseModal={() => setShowModal(false)}
+				handleSaveChanges={() => {
+					handleFinalizeConfirmed();
+					setShowModal(false);
+				}}
+			/>
 		</div>
 	);
 };
