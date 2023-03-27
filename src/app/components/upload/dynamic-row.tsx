@@ -35,7 +35,7 @@ const DynamicRow = ({
 					aria-required
 					min={0}
 					max={MAX_FILE_SIZE}
-					className="text-black text-md px-1 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-violet-700 focus:ring-violet-700 ring-2 ring-stone-500 dark:hover:ring-solana-purple dark:focus:ring-solana-purple dark:ring-stone-400 invalid:ring-rose-700"
+					className="text-black text-base px-1 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-violet-700 focus:ring-violet-700 ring-2 ring-stone-500 dark:hover:ring-solana-purple dark:focus:ring-solana-purple dark:ring-stone-400 invalid:ring-rose-700"
 					value={space}
 					onChange={(e) => {
 						const num = Number(e.target.value);

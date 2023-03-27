@@ -241,13 +241,13 @@ const UploadPage = () => {
 				</div>
 				<div className="text-lg">
 					{dataAccount && (
-						<h1 className="text-md">
+						<h1 className="text-base">
 							<p className="text-emerald-500 dark:text-solana-green/80 font-semibold">
 								Data Account initialized:{" "}
 							</p>
 							<Link
 								href={`/${dataAccount}?cluster=${cluster}`}
-								className="underline text-md"
+								className="underline text-base"
 							>
 								{dataAccount}
 							</Link>
@@ -257,7 +257,7 @@ const UploadPage = () => {
 				</div>
 				{error && (
 					<div className="text-lg">
-						<h1 className="text-md">
+						<h1 className="text-base">
 							<p className="text-rose-500 font-semibold">
 								An error occurred while uploading...
 							</p>

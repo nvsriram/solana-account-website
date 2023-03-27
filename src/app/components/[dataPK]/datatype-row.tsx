@@ -19,10 +19,12 @@ const DataTypeRow = ({
 			>
 				Data Type
 			</th>
-			<td className="px-2 text-stone-500 dark:text-stone-200">:</td>
-			<td className="text-md flex">
+			<td className="px-2 leading-7 text-stone-500 dark:text-stone-200">:</td>
+			<td className="text-base leading-7 flex items-center">
 				<p className="mr-5">{DataTypeOption[data_type]}</p>
-				{<DataTypeSelect dataType={dataType} setDataType={setDataType} />}
+				{data_type && (
+					<DataTypeSelect dataType={dataType} setDataType={setDataType} />
+				)}
 			</td>
 		</tr>
 	);

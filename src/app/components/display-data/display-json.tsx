@@ -239,22 +239,22 @@ const JSONDisplay = ({
 				{meta.data_status != DataStatusOption.FINALIZED && unsavedChanges && (
 					<>
 						<button
-							className="text-md mr-2 py-1 px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white focus:outline-none"
+							className="text-base mr-2 py-1 px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white focus:outline-none"
 							onClick={() => handleSave()}
 						>
 							{saveState}
 						</button>
 						<button
-							className="text-md mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
+							className="text-base mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
 							onClick={() => handleCancel()}
 						>
 							Cancel
 						</button>
 					</>
 				)}
-				<p className="text-solana-purple text-md pr-2">Theme:</p>
+				<p className="text-solana-purple text-base pr-2">Theme:</p>
 				<select
-					className="text-black text-md w-fit p-0.5 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400"
+					className="text-black text-base w-fit p-0.5 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400"
 					required
 					aria-required
 					value={editorTheme}

@@ -18,7 +18,7 @@ const UploadStatusBar = ({
 				</div>
 			)}
 			{dataAccountStatus >= 100 && (
-				<div className="text-md mt-3 text-emerald-500 dark:text-solana-green/80">
+				<div className="text-base mt-3 text-emerald-500 dark:text-solana-green/80">
 					Upload Complete!
 				</div>
 			)}

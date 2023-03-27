@@ -359,3 +359,46 @@ export const finalizeDataAccount = (
 	tx.feePayer = feePayer;
 	return tx;
 };
+
+export const closeDataAccount = (
+	feePayer: PublicKey,
+	dataAccount: PublicKey,
+	pdaKey: PublicKey | null,
+	debug?: boolean
+): Transaction => {
+	let pda = pdaKey;
+	if (!pda) {
+		[pda] = getPDAFromDataAccount(dataAccount);
+	}
+
+	const idx4 = Buffer.from(new Uint8Array([4]));
+	const true_flag = Buffer.from(new Uint8Array([1]));
+	const false_flag = Buffer.from(new Uint8Array([0]));
+
+	const closeIx = new TransactionInstruction({
+		keys: [
+			{
+				pubkey: feePayer,
+				isSigner: true,
+				isWritable: true,
+			},
+			{
+				pubkey: dataAccount,
+				isSigner: false,
+				isWritable: true,
+			},
+			{
+				pubkey: pda,
+				isSigner: false,
+				isWritable: true,
+			},
+		],
+		programId: programId,
+		data: Buffer.concat([idx4, debug ? true_flag : false_flag]),
+	});
+
+	const tx = new Transaction();
+	tx.add(closeIx);
+	tx.feePayer = feePayer;
+	return tx;
+};

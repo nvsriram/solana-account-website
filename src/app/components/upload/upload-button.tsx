@@ -11,7 +11,7 @@ const UploadButton = ({
 		<button
 			type="submit"
 			disabled={dataAccount != null}
-			className="m-auto justify-self-center bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white text-md font-semibold py-1 px-4 border-b-4 border-emerald-700 dark:border-emerald-600 hover:border-emerald-500 dark:hover:border-solana-green/80 focus:border-emerald-500 dark:focus:border-solana-green/80 disabled:bg-emerald-700 dark:disabled:bg-emerald-600 disabled:hover:border-emerald-600 dark:disabled:hover:border-emerald-600 disabled:cursor-not-allowed outline-none rounded-md"
+			className="m-auto justify-self-center bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white text-base font-semibold py-1 px-4 border-b-4 border-emerald-700 dark:border-emerald-600 hover:border-emerald-500 dark:hover:border-solana-green/80 focus:border-emerald-500 dark:focus:border-solana-green/80 disabled:bg-emerald-700 dark:disabled:bg-emerald-600 disabled:hover:border-emerald-600 dark:disabled:hover:border-emerald-600 disabled:cursor-not-allowed outline-none rounded-md"
 		>
 			{loading && dataAccountStatus < 100 ? (
 				<>

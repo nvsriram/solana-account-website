@@ -13,9 +13,9 @@ const SerializationRow = ({
 			>
 				Serialization
 			</th>
-			<td className="px-2 text-stone-500 dark:text-stone-200">:</td>
+			<td className="px-2 leading-7 text-stone-500 dark:text-stone-200">:</td>
 			<td
-				className={`text-md ${
+				className={`text-base leading-7 ${
 					serialization_status % 2
 						? "text-emerald-500 dark:text-solana-green"
 						: "text-rose-500"

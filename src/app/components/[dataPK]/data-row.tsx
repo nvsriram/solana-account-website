@@ -9,7 +9,7 @@ const DataRow = ({ url }: { url: string }) => {
 			>
 				Data
 			</th>
-			<td className="px-2 text-stone-500 dark:text-stone-200">:</td>
+			<td className="px-2 leading-7 text-stone-500 dark:text-stone-200">:</td>
 			<td>
 				<Link
 					className="flex items-start w-fit text-sm font-semibold bg-solana-purple text-white px-2 py-1 rounded-md ring-violet-700 hover:bg-violet-700 dark:ring-solana-purple/70 dark:hover:bg-solana-purple/70 hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple/70"

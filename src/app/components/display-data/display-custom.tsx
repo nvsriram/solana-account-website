@@ -280,7 +280,7 @@ const CustomDisplay = ({
 					{inlineError && <p className="text-rose-500 mr-2">{inlineError}</p>}
 					{unsavedChanges && (
 						<button
-							className="text-md mr-2 p-1 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600/90 focus:bg-emerald-700 dark:focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-700 dark:disabled:bg-emerald-600/90"
+							className="text-base mr-2 p-1 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600/90 focus:bg-emerald-700 dark:focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-700 dark:disabled:bg-emerald-600/90"
 							disabled={saveState === "Saved"}
 							onClick={() => handleSave()}
 						>
@@ -289,14 +289,14 @@ const CustomDisplay = ({
 					)}
 					{editable ? (
 						<button
-							className="text-md mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
+							className="text-base mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
 							onClick={() => handleCancel()}
 						>
 							Cancel
 						</button>
 					) : (
 						<button
-							className="h-full mr-2 p-1 flex text-md rounded-md bg-stone-100/70 text-stone-500/90 focus:outline-none hover:bg-stone-300/70 hover:text-solana-purple/80 focus:bg-stone-300/70 focus:text-solana-purple/80"
+							className="h-full mr-2 p-1 flex text-base rounded-md bg-stone-100/70 text-stone-500/90 focus:outline-none hover:bg-stone-300/70 hover:text-solana-purple/80 focus:bg-stone-300/70 focus:text-solana-purple/80"
 							onClick={() => handleEdit()}
 						>
 							Edit

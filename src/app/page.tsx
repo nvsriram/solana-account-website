@@ -41,14 +41,14 @@ export default function Home() {
 									<tr key={idx}>
 										<th
 											scope="row"
-											className=" text-md text-left text-violet-700 dark:text-solana-purple"
+											className=" text-base text-left text-violet-700 dark:text-solana-purple"
 										>
 											{dataType}
 										</th>
 										<td className="text-stone-500 dark:text-stone-200 px-2">
 											:
 										</td>
-										<td className="text-md text-stone-500 dark:text-stone-200">
+										<td className="text-base text-stone-500 dark:text-stone-200">
 											{dataTypeDescription.get(idx)}
 										</td>
 									</tr>
