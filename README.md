@@ -48,10 +48,21 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 
 - Go to the [Data Account details page](#to-view-data-account-details)
 - Ensure the Data Account `Data Status` is not already `FINALIZED`
+- Click on the Actions dropdown button next to the `Data Status`
 - Ensure you are logged in as the authority. Otherwise, the button will be disabled
-- Once logged in as the authority, click on the Finalize button next to the `Data Status` 
+- Once logged in as the authority, click on the Finalize button
 - This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
-- Once the transaction goes through, the page will reload and can see the changes being reflected
+- Once the transaction goes through, the page will reload and you can see the changes being reflected
+
+### To close your data account and associated metadata account and reclaim SOL
+**NOTE: The Close action cannot be reverted. Once closed, the data account and the associated metadata account will no longer exist.**
+
+- Go to the [Data Account details page](#to-view-data-account-details)
+- Click on the Actions dropdown button next to the `Data Status`
+- Ensure you are logged in as the authority. Otherwise, the button will be disabled
+- Once logged in as the authority, click on the Close button
+- This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
+- Once the transaction goes through, the page will reload and you can see the changes being reflected
 
 ## API route(s)
 
