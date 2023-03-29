@@ -2,7 +2,7 @@
 
 This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-account). It allows the user to view/edit the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
 
-## Usage instructions
+## Getting Started
 
 ### To view Data Account details
 
