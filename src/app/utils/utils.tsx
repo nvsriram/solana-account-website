@@ -28,6 +28,7 @@ export const useEditorTheme = () =>
 
 export const getBaseURL = () => {
 	if (process.env.NEXT_PUBLIC_VERCEL_ENV) {
+		return "https://sold-website.vercel.app";
 		return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
 	}
 	return process.env.NEXT_PUBLIC_HOST;
