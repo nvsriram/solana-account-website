@@ -118,7 +118,7 @@ const FinalizeAction = ({
 	return (
 		<div className="flex items-center mt-1">
 			<button
-				className="px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 focus:outline-none text-white disabled:bg-stone-500 disabled:cursor-not-allowed"
+				className="px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 focus:outline-none text-white disabled:bg-stone-500 disabled:dark:bg-stone-500 disabled:cursor-not-allowed"
 				onClick={() => handleFinalize()}
 				disabled={!isAuthority}
 			>
