@@ -2,9 +2,9 @@
 
 This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-account). It allows the user to view/edit the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
 
-## Getting Started
+## 🧑‍💻 Getting Started
 
-### To view Data Account details
+### 👀 To view Data Account details
 
 - Select the Solana cluster (`Mainnet Beta`, `Devnet`, `Testnet`, `Custom`) on the top right
 - To view the details regarding the Data Account:
@@ -13,7 +13,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 - If the Data Account is valid, you should be able to view the metadata associated with the Data Account like its `Authority`, `Data Status`, `Serialization Status`, etc., and its `Data` will be displayed in the format as specified by the `Data Type`
 - On error, you will be met with an informative error message
 
-### To upload your own file
+### 📄 To upload your own file
 
 - Select the Solana cluster (`Mainnet Beta`, `Devnet`, `Testnet`, `Custom`) on the top right
 - To access the _Upload_ page:
@@ -34,7 +34,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
   11. Once the upload is complete, you can navigate to the link to view the Data Account details
   12. On error, you will be met with an informative error message
 
-### To update your data
+### :pencil2: To update your data
 
 - Go to the [Data Account details page](#to-view-data-account-details)
 - Choose the `Data Type` you wish to set
@@ -43,7 +43,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 - This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
 - Once the transaction goes through, the page will reload and you can see the changes being reflected
 
-### To finalize your data
+### 🏁 To finalize your data
 **NOTE: The Finalize action cannot be reverted. Once finalized, the data can no longer be updated.**
 
 - Go to the [Data Account details page](#to-view-data-account-details)
@@ -55,7 +55,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 - This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
 - Once the transaction goes through, the page will reload and you can see the changes being reflected
 
-### To close your data account and associated metadata account and reclaim SOL
+### ❌ To close your data account and associated metadata account and reclaim SOL
 **NOTE: The Close action cannot be reverted. Once closed, the data account and the associated metadata account will no longer exist.**
 
 - Go to the [Data Account details page](#to-view-data-account-details)
@@ -66,7 +66,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 - This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
 - Once the transaction goes through, the page will reload and you can see the changes being reflected
 
-## API route(s)
+## 🌐 API route(s)
 
 With the website running, you can also navigate to the following API route(s):
 
@@ -208,7 +208,7 @@ Use this API route to get the data for a given Data Account.
   });
   ```
 
-## Instructions for running the project locally
+## 💻 Instructions for running the project locally
 
 1. Install the dependencies: `npm install`
 2. Run the development server: `npm run dev`
