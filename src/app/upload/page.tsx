@@ -150,55 +150,63 @@ const UploadPage = () => {
 			// upload data parts
 			let partTxs = signedTxs.slice(2);
 			const completedTxs = new Set<number>();
+			let partOffset = 0;
 			const handleUploadStatus = (tx: Transaction) => {
 				setDataAccountStatus((prev) => prev + 100 / (parts + 2));
-				completedTxs.add(partTxs.indexOf(tx));
+				completedTxs.add(partOffset + partTxs.indexOf(tx));
 			};
-			while (completedTxs.size < partTxs.length) {
-				await Promise.allSettled(
-					handleUpload(
-						clusterConnection,
-						recentBlockhash,
-						partTxs,
-						handleUploadStatus
-					)
-				).then(async (p) => {
-					const rejected = p.filter((r) => r.status === "rejected");
-					if (rejected.length === 0) return;
-					rejected.forEach((rej) => {
-						if (rej.status === "rejected") {
-							console.log(Object.entries(rej.reason));
-							console.log("rejected", rej.reason);
+			while (completedTxs.size < parts) {
+				try {
+					await Promise.allSettled(
+						handleUpload(
+							clusterConnection,
+							recentBlockhash,
+							partTxs,
+							handleUploadStatus
+						)
+					).then(async (p) => {
+						const rejected = p.filter((r) => r.status === "rejected");
+						if (rejected.length === 0) return;
+						// remake and sign all incomplete txs with new blockhash
+						recentBlockhash = await clusterConnection.getLatestBlockhash();
+						const allTxs: Transaction[] = [];
+						let i = 0;
+						for (; i < parts; ++i) {
+							if (!completedTxs.has(i)) {
+								partOffset = i;
+								break;
+							}
 						}
-					});
-					// remake and sign all incomplete txs with new blockhash
-					recentBlockhash = await clusterConnection.getLatestBlockhash();
-					const allTxs: Transaction[] = [];
-					let current = 0;
-					while (current < parts) {
-						if (completedTxs.has(current)) {
+						if (i === parts) {
+							partOffset = i;
+							console.log("completed");
+							setDataAccountStatus(100);
+						}
+						let current = partOffset;
+						while (current < parts) {
+							const part = fileData.subarray(
+								current * PART_SIZE,
+								(current + 1) * PART_SIZE
+							);
+							const offset = current * PART_SIZE;
+							const tx = uploadDataPart(
+								feePayer,
+								dataKP.publicKey,
+								pda,
+								dataType,
+								part,
+								offset
+							);
+							tx.recentBlockhash = recentBlockhash.blockhash;
+							allTxs.push(tx);
 							++current;
-							continue;
 						}
-						const part = fileData.subarray(
-							current * PART_SIZE,
-							(current + 1) * PART_SIZE
-						);
-						const offset = current * PART_SIZE;
-						const tx = uploadDataPart(
-							feePayer,
-							dataKP.publicKey,
-							pda,
-							dataType,
-							part,
-							offset
-						);
-						tx.recentBlockhash = recentBlockhash.blockhash;
-						allTxs.push(tx);
-						++current;
-					}
-					partTxs = await signAllTransactions(allTxs);
-				});
+						partTxs = await signAllTransactions(allTxs);
+						console.log(completedTxs.size, partTxs.length);
+					});
+				} catch (err) {
+					console.log(err);
+				}
 			}
 			setLoading(false);
 		} catch (err) {

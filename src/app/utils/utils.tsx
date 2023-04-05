@@ -285,6 +285,7 @@ export const uploadDataPart = (
 	return tx;
 };
 
+const TX_INTERVAL = 1000;
 export const handleUpload = (
 	connection: Connection,
 	recentBlockhash: Readonly<{
@@ -294,27 +295,48 @@ export const handleUpload = (
 	txs: Transaction[],
 	handleUploadStatus: ((tx: Transaction) => void) | null
 ): Promise<void>[] => {
-	return txs.map(async (tx, idx, allTxs) => {
-		const txid = await connection.sendRawTransaction(tx.serialize());
-		await connection
-			.confirmTransaction(
-				{
-					blockhash: recentBlockhash.blockhash,
-					lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
-					signature: txid,
-				},
-				"confirmed"
-			)
-			.then(() => {
-				if (handleUploadStatus) {
-					handleUploadStatus(tx);
+	return txs.map((tx, idx, allTxs) => {
+		return new Promise((resolve, reject) => {
+			setTimeout(() => {
+				try {
+					connection
+						.sendRawTransaction(tx.serialize(), {
+							maxRetries: 0,
+							skipPreflight: true,
+						})
+						.then(async (txid) => {
+							await connection
+								.confirmTransaction(
+									{
+										blockhash: recentBlockhash.blockhash,
+										lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+										signature: txid,
+									},
+									"confirmed"
+								)
+								.then(() => {
+									if (handleUploadStatus) {
+										handleUploadStatus(tx);
+									}
+									console.log(
+										`${idx + 1}/${
+											allTxs.length
+										}: https://explorer.solana.com/tx/${txid}?cluster=devnet`
+									);
+								})
+								.then(resolve)
+								.catch((e) => {
+									reject(e.message);
+								});
+						})
+						.catch((e) => {
+							reject(e.message);
+						});
+				} catch (err) {
+					console.log("caught inside timeout");
 				}
-				console.log(
-					`${idx + 1}/${
-						allTxs.length
-					}: https://explorer.solana.com/tx/${txid}?cluster=devnet`
-				);
-			});
+			}, idx * TX_INTERVAL);
+		});
 	});
 };
 
