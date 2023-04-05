@@ -285,7 +285,7 @@ export const uploadDataPart = (
 	return tx;
 };
 
-const TX_INTERVAL = 1000;
+const TX_INTERVAL = 250;
 export const handleUpload = (
 	connection: Connection,
 	recentBlockhash: Readonly<{
