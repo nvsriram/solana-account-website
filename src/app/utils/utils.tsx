@@ -148,7 +148,7 @@ export const createDataAccount = async (
 	connection: Connection,
 	feePayer: PublicKey,
 	initialSize: number
-): Promise<[Transaction, Keypair]> => {
+): Promise<[TransactionInstruction, Keypair]> => {
 	const programId = new PublicKey(PROGRAM_ID);
 	const dataAccount = new Keypair();
 
@@ -162,10 +162,7 @@ export const createDataAccount = async (
 		space: initialSize,
 		programId: programId,
 	});
-	const tx = new Transaction();
-	tx.add(createIx);
-	tx.feePayer = feePayer;
-	return [tx, dataAccount];
+	return [createIx, dataAccount];
 };
 
 export const initializeDataAccount = (
@@ -174,7 +171,7 @@ export const initializeDataAccount = (
 	authorityPK: PublicKey,
 	isDynamic: boolean,
 	initialSize: number
-): [Transaction, PublicKey] => {
+): [TransactionInstruction, PublicKey] => {
 	const [pda] = getPDAFromDataAccount(dataAccount.publicKey);
 	const idx0 = Buffer.from(new Uint8Array([0]));
 	const space = new BN(initialSize).toArrayLike(Buffer, "le", 8);
@@ -216,10 +213,32 @@ export const initializeDataAccount = (
 		]),
 	});
 
+	return [initializeIx, pda];
+};
+
+export const createAndInitializeDataAccount = async (
+	connection: Connection,
+	feePayer: PublicKey,
+	authorityPK: PublicKey,
+	isDynamic: boolean,
+	initialSize: number
+): Promise<[Transaction, Keypair, PublicKey]> => {
+	const [createIx, dataAccount] = await createDataAccount(
+		connection,
+		feePayer,
+		initialSize
+	);
+	const [initializeIx, pda] = initializeDataAccount(
+		feePayer,
+		dataAccount,
+		authorityPK,
+		isDynamic,
+		initialSize
+	);
 	const tx = new Transaction();
-	tx.add(initializeIx);
+	tx.add(createIx).add(initializeIx);
 	tx.feePayer = feePayer;
-	return [tx, pda];
+	return [tx, dataAccount, pda];
 };
 
 export const uploadDataPart = (

@@ -2,9 +2,8 @@
 
 import { ClusterNames, DataTypeOption } from "@/app/utils/types";
 import {
-	createDataAccount,
+	createAndInitializeDataAccount,
 	handleUpload,
-	initializeDataAccount,
 	isBase58,
 	uploadDataPart,
 	useCluster,
@@ -65,22 +64,14 @@ const UploadPage = () => {
 			const allTxs: Transaction[] = [];
 			let recentBlockhash = await clusterConnection.getLatestBlockhash();
 
-			// create data account
-			const [cTx, dataKP] = await createDataAccount(
+			const [cTx, dataKP, pda] = await createAndInitializeDataAccount(
 				clusterConnection,
 				feePayer,
-				space
-			);
-			allTxs.push(cTx);
-			// initialize data account + create pda
-			const [iTx, pda] = initializeDataAccount(
-				feePayer,
-				dataKP,
 				authorityPK,
 				isDynamic,
 				space
 			);
-			allTxs.push(iTx);
+			allTxs.push(cTx);
 			// data part txs
 			let current = 0;
 			while (current < parts) {
@@ -107,7 +98,7 @@ const UploadPage = () => {
 				recentBlockhash = await clusterConnection.getLatestBlockhash();
 				allTxs.map((tx, idx) => {
 					tx.recentBlockhash = recentBlockhash.blockhash;
-					if (idx <= 1) {
+					if (idx === 0) {
 						tx.sign(dataKP);
 					}
 					return tx;
@@ -115,44 +106,39 @@ const UploadPage = () => {
 				signedTxs = await signAllTransactions(allTxs);
 				// create and initialize data account + pda
 				setDataAccountStatus(0);
-				current = 0;
-				for (const tx of signedTxs.slice(0, 2)) {
-					const txid = await clusterConnection
-						.sendRawTransaction(tx.serialize())
-						.catch((err) => {
-							if (err instanceof Error) {
-								console.log(err.message);
-							}
-							initialized = false;
-						});
-					if (!txid) break;
-					await clusterConnection
-						.confirmTransaction(
-							{
-								blockhash: recentBlockhash.blockhash,
-								lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
-								signature: txid,
-							},
-							current ? "finalized" : "confirmed"
-						)
-						.then(() => {
-							console.log(
-								`${
-									current ? "initialized" : "created"
-								}: https://explorer.solana.com/tx/${txid}?cluster=devnet`
-							);
-							setDataAccountStatus((++current / (parts + 2)) * 100);
-							setDataAccount(dataKP.publicKey.toBase58());
-						});
-				}
-				if (initialized === null) break;
+				const txid = await clusterConnection
+					.sendRawTransaction(signedTxs[0].serialize())
+					.catch((err) => {
+						if (err instanceof Error) {
+							console.log(err.message);
+						}
+						initialized = false;
+					});
+				if (!txid) continue;
+				await clusterConnection
+					.confirmTransaction(
+						{
+							blockhash: recentBlockhash.blockhash,
+							lastValidBlockHeight: recentBlockhash.lastValidBlockHeight,
+							signature: txid,
+						},
+						"finalized"
+					)
+					.then(() => {
+						console.log(
+							`${"created"}: https://explorer.solana.com/tx/${txid}?cluster=devnet`
+						);
+						setDataAccountStatus((1 / (parts + 1)) * 100);
+						setDataAccount(dataKP.publicKey.toBase58());
+						initialized = true;
+					});
 			}
 			// upload data parts
-			let partTxs = signedTxs.slice(2);
+			let partTxs = signedTxs.slice(1);
 			const completedTxs = new Set<number>();
 			let partOffset = 0;
 			const handleUploadStatus = (tx: Transaction) => {
-				setDataAccountStatus((prev) => prev + 100 / (parts + 2));
+				setDataAccountStatus((prev) => prev + 100 / (parts + 1));
 				completedTxs.add(partOffset + partTxs.indexOf(tx));
 			};
 			while (completedTxs.size < parts) {
