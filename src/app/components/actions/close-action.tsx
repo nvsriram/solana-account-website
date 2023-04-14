@@ -1,21 +1,23 @@
 import { IDataAccountMeta, ClusterNames } from "@/app/utils/types";
 import { useCluster, closeDataAccount } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey } from "@solana/web3.js";
-import { useState } from "react";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
+import { useMemo, useState } from "react";
 import Tooltip from "../helpers/tooltip";
-import ActionModal from "./action-modal";
+import ActionModal from "../helpers/action-modal";
 
 const CloseAction = ({
 	dataPK,
 	meta,
 	refresh,
-	isAuthority,
+	disableTooltip,
+	classes,
 }: {
 	dataPK: string | undefined;
 	meta: IDataAccountMeta;
 	refresh: () => void;
-	isAuthority: boolean | null;
+	disableTooltip?: boolean;
+	classes?: string;
 }) => {
 	const { cluster } = useCluster();
 	const { publicKey: authority, signTransaction } = useWallet();
@@ -23,6 +25,11 @@ const CloseAction = ({
 	const [error, setError] = useState<string | null>(null);
 	const [closeState, setCloseState] = useState("Close");
 	const [showModal, setShowModal] = useState(false);
+
+	const isAuthority = useMemo(
+		() => authority && authority.toBase58() === meta.authority,
+		[authority, meta]
+	);
 
 	const handleCloseConfirmed = async () => {
 		if (!dataPK) {
@@ -57,8 +64,11 @@ const CloseAction = ({
 			const dataAccount = new PublicKey(dataPK);
 
 			const recentBlockhash = await clusterConnection.getLatestBlockhash();
-			const tx = closeDataAccount(authority, dataAccount, null, true);
+			const tx = new Transaction();
+			const ix = closeDataAccount(authority, dataAccount, null, true);
+			tx.add(ix);
 			tx.recentBlockhash = recentBlockhash.blockhash;
+			tx.feePayer = authority;
 			const signed = await signTransaction(tx);
 			const txid = await clusterConnection.sendRawTransaction(
 				signed.serialize()
@@ -107,41 +117,48 @@ const CloseAction = ({
 	};
 
 	return (
-		<div className="flex items-center mt-1">
+		<div className={`flex items-center mt-1 ${classes}`}>
 			<button
 				className="px-2 rounded-md bg-rose-600 hover:bg-rose-700 focus:bg-rose-700 focus:outline-none text-white disabled:bg-stone-500 disabled:cursor-not-allowed"
 				onClick={() => handleClose()}
 				disabled={!isAuthority}
+				title={
+					isAuthority
+						? "This action closes the data account and the metadata PDA account and reclaims their SOL"
+						: "Login as Authority wallet to close data account"
+				}
 			>
 				{closeState}
 			</button>
-			<Tooltip
-				message={
-					<>
-						{isAuthority
-							? "This action closes the data account and the metadata PDA account and reclaims their SOL"
-							: "Login as Authority wallet to close data account"}
-					</>
-				}
-				condition={true}
-				sx={`w-44 right-0 top-0 left-9`}
-			>
-				<svg
-					className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth={1.5}
-					viewBox="0 0 24 24"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
+			{!disableTooltip && (
+				<Tooltip
+					message={
+						<>
+							{isAuthority
+								? "This action closes the data account and the metadata PDA account and reclaims their SOL"
+								: "Login as Authority wallet to close data account"}
+						</>
+					}
+					condition={true}
+					sx={`w-44 right-0 top-0 left-9`}
 				>
-					<path
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
-					/>
-				</svg>
-			</Tooltip>
+					<svg
+						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:group-hover:text-emerald-600 group-focus:text-emerald-700 dark:group-focus:text-emerald-600"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth={1.5}
+						viewBox="0 0 24 24"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"
+						/>
+					</svg>
+				</Tooltip>
+			)}
 			{error && <p className="ml-5 text-rose-500">{error}</p>}
 			<ActionModal
 				showModal={showModal}

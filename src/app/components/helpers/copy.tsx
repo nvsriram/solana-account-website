@@ -12,8 +12,8 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 	}, [copy]);
 
 	return (
-		<span
-			className="text-sm ml-1 flex flex-row hover:cursor-pointer"
+		<button
+			className="text-sm ml-1 hover:cursor-pointer focus:outline-none appearance-none text-stone-500 dark:text-stone-100 hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple"
 			onClick={() => {
 				navigator.clipboard.writeText(message);
 				setCopy(true);
@@ -41,7 +41,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-5 h-5 text-stone-500 dark:text-stone-100 ease-in duration-150"
+					className="w-5 h-5 ease-in duration-150"
 				>
 					<path
 						strokeLinecap="round"
@@ -50,7 +50,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 					/>
 				</svg>
 			)}
-		</span>
+		</button>
 	);
 };
 

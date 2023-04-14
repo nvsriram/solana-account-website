@@ -1,5 +1,7 @@
 import { DataStatusOption, IDataAccountMeta } from "@/app/utils/types";
-import DataStatusActions from "./data-status-actions";
+import DataStatusActions from "../actions/data-status-actions";
+import FinalizeAction from "../actions/finalize-action";
+import CloseAction from "../actions/close-action";
 
 const DataStatusRow = ({
 	dataPK,
@@ -30,7 +32,14 @@ const DataStatusRow = ({
 			>
 				<p className="mr-5">{DataStatusOption[meta.data_status]}</p>
 				{meta.data_status != undefined && (
-					<DataStatusActions dataPK={dataPK} meta={meta} refresh={refresh} />
+					<DataStatusActions>
+						<div>
+							{meta.data_status != DataStatusOption.FINALIZED && (
+								<FinalizeAction dataPK={dataPK} meta={meta} refresh={refresh} />
+							)}
+							<CloseAction dataPK={dataPK} meta={meta} refresh={refresh} />
+						</div>
+					</DataStatusActions>
 				)}
 			</td>
 		</tr>

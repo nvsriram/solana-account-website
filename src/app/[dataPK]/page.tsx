@@ -12,7 +12,7 @@ import DataTypeRow from "../components/[dataPK]/datatype-row";
 import DynamicRow from "../components/[dataPK]/dynamic-row";
 import SerializationRow from "../components/[dataPK]/serialization-row";
 import { getBaseURL } from "../utils/utils";
-import Loading from "./loading";
+import Loading from "@/app/components/loading";
 
 const DataAccountInfoPage = () => {
 	const pathname = usePathname();

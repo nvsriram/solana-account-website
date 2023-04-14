@@ -2,7 +2,7 @@ import { ApiError, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import { getBaseURL } from "@/app/utils/utils";
 import NextImage from "next/image";
 import { useEffect, useState } from "react";
-import Loading from "../../[dataPK]/loading";
+import Loading from "../loading";
 import CustomDisplay from "./display-custom";
 import HTMLDisplay from "./display-html";
 import JSONDisplay from "./display-json";

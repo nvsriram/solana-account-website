@@ -1,4 +1,5 @@
 import {
+	AccountInfo,
 	Connection,
 	Keypair,
 	PublicKey,
@@ -76,14 +77,10 @@ const getPDAFromDataAccount = (dataKey: PublicKey): [PublicKey, number] => {
 	);
 };
 
-export const parseMetadata = async (
-	connection: Connection,
-	dataKey: PublicKey,
+const parseMetadataFromAccountInfo = (
+	meta_account: AccountInfo<Buffer> | null,
 	debug?: boolean
-): Promise<IDataAccountMeta> => {
-	const [metaKey] = getPDAFromDataAccount(dataKey);
-	const meta_account = await connection.getAccountInfo(metaKey, "confirmed");
-
+) => {
 	if (debug) {
 		console.log("Raw Metadata:");
 		console.log(meta_account?.data);
@@ -117,6 +114,17 @@ export const parseMetadata = async (
 	}
 
 	return account_meta;
+};
+
+export const parseMetadata = async (
+	connection: Connection,
+	dataKey: PublicKey,
+	debug?: boolean
+): Promise<IDataAccountMeta> => {
+	const [metaKey] = getPDAFromDataAccount(dataKey);
+	const meta_account = await connection.getAccountInfo(metaKey, "confirmed");
+
+	return parseMetadataFromAccountInfo(meta_account, debug);
 };
 
 export const parseData = async (
@@ -364,7 +372,7 @@ export const finalizeDataAccount = (
 	dataAccount: PublicKey,
 	pdaKey: PublicKey | null,
 	debug?: boolean
-): Transaction => {
+): TransactionInstruction => {
 	let pda = pdaKey;
 	if (!pda) {
 		[pda] = getPDAFromDataAccount(dataAccount);
@@ -395,11 +403,7 @@ export const finalizeDataAccount = (
 		programId: programId,
 		data: Buffer.concat([idx3, debug ? true_flag : false_flag]),
 	});
-
-	const tx = new Transaction();
-	tx.add(finalizeIx);
-	tx.feePayer = feePayer;
-	return tx;
+	return finalizeIx;
 };
 
 export const closeDataAccount = (
@@ -407,7 +411,7 @@ export const closeDataAccount = (
 	dataAccount: PublicKey,
 	pdaKey: PublicKey | null,
 	debug?: boolean
-): Transaction => {
+): TransactionInstruction => {
 	let pda = pdaKey;
 	if (!pda) {
 		[pda] = getPDAFromDataAccount(dataAccount);
@@ -438,9 +442,55 @@ export const closeDataAccount = (
 		programId: programId,
 		data: Buffer.concat([idx4, debug ? true_flag : false_flag]),
 	});
+	return closeIx;
+};
 
-	const tx = new Transaction();
-	tx.add(closeIx);
-	tx.feePayer = feePayer;
-	return tx;
+export const getDataAccountsByAuthority = async (
+	connection: Connection,
+	authorityPK: string
+) => {
+	const allAccounts = await connection.getParsedProgramAccounts(
+		programId,
+		"confirmed"
+	);
+	const PDAs = new Map(
+		(
+			await connection.getParsedProgramAccounts(programId, {
+				commitment: "confirmed",
+				filters: [
+					{
+						dataSize: 38,
+					},
+					{
+						memcmp: {
+							offset: 2,
+							bytes: authorityPK,
+						},
+					},
+				],
+			})
+		).map(({ pubkey, account }) => [
+			pubkey.toBase58(),
+			parseMetadataFromAccountInfo(account as AccountInfo<Buffer>),
+		])
+	);
+	const nonPDAs = allAccounts.filter(
+		(account) => !PDAs.has(account.pubkey.toBase58())
+	);
+	const dataAccountPDAMap = new Map<PublicKey, IDataAccountMeta>();
+	const dataAccounts = nonPDAs.filter(({ pubkey }) => {
+		const [pda] = getPDAFromDataAccount(pubkey);
+		const metadata = PDAs.get(pda.toBase58());
+		if (metadata) {
+			dataAccountPDAMap.set(pubkey, metadata);
+			return true;
+		}
+		return false;
+	});
+	const dataAccountsWithMeta = dataAccounts.map(({ pubkey, account }) => ({
+		pubkey,
+		account,
+		meta: dataAccountPDAMap.get(pubkey) ?? ({} as IDataAccountMeta),
+	}));
+	return dataAccountsWithMeta;
 };

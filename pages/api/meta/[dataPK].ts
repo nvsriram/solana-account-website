@@ -7,6 +7,12 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse<IDataAccountMeta | ApiError>
 ) {
+	res.setHeader("Access-Control-Allow-Origin", "*");
+	res.setHeader(
+		"Access-Control-Allow-Methods",
+		"GET, PUT, POST, DELETE, HEAD, OPTIONS"
+	);
+	
 	if (req.method !== "GET") {
 		res.status(405).json({ error: "Unsupported method" });
 		return;
@@ -14,7 +20,7 @@ export default async function handler(
 
 	const { dataPK, cluster } = req.query;
 	const clusterURL = Object.values(ClusterNames).find(
-		({ name }) => name === cluster
+		({ name }) => name.toLowerCase() === cluster?.toString().toLowerCase()
 	)?.url;
 	if (!clusterURL) {
 		res.status(400).json({ error: "Invalid Cluster" });

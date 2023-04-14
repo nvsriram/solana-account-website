@@ -1,29 +1,16 @@
 "use client";
 
-import { DataStatusOption, IDataAccountMeta } from "@/app/utils/types";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import CloseAction from "./close-action";
-import FinalizeAction from "./finalize-action";
+import { useState, useRef, useEffect, useCallback, ReactNode } from "react";
 
 export const DataStatusActions = ({
-	dataPK,
-	meta,
-	refresh,
+	children,
+	sm,
 }: {
-	dataPK: string | undefined;
-	meta: IDataAccountMeta;
-	refresh: () => void;
+	children: ReactNode;
+	sm?: boolean;
 }) => {
-	const { publicKey: authority } = useWallet();
-
 	const [open, setOpen] = useState(false);
 	const dataStatusActionRef = useRef<HTMLDivElement>(null);
-
-	const isAuthority = useMemo(
-		() => authority && authority.toBase58() === meta.authority,
-		[authority, meta]
-	);
 
 	const toggleDataStatusActionMenu = useCallback(() => {
 		setOpen((o) => !o);
@@ -55,14 +42,16 @@ export const DataStatusActions = ({
 				ref={dataStatusActionRef}
 			>
 				<button
-					className="mb-1 px-2 flex items-center text-base rounded-md ring-2 ring-stone-500 dark:ring-stone-400 bg-white dark:bg-stone-200 text-stone-500 focus:outline-none hover:bg-stone-300 hover:text-violet-700 dark:hover:text-solana-purple/80 hover:ring-violet-700 dark:hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple"
+					className={`mb-1 px-2 flex items-center text-${
+						sm ? "sm" : "base"
+					} rounded-md ring-2 ring-stone-500 dark:ring-stone-400 bg-white dark:bg-stone-200 text-stone-500 focus:outline-none hover:bg-stone-300 hover:text-violet-700 dark:hover:text-solana-purple/80 hover:ring-violet-700 dark:hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple`}
 					onClick={() => toggleDataStatusActionMenu()}
 				>
 					Actions
 					<span className="flex items-center justify-center h-full ml-2">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
-							className="w-4 h-4"
+							className={sm ? "w-3 h-3" : "w-4 h-4"}
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
@@ -76,24 +65,7 @@ export const DataStatusActions = ({
 						</svg>
 					</span>
 				</button>
-				{open && (
-					<div>
-						{meta.data_status != DataStatusOption.FINALIZED && (
-							<FinalizeAction
-								dataPK={dataPK}
-								meta={meta}
-								refresh={refresh}
-								isAuthority={isAuthority}
-							/>
-						)}
-						<CloseAction
-							dataPK={dataPK}
-							meta={meta}
-							refresh={refresh}
-							isAuthority={isAuthority}
-						/>
-					</div>
-				)}
+				{open && children}
 			</div>
 		</>
 	);

@@ -64,7 +64,7 @@ const DynamicRow = ({
 					sx={`w-32 right-0 top-0 left-9`}
 				>
 					<svg
-						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green"
+						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:hover:text-emerald-600 group-focus:text-emerald-700 dark:focus:text-emerald-600"
 						fill="none"
 						stroke="currentColor"
 						strokeWidth={1.5}
