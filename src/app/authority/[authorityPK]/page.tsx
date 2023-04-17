@@ -22,8 +22,8 @@ import dynamic from "next/dynamic";
 import FinalizeAction from "@/app/components/actions/finalize-action";
 import CloseAction from "@/app/components/actions/close-action";
 
-const DynamicDataAccountTable = dynamic(
-	() => import("@/app/components/authority/[authorityPK]/dataaccount-table")
+const DynamicDataAccountTableDiv = dynamic(
+	() => import("@/app/components/authority/[authorityPK]/dataaccount-table-div")
 );
 
 const AuthorityPage = () => {
@@ -33,6 +33,7 @@ const AuthorityPage = () => {
 	const searchParams = useSearchParams();
 	const [accounts, setAccounts] = useState<DataAccountWithMeta[]>([]);
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 	const [dirty, setDirty] = useState(true);
 
 	const displayAddress = (base58: string) => {
@@ -159,30 +160,54 @@ const AuthorityPage = () => {
 		}
 
 		setLoading(true);
+		setError(null);
 		const clusterURL = Object.values(ClusterNames).find(
 			({ name }) => name.toLowerCase() === cluster?.toString().toLowerCase()
 		)?.url;
-		if (!clusterURL || !authorityPK) {
+		if (!clusterURL) {
+			setError("Invalid Cluster");
+			return;
+		}
+		if (!authorityPK) {
+			setError("No Authority provided");
 			return;
 		}
 		const connection = new Connection(clusterURL, "confirmed");
-		getDataAccountsByAuthority(connection, authorityPK).then((data) => {
-			const dataAccountsWithMeta = data.map(({ pubkey, meta }) => ({
-				pubkey,
-				meta,
-			}));
-			setAccounts(dataAccountsWithMeta);
-			setLoading(false);
-			setDirty(false);
-		});
+		getDataAccountsByAuthority(connection, authorityPK)
+			.then((data) => {
+				const dataAccountsWithMeta = data.map(({ pubkey, meta }) => ({
+					pubkey,
+					meta,
+				}));
+				setAccounts(dataAccountsWithMeta);
+				setError(null);
+				setDirty(false);
+			})
+			.catch((err) => {
+				if (err instanceof Error) {
+					setError(err.message);
+				}
+			})
+			.finally(() => setLoading(false));
 	}, [authorityPK, cluster, dirty]);
 
 	if (loading) {
 		return <Loading />;
 	}
 
+	if (error) {
+		return (
+			<div className="text-lg">
+				<h1 className="text-base">
+					<p className="text-rose-500 font-semibold">ERROR: </p>
+					{error}
+				</h1>
+			</div>
+		);
+	}
+
 	return (
-		<DynamicDataAccountTable
+		<DynamicDataAccountTableDiv
 			columns={columns}
 			data={data}
 			refresh={handleRefresh}

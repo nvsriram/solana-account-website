@@ -70,6 +70,7 @@ export const getMimeType = (base64: string): string => {
 	return mime;
 };
 
+/// Parse Data Program Accounts
 const getPDAFromDataAccount = (dataKey: PublicKey): [PublicKey, number] => {
 	return PublicKey.findProgramAddressSync(
 		[Buffer.from(PDA_SEED, "ascii"), dataKey.toBuffer()],
@@ -152,6 +153,7 @@ export const parseDetails = async (
 	};
 };
 
+/// Data Program Instructions
 export const createDataAccount = async (
 	connection: Connection,
 	feePayer: PublicKey,
@@ -444,6 +446,13 @@ export const closeDataAccount = (
 	});
 	return closeIx;
 };
+
+/// Data Account Pagination
+export const MAX_PAGES_TO_NAVIGATE = 5;
+export const MAX_INACTIVE_PAGES_PER_SIDE = Math.floor(
+	MAX_PAGES_TO_NAVIGATE / 2
+);
+export const START_PAGE_INDICES = [0, MAX_PAGES_TO_NAVIGATE];
 
 export const getDataAccountsByAuthority = async (
 	connection: Connection,
