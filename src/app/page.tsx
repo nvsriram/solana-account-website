@@ -69,6 +69,23 @@ export default function Home() {
 					Get Started!
 				</button>
 			</section>
+			<h1 className="mt-10 text-lg">
+				Alternatively, if you have used the Data Program previously to create
+				Data Account(s), enter the following:
+				<br />
+				<button
+					title="click to copy"
+					onClick={() => navigator.clipboard.writeText("authority/")}
+					className="px-2 rounded-md bg-white dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-900 focus:bg-stone-200 dark:focus:bg-stone-900 appearance-none outline-none focus:ring-2 ring-violet-700 dark:ring-solana-purple"
+				>
+					<code className="text-violet-700 dark:text-solana-purple">
+						{`authority/<Authority PublicKey>`}
+					</code>
+				</button>
+				<br />
+				in the search bar to view all the Data Accounts that belongs to that{" "}
+				<code>PublicKey</code>
+			</h1>
 		</>
 	);
 }

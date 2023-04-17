@@ -28,7 +28,7 @@ const WalletButton: FC<ButtonProps> = ({ children, ...props }) => {
 	const content = useMemo(() => {
 		if (children) return children;
 		if (!wallet || !base58) return null;
-		return base58.slice(0, 4) + ".." + base58.slice(-4);
+		return base58.slice(0, 6) + ".." + base58.slice(-6);
 	}, [children, wallet, base58]);
 
 	const copyAddress = useCallback(async () => {
