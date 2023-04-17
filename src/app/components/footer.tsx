@@ -9,10 +9,10 @@ const Footer = () => {
 	return (
 		<footer className="w-full h-full container mx-auto mt-2">
 			<hr className="w-full bg-stone-500 border-0 h-px" />
-			<div className="w-full mx-auto py-5 px-4 flex items-center justify-between">
-				<small className="text-sm text-stone-500">{`© ${new Date().getFullYear()} SolD. All Rights Reserved.`}</small>
-				<ul className="h-full flex flex-wrap text-stone-500 justify-center">
-					<li className="pr-3">
+			<div className="flex flex-col gap-2 sm:flex-row sm:gap-0 w-full mx-auto py-5 px-4 items-center justify-between">
+				<small className="text-xs sm:text-sm text-stone-500">{`© ${new Date().getFullYear()} SolD. All Rights Reserved.`}</small>
+				<ul className="h-full w-full sm:w-fit flex flex-wrap text-stone-500 justify-center">
+					<li className="pr-3 mr-auto">
 						<DarkModeSwitchDynamic />
 					</li>
 					<li className="pr-2">
@@ -23,7 +23,7 @@ const Footer = () => {
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								className="h-5 w-5"
+								className="w-4 h-4 md:w-5 md:h-5"
 								fill="currentColor"
 								viewBox="0 0 24 24"
 							>
@@ -39,7 +39,7 @@ const Footer = () => {
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								className="h-5 w-5"
+								className="w-4 h-4 md:w-5 md:h-5"
 								fill="currentColor"
 								viewBox="0 0 24 24"
 							>
@@ -55,7 +55,7 @@ const Footer = () => {
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								className="h-5 w-5 pb-0.5"
+								className="w-4 h-4 md:w-5 md:h-5 pb-0.5"
 								fill="currentColor"
 								viewBox="0 0 24 24"
 							>
@@ -71,7 +71,7 @@ const Footer = () => {
 						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
-								className="w-5 h-5"
+								className="w-4 h-4 md:w-5 md:h-5"
 								fill="none"
 								viewBox="0 0 24 24"
 								strokeWidth={1.5}

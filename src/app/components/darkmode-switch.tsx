@@ -27,11 +27,11 @@ const DarkModeSwitch = () => {
 
 	return (
 		<button
-			className={`relative flex flex-row h-5 w-11 rounded-full p-0.5 items-center justify-between group outline-none border-2 bg-transparent border-stone-500 hover:border-violet-700 dark:hover:border-solana-purple ease-in-out duration-200 focus:border-violet-700 dark:focus:border-solana-purple shadow-inner hover:cursor-pointer hover:text-violet-700 focus:text-violet-700 dark:hover:text-solana-purple/80 dark:focus:text-solana-purple/80`}
+			className={`relative flex flex-row w-10 h-4 md:w-11 md:h-5 rounded-full p-0.5 items-center justify-between group outline-none border-2 bg-transparent border-stone-500 hover:border-violet-700 dark:hover:border-solana-purple ease-in-out duration-200 focus:border-violet-700 dark:focus:border-solana-purple shadow-inner hover:cursor-pointer hover:text-violet-700 focus:text-violet-700 dark:hover:text-solana-purple/80 dark:focus:text-solana-purple/80`}
 			onClick={() => setDarkMode((d) => !d)}
 		>
 			<div
-				className={`absolute left-0.5 z-10 h-full w-[1.14rem] rounded-full bg-stone-500 group-hover:bg-violet-700 dark:group-hover:bg-solana-purple ease-in-out duration-200 group-focus:bg-violet-700 dark:group-focus:bg-solana-purple ${
+				className={`absolute left-0.5 z-10 h-full w-4 md:w-[1.14rem] rounded-full bg-stone-500 group-hover:bg-violet-700 dark:group-hover:bg-solana-purple ease-in-out duration-200 group-focus:bg-violet-700 dark:group-focus:bg-solana-purple ${
 					darkMode && "translate-x-[1.15rem]"
 				}`}
 			/>
@@ -41,7 +41,7 @@ const DarkModeSwitch = () => {
 				viewBox="0 0 24 24"
 				strokeWidth={1.5}
 				stroke="currentColor"
-				className="w-4 h-4"
+				className="w-3 h-3 md:w-4 md:h-4"
 			>
 				<path
 					strokeLinecap="round"
@@ -54,7 +54,7 @@ const DarkModeSwitch = () => {
 				fill="none"
 				viewBox="0 0 24 24"
 				strokeWidth={1.5}
-				className="w-4 h-4"
+				className="w-3 h-3 md:w-4 md:h-4"
 				stroke="currentColor"
 			>
 				<path

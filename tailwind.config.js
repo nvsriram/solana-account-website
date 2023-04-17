@@ -16,6 +16,9 @@ module.exports = {
 				"solana-blue": "#03E1FF",
 				"solana-green": "#14F195",
 			},
+			screens: {
+				xs: "350px",
+			},
 		},
 	},
 	plugins: [],

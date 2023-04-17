@@ -89,14 +89,14 @@ const WalletButton: FC<ButtonProps> = ({ children, ...props }) => {
 				style={{ pointerEvents: active ? "none" : "auto", ...props.style }}
 				onClick={openDropdown}
 			>
-				<i className="wallet-adapter-button-start-icon">
+				<i className="wallet-adapter-button-start-icon mr-2 sm:mr-[12px]">
 					<WalletIcon wallet={wallet} />
 				</i>
-				{content}
+				<p className="w-full xs:w-fit">{content}</p>
 			</button>
 			<ul
 				aria-label="dropdown-list"
-				className={`wallet-adapter-dropdown-list ${
+				className={`w-full xs:w-fit wallet-adapter-dropdown-list ${
 					active && "wallet-adapter-dropdown-list-active"
 				} bg-violet-700 dark:bg-solana-purple p-0.5`}
 				ref={ref}
@@ -104,21 +104,21 @@ const WalletButton: FC<ButtonProps> = ({ children, ...props }) => {
 			>
 				<li
 					onClick={copyAddress}
-					className="wallet-adapter-dropdown-list-item [&:not([disabled]):hover]:bg-stone-800/30"
+					className="text-xs sm:text-sm wallet-adapter-dropdown-list-item [&:not([disabled]):hover]:bg-stone-800/30"
 					role="menuitem"
 				>
 					{copied ? "Copied" : "Copy address"}
 				</li>
 				<li
 					onClick={openModal}
-					className="wallet-adapter-dropdown-list-item [&:not([disabled]):hover]:bg-stone-800/30"
+					className="text-xs sm:text-sm wallet-adapter-dropdown-list-item [&:not([disabled]):hover]:bg-stone-800/30"
 					role="menuitem"
 				>
 					Change wallet
 				</li>
 				<li
 					onClick={disconnect}
-					className="wallet-adapter-dropdown-list-item [&:not([disabled]):hover]:bg-stone-800/30"
+					className="text-xs sm:text-sm wallet-adapter-dropdown-list-item [&:not([disabled]):hover]:bg-stone-800/30"
 					role="menuitem"
 				>
 					Disconnect

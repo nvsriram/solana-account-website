@@ -11,7 +11,7 @@ export const ClusterOption = ({
 }) => {
 	return (
 		<button
-			className={`w-44 py-2 items-center justify-between text-sm inline-flex ${
+			className={`ml-auto w-full xs:w-36 sm:w-44 py-2 items-center justify-between text-xs sm:text-sm inline-flex ${
 				cluster === ClusterNames.DEVNET.name
 					? "bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-solana-green/50 focus:bg-emerald-700 dark:focus:bg-solana-green/50"
 					: "bg-rose-500 hover:bg-rose-700 focus:bg-rose-700"

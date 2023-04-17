@@ -39,14 +39,14 @@ export const ClusterSelect = () => {
 	};
 
 	return (
-		<div className="flex relative" ref={clusterRef}>
+		<div className="flex relative w-full text-xs sm:text-sm" ref={clusterRef}>
 			<ClusterOption
 				cluster={cluster}
 				isSelected={true}
 				handleClick={handleClick}
 			/>
 			{open && (
-				<div className="absolute right-0 z-10 w-44 mt-11 origin-bottom-right shadow-xl">
+				<div className="absolute right-0 z-10 w-full xs:w-36 sm:w-44 mt-10 xs:mt-11 origin-bottom-right shadow-xl">
 					{Object.values(ClusterNames)
 						.filter((clusterName) => clusterName.name !== cluster)
 						.map((clusterName, idx) => {

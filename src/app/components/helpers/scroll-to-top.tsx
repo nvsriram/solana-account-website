@@ -33,7 +33,7 @@ export const ScrollToTop = () => {
 				onClick={scrollToTop}
 				className={`${
 					isVisible ? "opacity-100" : "opacity-0"
-				} text-stone-800 dark:text-stone-200 bg-stone-300 dark:bg-stone-700 hover:bg-white dark:hover:bg-stone-900 hover:text-violet-700 dark:hover:text-solana-purple focus:bg-white dark:focus:bg-stone-900 focus:text-violet-700 dark:focus:text-solana-purple focus:ring-violet-700 dark:focus:ring-solana-purple inline-flex items-center rounded-full p-3 shadow-lg transition-opacity focus:outline-none focus:ring-1 ease-in-out duration-100`}
+				} text-stone-800 dark:text-stone-200 bg-stone-300 dark:bg-stone-700 hover:bg-white dark:hover:bg-stone-900 hover:text-violet-700 dark:hover:text-solana-purple focus:bg-white dark:focus:bg-stone-900 focus:text-violet-700 dark:focus:text-solana-purple focus:ring-violet-700 dark:focus:ring-solana-purple inline-flex items-center rounded-full p-1 xs:p-2 md:p-3 shadow-lg transition-opacity focus:outline-none focus:ring-1 ease-in-out duration-100`}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@ export const ScrollToTop = () => {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-6 h-6"
+					className="w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6"
 				>
 					<path
 						strokeLinecap="round"

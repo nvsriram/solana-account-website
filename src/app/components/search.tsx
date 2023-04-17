@@ -31,10 +31,10 @@ export const Search = () => {
 	const focusRef = useRef<HTMLInputElement>(null);
 
 	return (
-		<form onSubmit={handleSubmit}>
-			<div className="flex items-center bg-white dark:bg-stone-200 focus-within:ring-2 hover:ring-violet-700 focus-within:ring-violet-700 dark:hover:ring-solana-purple dark:focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-500 dark:ring-stone-400 shadow-sm">
+		<form className="px-3 md:px-0" onSubmit={handleSubmit}>
+			<div className="w-full flex items-center bg-white dark:bg-stone-200 focus-within:ring-2 hover:ring-violet-700 focus-within:ring-violet-700 dark:hover:ring-solana-purple dark:focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-500 dark:ring-stone-400 shadow-sm">
 				<input
-					className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-lg py-2 pl-2 caret-violet-700 dark:caret-solana-purple"
+					className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-sm xs:text-base md:text-lg py-1 md:py-2 pl-0.5 xs:pl-1 md:pl-2 caret-violet-700 dark:caret-solana-purple"
 					type="text"
 					ref={focusRef}
 					aria-label="Search for data accounts"
@@ -47,7 +47,7 @@ export const Search = () => {
 				/>
 				<button
 					type="reset"
-					className="h-full p-2 rounded-sm text-stone-500 hover:text-rose-700 focus:text-rose-700 focus:outline-none"
+					className="h-full p-1 md:p-2 rounded-sm text-stone-500 hover:text-rose-700 focus:text-rose-700 focus:outline-none"
 					onClick={() => {
 						setSearch(PREFIX);
 						focusRef.current?.focus();
@@ -59,7 +59,7 @@ export const Search = () => {
 						viewBox="0 0 24 24"
 						strokeWidth="1.5"
 						stroke="currentColor"
-						className="w-5 h-5"
+						className="w-3 h-3 xs:w-4 xs:h-4 md:w-5 md:h-5"
 					>
 						<path
 							strokeLinecap="round"
@@ -80,11 +80,11 @@ export const Search = () => {
 					<button
 						type="submit"
 						disabled={search.substring(PREFIX.length) === "upload" && isUpload}
-						className="h-full px-3 py-2 rounded-sm border-l-2 border-stone-500 dark:border-stone-400 text-stone-500 hover:text-violet-700 dark:hover:text-solana-purple focus:text-violet-700 dark:focus:text-solana-purple focus:outline-none disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-800 dark:disabled:text-stone-500"
+						className="h-full px-2 md:px-3 py-0.5 xs:py-1 md:py-2 rounded-sm border-l-2 border-stone-500 dark:border-stone-400 text-stone-500 hover:text-violet-700 dark:hover:text-solana-purple focus:text-violet-700 dark:focus:text-solana-purple focus:outline-none disabled:cursor-not-allowed disabled:bg-stone-300 disabled:text-stone-800 dark:disabled:text-stone-500"
 					>
 						<svg
 							aria-hidden="true"
-							className="w-5 h-5"
+							className="w-3 h-3 xs:w-4 xs:h-4 md:w-5 md:h-5"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
