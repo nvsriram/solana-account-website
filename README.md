@@ -43,6 +43,16 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 - This will ask you to sign on the transaction if you are logged in as the authority. Otherwise, it will display an error
 - Once the transaction goes through, the page will reload and you can see the changes being reflected
 
+### 🗄️ To list all Data Accounts associated with an Authority
+
+- Enter `authority/<Authority PublicKey>` in the search bar
+- This will index the Data Program and return a list of all the data accounts that have given `PublicKey` as their `Authority`
+- You can sort by `Data Account`, `Data Type`, and/or `Data Status`
+- Clicking on a particular Data Account will take you to its [Data Account details page](#to-view-data-account-details)
+- If you are logged in as the authority:
+  - You can individually Finalize the data or Close the data account to reclaim its SOL
+  - Alternatively, you can select multiple accounts and finalize/close them all at once by clicking on the `Actions` dropdown button and following the prompts
+
 ### 🏁 To finalize your data
 **NOTE: The Finalize action cannot be reverted. Once finalized, the data can no longer be updated.**
 
