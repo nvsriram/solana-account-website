@@ -31,7 +31,7 @@ const DarkModeSwitch = () => {
 			onClick={() => setDarkMode((d) => !d)}
 		>
 			<div
-				className={`absolute left-0.5 z-10 h-4 w-[1.15rem] rounded-full bg-stone-500 group-hover:bg-violet-700 dark:group-hover:bg-solana-purple ease-in-out duration-200 group-focus:bg-violet-700 dark:group-focus:bg-solana-purple ${
+				className={`absolute left-0.5 z-10 h-full w-[1.14rem] rounded-full bg-stone-500 group-hover:bg-violet-700 dark:group-hover:bg-solana-purple ease-in-out duration-200 group-focus:bg-violet-700 dark:group-focus:bg-solana-purple ${
 					darkMode && "translate-x-[1.15rem]"
 				}`}
 			/>

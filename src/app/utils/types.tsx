@@ -1,3 +1,4 @@
+import { PublicKey } from "@solana/web3.js";
 import { Dispatch, SetStateAction } from "react";
 import { ThemeKeys, ThemeObject } from "react-json-view";
 
@@ -120,3 +121,8 @@ export interface IDataAccount {
 	meta: IDataAccountMeta;
 	data?: Buffer;
 }
+
+export type DataAccountWithMeta = {
+	pubkey: PublicKey;
+	meta: IDataAccountMeta;
+};
