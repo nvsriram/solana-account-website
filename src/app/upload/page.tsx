@@ -203,64 +203,58 @@ const UploadPage = () => {
 	};
 
 	return (
-		<section>
-			<form onSubmit={handleSubmit}>
-				<table className="table-auto w-full h-full border-spacing-y-8">
-					<tbody>
-						<FeePayerRow />
-						<AuthorityRow authority={authority} setAuthority={setAuthority} />
-						<FileRow
-							dataType={dataType}
-							fileData={fileData}
-							setDataType={setDataType}
-							setSpace={setSpace}
-							setFileData={setFileData}
-							setError={setError}
-						/>
-						<DataTypeRow dataType={dataType} setDataType={setDataType} />
-						<DynamicRow
-							isDynamic={isDynamic}
-							setIsDynamic={setIsDynamic}
-							space={space}
-							setSpace={setSpace}
-						/>
-					</tbody>
-				</table>
-				<div className="flex flex-row items-center mt-10">
-					<UploadButton
-						dataAccount={dataAccount}
-						loading={loading}
-						dataAccountStatus={dataAccountStatus}
-					/>
-				</div>
-				<div className="text-lg">
-					{dataAccount && (
-						<h1 className="text-base">
-							<p className="text-emerald-500 dark:text-solana-green/80 font-semibold">
-								Data Account initialized:{" "}
-							</p>
-							<Link
-								href={`/${dataAccount}?cluster=${cluster}`}
-								className="underline text-base"
-							>
-								{dataAccount}
-							</Link>
-						</h1>
-					)}
-					<UploadStatusBar dataAccountStatus={dataAccountStatus} />
-				</div>
-				{error && (
-					<div className="text-lg">
-						<h1 className="text-base">
-							<p className="text-rose-500 font-semibold">
-								An error occurred while uploading...
-							</p>
-							{error}
-						</h1>
-					</div>
+		<form className="grid auto-rows-max w-full h-full" onSubmit={handleSubmit}>
+			<FeePayerRow />
+			<AuthorityRow authority={authority} setAuthority={setAuthority} />
+			<FileRow
+				dataType={dataType}
+				fileData={fileData}
+				setDataType={setDataType}
+				setSpace={setSpace}
+				setFileData={setFileData}
+				setError={setError}
+			/>
+			<DataTypeRow dataType={dataType} setDataType={setDataType} />
+			<DynamicRow
+				isDynamic={isDynamic}
+				setIsDynamic={setIsDynamic}
+				space={space}
+				setSpace={setSpace}
+			/>
+			<div className="flex flex-row items-center mt-4 sm:mt-10">
+				<UploadButton
+					dataAccount={dataAccount}
+					loading={loading}
+					dataAccountStatus={dataAccountStatus}
+				/>
+			</div>
+			<div className="mt-5 md:mt-0 text-lg break-words">
+				{dataAccount && (
+					<h1 className="text-xs sm:text-sm lg:text-base">
+						<p className="text-emerald-500 dark:text-solana-green/80 font-semibold">
+							Data Account initialized:{" "}
+						</p>
+						<Link
+							href={`/${dataAccount}?cluster=${cluster}`}
+							className="underline text-xs sm:text-sm lg:text-base"
+						>
+							{dataAccount}
+						</Link>
+					</h1>
 				)}
-			</form>
-		</section>
+				<UploadStatusBar dataAccountStatus={dataAccountStatus} />
+			</div>
+			{error && (
+				<div className="mt-5 md:mt-0">
+					<h1 className="text-xs sm:text-sm lg:text-base">
+						<p className="text-rose-500 font-semibold">
+							An error occurred while uploading...
+						</p>
+						{error}
+					</h1>
+				</div>
+			)}
+		</form>
 	);
 };
 

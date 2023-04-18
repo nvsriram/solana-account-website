@@ -83,20 +83,22 @@ const FileRow = ({
 	};
 
 	return (
-		<tr>
-			<th
-				scope="row"
-				className="text-lg text-left text-violet-700 dark:text-solana-purple"
-			>
+		<div className="grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12">
+			<div className="flex flex-row pb-1 sm:pb-0 col-span-5 items-center text-sm sm:font-bold sm:text-base lg:text-lg text-left text-violet-700 dark:text-solana-purple">
 				<span>Upload File</span>
-			</th>
-			<td className="p-2 text-stone-500 dark:text-stone-200">:</td>
-			<td className="h-full flex flex-row items-center">
+				<span className="flex sm:hidden w-fit py-1 pl-2 text-stone-500 dark:text-stone-200">
+					:
+				</span>
+			</div>
+			<div className="w-fit hidden col-span-1 sm:flex sm:p-1 lg:p-2 text-stone-500 dark:text-stone-200">
+				:
+			</div>
+			<div className="pb-5 sm:pb-0 h-full flex flex-row items-center col-span-6">
 				<input
 					type="file"
 					onChange={handleFileChange}
 					required
-					className="text-sm text-stone-500 dark:text-stone-100 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-solana-purple file:text-white hover:file:bg-violet-700 dark:hover:file:bg-solana-purple/70 file:hover:text-stone-100 file:focus:bg-violet-700 dark:file:focus:bg-solana-purple/70 file:focus:text-stone-100"
+					className="text-xs md:text-sm text-stone-500 dark:text-stone-100 file:mr-2 file:py-0.5 file:lg:py-1 file:px-1 file:lg:px-2 file:rounded-md file:border-0 file:text-xs file:md:text-sm file:font-semibold file:bg-solana-purple file:text-white hover:file:bg-violet-700 dark:hover:file:bg-solana-purple/70 file:hover:text-stone-100 file:focus:bg-violet-700 dark:file:focus:bg-solana-purple/70 file:focus:text-stone-100"
 				/>
 				<Tooltip
 					message={
@@ -111,10 +113,10 @@ const FileRow = ({
 						</>
 					}
 					condition={true}
-					sx={`w-28 right-0 top-0 left-9`}
+					sx={`w-28 right-0 top-7 md:top-5 lg:top-0 lg:left-9`}
 				>
 					<svg
-						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:group-hover:text-emerald-600 group-focus:text-emerald-700 dark:group-focus:text-emerald-600"
+						className="ml-2 w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:group-hover:text-emerald-600 group-focus:text-emerald-700 dark:group-focus:text-emerald-600"
 						fill="none"
 						stroke="currentColor"
 						strokeWidth={1.5}
@@ -129,8 +131,8 @@ const FileRow = ({
 						/>
 					</svg>
 				</Tooltip>
-			</td>
-		</tr>
+			</div>
+		</div>
 	);
 };
 

@@ -10,10 +10,12 @@ const CloseAllAction = ({
 	rows,
 	refresh,
 	disableTooltip,
+	sx,
 }: {
 	rows: DataAccountWithMeta[];
 	refresh: () => void;
 	disableTooltip?: boolean;
+	sx?: string;
 }) => {
 	const { cluster } = useCluster();
 	const { publicKey: authority, signTransaction } = useWallet();
@@ -115,9 +117,9 @@ const CloseAllAction = ({
 	};
 
 	return (
-		<div className="flex items-center mt-1">
+		<div className={`flex items-center mt-1 ${sx ? sx : ""}`}>
 			<button
-				className="px-2 py-1 rounded-md bg-rose-600 hover:bg-rose-700 focus:bg-rose-700 focus:outline-none text-white disabled:bg-stone-500 disabled:cursor-not-allowed"
+				className="w-full px-1 lg:px-2 rounded-md bg-rose-600 hover:bg-rose-700 focus:bg-rose-700 focus:outline-none text-white disabled:bg-stone-500 disabled:cursor-not-allowed"
 				onClick={() => handleClose()}
 				disabled={!isAuthority}
 				title={
@@ -126,7 +128,7 @@ const CloseAllAction = ({
 						: "Login as Authority wallet to close data account(s)"
 				}
 			>
-				{closeState}
+				<span className="text-xs md:text-sm lg:text-base">{closeState}</span>
 			</button>
 			{!disableTooltip && (
 				<Tooltip
@@ -138,10 +140,10 @@ const CloseAllAction = ({
 						</>
 					}
 					condition={true}
-					sx={`w-44 right-0 top-0 left-9`}
+					sx={`w-32 lg:w-44 top-7 right-0 md:top-5 lg:top-0 lg:left-9`}
 				>
 					<svg
-						className="ml-2 w-5 h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:group-hover:text-emerald-600 group-focus:text-emerald-700 dark:group-focus:text-emerald-600"
+						className="ml-1 lg:ml-2 w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:group-hover:text-emerald-600 group-focus:text-emerald-700 dark:group-focus:text-emerald-600"
 						fill="none"
 						stroke="currentColor"
 						strokeWidth={1.5}
@@ -157,7 +159,11 @@ const CloseAllAction = ({
 					</svg>
 				</Tooltip>
 			)}
-			{error && <p className="ml-5 text-rose-500">{error}</p>}
+			{error && (
+				<p className="text-xs md:text-sm lg:text-base ml-3 lg:ml-5 text-rose-500">
+					{error}
+				</p>
+			)}
 			<ActionModal
 				showModal={showModal}
 				message={

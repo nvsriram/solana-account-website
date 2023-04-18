@@ -231,48 +231,58 @@ const JSONDisplay = ({
 	};
 
 	return (
-		<div className="mt-2 justify-end relative">
-			<div className="absolute top-2 z-10 right-2 inline-flex">
+		<div className="mt-2 justify-end relative leading-3 text-[0.5rem] sm:text-xs lg:text-sm">
+			<div className="pb-3 flex gap-1 flex-col-reverse sm:gap-0 sm:flex-row sm:pb-0 sm:absolute sm:top-2 sm:z-10 sm:right-2 sm:inline-flex">
 				{meta.data_status != DataStatusOption.FINALIZED && error && (
-					<p className="text-rose-500 mr-2">{error}</p>
+					<p className="text-rose-500 mr-2 leading-3 text-[0.5rem] sm:text-xs lg:text-sm">
+						{error}
+					</p>
 				)}
 				{meta.data_status != DataStatusOption.FINALIZED && unsavedChanges && (
-					<>
+					<div className="flex flex-col gap-1 sm:gap-0 sm:flex-row pt-2 sm:pt-0">
 						<button
-							className="text-base mr-2 py-1 px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white focus:outline-none"
+							className="text-xs md:text-sm lg:text-base mr-1 lg:mr-2 py-0 lg:py-0.5 px-1 lg:px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white focus:outline-none"
 							onClick={() => handleSave()}
 						>
 							{saveState}
 						</button>
 						<button
-							className="text-base mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
+							className="text-xs md:text-sm lg:text-base mr-1 lg:mr-2 py-0 lg:py-0.5 px-1 lg:px-2 rounded-md bg-rose-500 hover:bg-rose-700 focus:bg-rose-700 sm:bg-rose-500/70 sm:hover:bg-rose-700/90 sm:focus:bg-rose-700/90 focus:outline-none text-white"
 							onClick={() => handleCancel()}
 						>
 							Cancel
 						</button>
-					</>
+					</div>
 				)}
-				<p className="text-solana-purple text-base pr-2">Theme:</p>
-				<select
-					className="text-black text-base w-fit p-0.5 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400"
-					required
-					aria-required
-					value={editorTheme}
-					onChange={(e) => setEditorTheme(e.target.value)}
-				>
-					{EditorThemeKeys.map((label, idx) => {
-						return (
-							<option key={idx} value={label}>
-								{label}
-							</option>
-						);
-					})}
-				</select>
+				<div className="w-full inline-flex">
+					<p className="text-solana-purple text-xs md:text-sm lg:text-base pr-1 lg:pr-2">
+						Theme:
+					</p>
+					<select
+						className="text-black text-xs md:text-sm lg:text-base w-full p-0.5 lg:p-1 bg-white dark:bg-stone-200 rounded-sm focus:outline-none shadow-sm focus-within:ring-2 hover:ring-solana-purple focus:ring-solana-purple ring-2 ring-stone-400"
+						required
+						aria-required
+						value={editorTheme}
+						onChange={(e) => setEditorTheme(e.target.value)}
+					>
+						{EditorThemeKeys.map((label, idx) => {
+							return (
+								<option key={idx} value={label}>
+									{label}
+								</option>
+							);
+						})}
+					</select>
+				</div>
 			</div>
 			<ReactJsonDynamic
 				src={data}
 				name={null}
-				style={{ padding: "0.5rem", borderRadius: "0.5rem" }}
+				style={{
+					padding: "0.5rem",
+					borderRadius: "0.5rem",
+					overflowX: "auto",
+				}}
 				theme={EditorThemeMap.get(editorTheme)}
 				iconStyle="square"
 				onEdit={

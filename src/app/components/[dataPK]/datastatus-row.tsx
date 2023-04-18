@@ -7,32 +7,38 @@ const DataStatusRow = ({
 	dataPK,
 	meta,
 	refresh,
+	sx,
 }: {
 	dataPK: string | undefined;
 	meta: IDataAccountMeta;
 	refresh: () => void;
+	sx?: string;
 }) => {
 	return (
-		<tr>
-			<th
-				scope="row"
-				className="text-lg align-top text-left text-violet-700 dark:text-solana-purple"
-			>
-				Data Status
-			</th>
-			<td className="px-2 leading-7 align-top text-stone-500 dark:text-stone-200">
+		<div
+			className={`grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12 ${sx}`}
+		>
+			<div className="flex flex-row pb-1 sm:pb-0 col-span-3 items-center text-sm sm:font-bold sm:text-base lg:text-lg text-left text-violet-700 dark:text-solana-purple">
+				<span>Data Status</span>
+				<span className="flex sm:hidden w-fit py-1 pl-2 text-stone-500 dark:text-stone-200">
+					:
+				</span>
+			</div>
+			<div className="w-fit items-center hidden col-span-1 sm:flex sm:p-1 lg:p-2 text-stone-500 dark:text-stone-200">
 				:
-			</td>
-			<td
-				className={`text-base leading-7 flex items-top ${
-					meta.data_status === DataStatusOption.INITIALIZED
-						? "text-emerald-500 dark:text-solana-green"
-						: "text-rose-500"
-				}`}
-			>
-				<p className="mr-5">{DataStatusOption[meta.data_status]}</p>
+			</div>
+			<div className="pb-2 sm:pb-0 flex items-center col-span-8">
+				<span
+					className={`text-sm lg:text-base ${
+						meta.data_status === DataStatusOption.INITIALIZED
+							? "text-emerald-500 dark:text-solana-green"
+							: "text-rose-500"
+					}`}
+				>
+					{DataStatusOption[meta.data_status]}
+				</span>
 				{meta.data_status != undefined && (
-					<DataStatusActions>
+					<DataStatusActions sx="hidden sm:flex ml-2 lg:ml-5">
 						<div>
 							{meta.data_status != DataStatusOption.FINALIZED && (
 								<FinalizeAction dataPK={dataPK} meta={meta} refresh={refresh} />
@@ -41,8 +47,26 @@ const DataStatusRow = ({
 						</div>
 					</DataStatusActions>
 				)}
-			</td>
-		</tr>
+			</div>
+			<div className="pb-4 flex flex-col items-center gap-2 w-full sm:hidden">
+				<DataStatusActions sx="w-full">
+					{meta.data_status != DataStatusOption.FINALIZED && (
+						<FinalizeAction
+							dataPK={dataPK}
+							meta={meta}
+							refresh={refresh}
+							classes="w-full"
+						/>
+					)}
+					<CloseAction
+						dataPK={dataPK}
+						meta={meta}
+						refresh={refresh}
+						classes="w-full"
+					/>
+				</DataStatusActions>
+			</div>
+		</div>
 	);
 };
 

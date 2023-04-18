@@ -65,8 +65,8 @@ const DataAccountInfoPage = () => {
 
 	if (error) {
 		return (
-			<div className="text-lg">
-				<h1 className="text-lg">
+			<div>
+				<h1 className="text-sm lg:text-base">
 					<p className="text-rose-500 font-semibold">ERROR:</p>
 					{error}
 				</h1>
@@ -80,32 +80,37 @@ const DataAccountInfoPage = () => {
 
 	return (
 		<div className="pb-2">
-			<table className="table-auto">
-				<tbody>
-					<DataAccountRow dataPK={dataPK} />
-					<AuthorityRow authority={dataAccountMeta.authority} />
-					<DataStatusRow
-						dataPK={dataPK}
-						meta={dataAccountMeta}
-						refresh={handleRefresh}
-					/>
-					<SerializationRow
-						serialization_status={dataAccountMeta.serialization_status}
-					/>
-					<DynamicRow is_dynamic={dataAccountMeta.is_dynamic} />
-					<DataTypeRow
-						data_type={dataAccountMeta.data_type}
-						dataType={dataType}
-						setDataType={setDataType}
-					/>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<DataRow
-						url={`${getBaseURL()}/api/data${pathname}?${searchParams.toString()}`}
-					/>
-				</tbody>
-			</table>
+			<div className="grid grid-rows-7 md:grid-rows-8 w-full h-full">
+				<DataAccountRow dataPK={dataPK} sx="row-start-1 row-end-2" />
+				<AuthorityRow
+					authority={dataAccountMeta.authority}
+					sx="row-start-2 row-end-3"
+				/>
+				<DataStatusRow
+					dataPK={dataPK}
+					meta={dataAccountMeta}
+					refresh={handleRefresh}
+					sx="row-start-3 row-end-4"
+				/>
+				<SerializationRow
+					serialization_status={dataAccountMeta.serialization_status}
+					sx="row-start-4 row-end-5"
+				/>
+				<DynamicRow
+					is_dynamic={dataAccountMeta.is_dynamic}
+					sx="row-start-5 row-end-6"
+				/>
+				<DataTypeRow
+					data_type={dataAccountMeta.data_type}
+					dataType={dataType}
+					setDataType={setDataType}
+					sx="row-start-6 row-end-7"
+				/>
+				<DataRow
+					url={`${getBaseURL()}/api/data${pathname}?${searchParams.toString()}`}
+					sx="row-start-7 row-end-8"
+				/>
+			</div>
 			<DataDisplay
 				data_type={dataType}
 				dataPK={dataPK}

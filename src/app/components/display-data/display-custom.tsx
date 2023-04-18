@@ -117,7 +117,6 @@ const CustomDisplay = ({
 			return;
 		}
 
-		console.log(data.length, updated.length);
 		let updateData: Buffer;
 		try {
 			setSaveState("Saving...");
@@ -276,32 +275,38 @@ const CustomDisplay = ({
 	return (
 		<div className="mt-2 justify-end relative">
 			{meta.data_status != DataStatusOption.FINALIZED && (
-				<div className="absolute top-2 z-10 right-2 inline-flex">
-					{inlineError && <p className="text-rose-500 mr-2">{inlineError}</p>}
-					{unsavedChanges && (
-						<button
-							className="text-base mr-2 p-1 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600/90 focus:bg-emerald-700 dark:focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-700 dark:disabled:bg-emerald-600/90"
-							disabled={saveState === "Saved"}
-							onClick={() => handleSave()}
-						>
-							{saveState}
-						</button>
+				<div className="pb-3 flex gap-1 flex-col-reverse sm:gap-0 sm:flex-row sm:pb-0 sm:absolute sm:top-2 sm:z-10 sm:right-2 sm:inline-flex">
+					{inlineError && (
+						<p className="text-rose-500 mr-2 leading-3 text-[0.5rem] sm:text-xs lg:text-sm">
+							{inlineError}
+						</p>
 					)}
-					{editable ? (
-						<button
-							className="text-base mr-2 p-1 rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
-							onClick={() => handleCancel()}
-						>
-							Cancel
-						</button>
-					) : (
-						<button
-							className="h-full mr-2 p-1 flex text-base rounded-md bg-stone-100/70 text-stone-500/90 focus:outline-none hover:bg-stone-300/70 hover:text-solana-purple/80 focus:bg-stone-300/70 focus:text-solana-purple/80"
-							onClick={() => handleEdit()}
-						>
-							Edit
-						</button>
-					)}
+					<div className="flex flex-col gap-1 sm:gap-0 sm:flex-row pt-2 sm:pt-0">
+						{unsavedChanges && (
+							<button
+								className="text-xs md:text-sm lg:text-base mr-1 lg:mr-2 py-0 lg:py-0.5 px-1 lg:px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600/90 focus:bg-emerald-700 dark:focus:bg-emerald-600/90 focus:outline-none text-white disabled:bg-emerald-700 dark:disabled:bg-emerald-600/90"
+								disabled={saveState === "Saved"}
+								onClick={() => handleSave()}
+							>
+								{saveState}
+							</button>
+						)}
+						{editable ? (
+							<button
+								className="text-xs md:text-sm lg:text-base mr-1 lg:mr-2 py-0 lg:py-0.5 px-1 lg:px-2  rounded-md bg-rose-500/70 hover:bg-rose-700/90 focus:bg-rose-700/90 focus:outline-none text-white"
+								onClick={() => handleCancel()}
+							>
+								Cancel
+							</button>
+						) : (
+							<button
+								className="h-full text-xs md:text-sm lg:text-base mr-1 lg:mr-2 py-0 lg:py-0.5 px-1 lg:px-2 rounded-md ring-2 sm:ring-0 ring-stone-500 dark:ring-stone-400 bg-white dark:bg-stone-200 text-stone-500 hover:bg-stone-300 hover:text-violet-700 dark:hover:text-solana-purple/80 hover:ring-violet-700 dark:hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple sm:bg-stone-100/70 sm:text-stone-500/90 focus:outline-none sm:hover:bg-stone-300/70 sm:hover:text-solana-purple/80 sm:focus:bg-stone-300/70 sm:focus:text-solana-purple/80"
+								onClick={() => handleEdit()}
+							>
+								Edit
+							</button>
+						)}
+					</div>
 				</div>
 			)}
 			<ReactCodeMirror
@@ -310,6 +315,7 @@ const CustomDisplay = ({
 				editable={editable}
 				extensions={dataType === DataTypeOption.HTML ? [html()] : []}
 				onChange={handleOnChange}
+				className="leading-3 text-[0.5rem] sm:text-xs lg:text-sm"
 			/>
 		</div>
 	);

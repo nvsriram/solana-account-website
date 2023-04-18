@@ -20,13 +20,15 @@ const RowCheckbox = forwardRef<HTMLInputElement, RowCheckboxProps>(
 		}, [resolvedRef, indeterminate]);
 
 		return (
-			<input
-				className="w-3 h-3 accent-emerald-500 dark:accent-solana-green hover:ring-violet-700 dark:hover:ring-solana-purple hover:ring-2 focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple"
-				type="checkbox"
-				ref={resolvedRef}
-				onChange={onChange}
-				{...rest}
-			/>
+			<div className="mr-4">
+				<input
+					className="w-3 h-3 lg:w-3.5 lg:h-3.5 accent-emerald-500 dark:accent-solana-green hover:ring-violet-700 dark:hover:ring-solana-purple hover:ring-2 focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple"
+					type="checkbox"
+					ref={resolvedRef}
+					onChange={onChange}
+					{...rest}
+				/>
+			</div>
 		);
 	}
 );

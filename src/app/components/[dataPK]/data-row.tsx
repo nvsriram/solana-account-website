@@ -1,18 +1,22 @@
 import Link from "next/link";
 
-const DataRow = ({ url }: { url: string }) => {
+const DataRow = ({ url, sx }: { url: string; sx?: string }) => {
 	return (
-		<tr>
-			<th
-				scope="row"
-				className="text-lg text-left text-violet-700 dark:text-solana-purple"
-			>
-				Data
-			</th>
-			<td className="px-2 leading-7 text-stone-500 dark:text-stone-200">:</td>
-			<td>
+		<div
+			className={`grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12 ${sx}`}
+		>
+			<div className="flex flex-row pb-1 sm:pb-0 col-span-3 items-center text-sm sm:font-bold sm:text-base lg:text-lg text-left text-violet-700 dark:text-solana-purple">
+				<span>Data</span>
+				<span className="flex sm:hidden w-fit py-1 pl-2 text-stone-500 dark:text-stone-200">
+					:
+				</span>
+			</div>
+			<div className="w-fit hidden col-span-1 sm:flex sm:p-1 lg:p-2 text-stone-500 dark:text-stone-200">
+				:
+			</div>
+			<div className="pb-4 sm:pb-0 flex items-center col-span-8">
 				<Link
-					className="flex items-start w-fit text-sm font-semibold bg-solana-purple text-white px-2 py-1 rounded-md ring-violet-700 hover:bg-violet-700 dark:ring-solana-purple/70 dark:hover:bg-solana-purple/70 hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple/70"
+					className="flex items-start w-fit text-xs lg:text-sm font-semibold bg-solana-purple text-white px-1 lg:px-2 py-0.5 lg:py-1 rounded-md ring-violet-700 hover:bg-violet-700 dark:ring-solana-purple/70 dark:hover:bg-solana-purple/70 hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-violet-700 dark:focus:ring-solana-purple/70"
 					href={url}
 					target="_blank"
 				>
@@ -24,7 +28,7 @@ const DataRow = ({ url }: { url: string }) => {
 							viewBox="0 0 24 24"
 							strokeWidth={1.75}
 							stroke="currentColor"
-							className="w-4 h-4 ml-1"
+							className="w-3 h-3 lg:w-4 lg:h-4 ml-1"
 						>
 							<path
 								strokeLinecap="round"
@@ -34,8 +38,8 @@ const DataRow = ({ url }: { url: string }) => {
 						</svg>
 					</span>
 				</Link>
-			</td>
-		</tr>
+			</div>
+		</div>
 	);
 };
 

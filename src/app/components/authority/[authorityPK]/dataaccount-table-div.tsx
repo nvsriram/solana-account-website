@@ -50,7 +50,7 @@ const DataAccountTableDiv = ({
 
 	if (data.length === 0) {
 		return (
-			<h1 className="text-lg">
+			<h1 className="text-sm xs:text-base lg:text-lg">
 				Given <code>Authority</code> has no data accounts associated with it
 			</h1>
 		);

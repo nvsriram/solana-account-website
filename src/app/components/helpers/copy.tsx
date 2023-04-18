@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const CopyToClipboard = ({ message }: { message: string }) => {
+const CopyToClipboard = ({ message, sx }: { message: string; sx?: string }) => {
 	const [copy, setCopy] = useState(false);
 
 	useEffect(() => setCopy(false), [message]);
@@ -13,7 +13,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 
 	return (
 		<button
-			className="text-sm ml-1 hover:cursor-pointer focus:outline-none appearance-none text-stone-500 dark:text-stone-100 hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple"
+			className={`text-xs md:text-sm ml-1 hover:cursor-pointer focus:outline-none appearance-none text-stone-500 dark:text-stone-100 hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple ${sx}`}
 			onClick={() => {
 				navigator.clipboard.writeText(message);
 				setCopy(true);
@@ -26,7 +26,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-5 h-5 text-emerald-500 dark:text-solana-green ease-in duration-150"
+					className="w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green ease-in duration-150"
 				>
 					<path
 						strokeLinecap="round"
@@ -41,7 +41,7 @@ const CopyToClipboard = ({ message }: { message: string }) => {
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-5 h-5 ease-in duration-150"
+					className="w-4 h-4 lg:w-5 lg:h-5 ease-in duration-150"
 				>
 					<path
 						strokeLinecap="round"

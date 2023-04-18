@@ -60,8 +60,8 @@ const DataDisplay = ({
 
 	if (error) {
 		return (
-			<div className="text-lg">
-				<h1 className="text-lg">
+			<div>
+				<h1 className="text-sm lg:text-base">
 					<p className="text-rose-500 font-semibold">ERROR:</p>
 					{error}
 				</h1>
@@ -97,8 +97,8 @@ const DataDisplay = ({
 				);
 			} catch (err) {
 				return (
-					<div className="text-lg pt-2">
-						<h1 className="text-lg break-words">
+					<div className="pt-2">
+						<h1 className="text-sm lg:text-lg break-words">
 							<p className="text-rose-500 font-semibold">
 								There was an error parsing the JSON data:
 							</p>
@@ -109,12 +109,12 @@ const DataDisplay = ({
 			}
 		case DataTypeOption.IMG:
 			return (
-				<div className="w-full text-lg pt-2">
+				<div className="w-full text-sm lg:text-lg pt-2 break-words">
 					<NextImage
 						src={`${getBaseURL()}${url}`}
 						height={300}
 						width={300}
-						style={{ maxHeight: 500, width: "auto" }}
+						style={{ maxHeight: 500, width: "auto", objectFit: "cover" }}
 						alt="nft-image"
 					/>
 				</div>

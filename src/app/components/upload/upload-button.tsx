@@ -11,13 +11,13 @@ const UploadButton = ({
 		<button
 			type="submit"
 			disabled={dataAccount != null}
-			className="m-auto justify-self-center bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white text-base font-semibold py-1 px-4 border-b-4 border-emerald-700 dark:border-emerald-600 hover:border-emerald-500 dark:hover:border-solana-green/80 focus:border-emerald-500 dark:focus:border-solana-green/80 disabled:bg-emerald-700 dark:disabled:bg-emerald-600 disabled:hover:border-emerald-600 dark:disabled:hover:border-emerald-600 disabled:cursor-not-allowed outline-none rounded-md"
+			className="w-full sm:w-fit m-auto justify-self-center bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white text-sm sm:text-base font-semibold py-1 px-4 border-b-4 border-emerald-700 dark:border-emerald-600 hover:border-emerald-500 dark:hover:border-solana-green/80 focus:border-emerald-500 dark:focus:border-solana-green/80 disabled:bg-emerald-700 dark:disabled:bg-emerald-600 disabled:hover:border-emerald-600 dark:disabled:hover:border-emerald-600 disabled:cursor-not-allowed outline-none rounded-md"
 		>
 			{loading && dataAccountStatus < 100 ? (
 				<>
 					{`Uploading `}
 					<svg
-						className="inline-flex ml-1 animate-spin h-5 w-5 text-white"
+						className="inline-flex ml-0.5 sm:ml-1 animate-spin h-4 w-4 sm:h-5 sm:w-5 text-white"
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"

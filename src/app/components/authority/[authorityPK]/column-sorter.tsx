@@ -11,7 +11,7 @@ const ColumnSorter = ({
 	}
 
 	return (
-		<button className="ml-1 flex items-center appearance-none focus:outline-none hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple">
+		<button className="ml-0.5 lg:ml-1 flex items-center appearance-none focus:outline-none hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple">
 			{column.isSorted ? (
 				column.isSortedDesc ? (
 					<svg
@@ -20,7 +20,7 @@ const ColumnSorter = ({
 						viewBox="0 0 24 24"
 						strokeWidth={2.5}
 						stroke="currentColor"
-						className="w-5 h-3"
+						className="w-4 h-2 lg:w-5 lg:h-3"
 					>
 						<path
 							strokeLinecap="round"
@@ -35,7 +35,7 @@ const ColumnSorter = ({
 						viewBox="0 0 24 24"
 						strokeWidth={2.5}
 						stroke="currentColor"
-						className="w-5 h-3"
+						className="w-4 h-2 lg:w-5 lg:h-3"
 					>
 						<path
 							strokeLinecap="round"
@@ -51,7 +51,7 @@ const ColumnSorter = ({
 					viewBox="0 0 24 24"
 					strokeWidth={1.5}
 					stroke="currentColor"
-					className="w-5 h-5"
+					className="w-4 h-4 lg:w-5 lg:h-5"
 				>
 					<path
 						strokeLinecap="round"

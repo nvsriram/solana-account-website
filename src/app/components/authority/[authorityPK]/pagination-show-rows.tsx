@@ -22,8 +22,8 @@ const PaginationShowRows = ({
 	};
 
 	return (
-		<div className="flex items-center">
-			<div className="mr-4 text-sm font-normal align-middle text-stone-500">
+		<div className="flex flex-col gap-1 sm:flex-row sm:gap-0 items-center">
+			<div className="mr-0 sm:mr-4 text-xs lg:text-sm font-normal align-middle text-stone-500">
 				Showing{" "}
 				<span className="font-semibold text-stone-700 dark:text-stone-200">
 					{`${pageIndex * pageSize + 1}-${(pageIndex + 1) * pageSize}`}
@@ -33,12 +33,12 @@ const PaginationShowRows = ({
 					{dataLen}
 				</span>
 			</div>
-			<div className="mr-2">
-				<span className="leading-7 text-sm font-normal text-stone-500">
-					Show{" "}
+			<div className="flex items-center h-full mr-2">
+				<span className="text-xs lg:text-sm font-normal text-stone-500">
+					Show
 				</span>
 				<select
-					className="text-black dark:text-white text-sm h-5 bg-white dark:bg-stone-900 rounded-sm focus:outline-none focus-within:ring-2 hover:ring-violet-700 focus:ring-violet-700 ring-1 ring-stone-500 dark:hover:ring-solana-purple dark:focus:ring-solana-purple dark:ring-stone-400"
+					className="ml-1 text-black dark:text-white text-xs lg:text-sm sm:h-5 bg-white dark:bg-stone-900 rounded-sm focus:outline-none focus-within:ring-2 hover:ring-violet-700 focus:ring-violet-700 ring-1 ring-stone-500 dark:hover:ring-solana-purple dark:focus:ring-solana-purple dark:ring-stone-400"
 					value={pageSize}
 					onChange={handlePageSize}
 				>

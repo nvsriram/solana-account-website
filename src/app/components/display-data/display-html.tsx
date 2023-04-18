@@ -39,19 +39,23 @@ const HTMLDisplay = ({
 					src={url}
 					height={500}
 					width={500}
-					className="mt-2 bg-white dark:bg-stone-200 rounded-md"
+					className="mt-2 bg-white dark:bg-stone-200 rounded-md w-36 h-36 xs:w-72 xs:h-72 sm:w-[500px] sm:h-[500px]"
 					allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
 					sandbox="allow-scripts"
 				/>
 			)}
 			<div className="mt-3 flex">
 				<button
-					className="py-1 px-2 flex text-base rounded-md ring-2 ring-stone-500 dark:ring-stone-400 bg-white dark:bg-stone-200 text-stone-500 focus:outline-none hover:bg-stone-300 hover:text-violet-700 dark:hover:text-solana-purple/80 hover:ring-violet-700 dark:hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple"
+					className="py-0.5 px-1 lg:py-1 lg:px-2 flex text-xs lg:text-base rounded-md ring-2 ring-stone-500 dark:ring-stone-400 bg-white dark:bg-stone-200 text-stone-500 focus:outline-none hover:bg-stone-300 hover:text-violet-700 dark:hover:text-solana-purple/80 hover:ring-violet-700 dark:hover:ring-solana-purple focus:bg-stone-300 focus:text-solana-purple/80 focus:ring-solana-purple"
 					onClick={() => toggleExpanded()}
 				>
 					{expanded ? "View original" : "View source"}
 				</button>
-				{error && <p className="text-rose-500 ml-2">{error}</p>}
+				{error && (
+					<p className="text-xs md:text-sm lg:text-base text-rose-500 ml-2">
+						{error}
+					</p>
+				)}
 			</div>
 		</div>
 	);

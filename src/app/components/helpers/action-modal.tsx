@@ -57,7 +57,7 @@ const ActionModal = ({
 						<div className="relative p-3 flex-auto">
 							<svg
 								aria-hidden="true"
-								className="mx-auto h-16 w-16 text-black"
+								className="mx-auto h-10 w-10 xs:h-12 xs:w-12 sm:h-14 sm:w-14 lg:h-16 lg:w-16 text-black"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -70,23 +70,29 @@ const ActionModal = ({
 									d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
 								></path>
 							</svg>
-							<p className="text-black text-lg">{message}</p>
+							<p className="text-black text-sm xs:text-base lg:text-lg">
+								{message}
+							</p>
 						</div>
-						<div className="flex items-center justify-end p-3 border-t border-solid border-stone-500 dark:border-stone-400 rounded-b">
+						<div className="flex flex-col gap-1 xs:flex-row xs:gap-2 items-center justify-end p-2 lg:p-3 border-t border-solid border-stone-500 dark:border-stone-400 rounded-b">
 							<button
 								ref={cancelRef}
-								className="px-2 py-1 rounded-md bg-rose-500 hover:bg-rose-700 focus:bg-rose-700 focus:outline-none text-white ease-linear transition-all duration-200"
+								className="w-full xs:w-auto px-1 lg:px-2 py-0.5 lg:py-1 rounded-md bg-rose-500 hover:bg-rose-700 focus:bg-rose-700 focus:outline-none text-white ease-linear transition-all duration-200"
 								onClick={() => handleCloseModal()}
 								autoFocus
 							>
-								{cancel}
+								<span className="text-xs xs:text-sm sm:text-base lg:text-lg">
+									{cancel}
+								</span>
 							</button>
 							<button
 								ref={confirmRef}
-								className="ml-2 px-2 py-1 rounded-md bg-emerald-500 hover:bg-emerald-700 focus:bg-emerald-700 focus:outline-none text-white ease-linear transition-all duration-200"
+								className="w-full xs:w-auto px-1 lg:px-2 py-0.5 lg:py-1 rounded-md bg-emerald-500 hover:bg-emerald-700 focus:bg-emerald-700 focus:outline-none text-white ease-linear transition-all duration-200"
 								onClick={() => handleSaveChanges()}
 							>
-								{confirm}
+								<span className="text-xs xs:text-sm sm:text-base lg:text-lg">
+									{confirm}
+								</span>
 							</button>
 						</div>
 					</div>

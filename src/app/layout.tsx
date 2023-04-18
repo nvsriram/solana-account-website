@@ -22,7 +22,7 @@ export default function RootLayout({
 						<section className="w-full h-full container mx-auto md:pt-5">
 							<Search />
 						</section>
-						<section className="grow w-full h-full flex flex-col mt-5 mx-auto px-3 md:px-0 content-center justify-content-center text-sky-500 dark:text-solana-blue">
+						<section className="grow w-full h-full flex flex-col mt-5 mx-auto px-3 lg:px-0 content-center justify-content-center text-sky-500 dark:text-solana-blue">
 							{children}
 						</section>
 					</main>

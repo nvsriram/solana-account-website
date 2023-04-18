@@ -197,8 +197,8 @@ const AuthorityPage = () => {
 
 	if (error) {
 		return (
-			<div className="text-lg">
-				<h1 className="text-base">
+			<div>
+				<h1 className="text-sm lg:text-base">
 					<p className="text-rose-500 font-semibold">ERROR: </p>
 					{error}
 				</h1>

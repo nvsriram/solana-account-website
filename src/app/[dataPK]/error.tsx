@@ -8,8 +8,8 @@ const ErrorBoundary = ({ error }: { error: Error; reset: () => void }) => {
 	}, [error]);
 
 	return (
-		<div className="text-lg">
-			<h1 className="text-lg">
+		<div>
+			<h1 className="text-sm lg:text-base">
 				<p className="text-rose-500 font-semibold">ERROR:</p>
 				{error.message}
 			</h1>

@@ -31,7 +31,7 @@ export const Search = () => {
 	const focusRef = useRef<HTMLInputElement>(null);
 
 	return (
-		<form className="px-3 md:px-0" onSubmit={handleSubmit}>
+		<form className="px-3 lg:px-0" onSubmit={handleSubmit}>
 			<div className="w-full flex items-center bg-white dark:bg-stone-200 focus-within:ring-2 hover:ring-violet-700 focus-within:ring-violet-700 dark:hover:ring-solana-purple dark:focus-within:ring-solana-purple rounded-sm ring-2 ring-stone-500 dark:ring-stone-400 shadow-sm">
 				<input
 					className="bg-transparent focus:outline-none focus:ring-0 appearance-none w-full text-sm xs:text-base md:text-lg py-1 md:py-2 pl-0.5 xs:pl-1 md:pl-2 caret-violet-700 dark:caret-solana-purple"

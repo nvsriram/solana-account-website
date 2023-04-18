@@ -16,7 +16,7 @@ const DataAccountTable = ({
 				className="table-auto border-collapse w-full shadow-xl bg-white dark:bg-stone-800"
 				{...getTableProps}
 			>
-				<thead className="text-base text-stone-700 dark:text-stone-200 bg-stone-200 dark:bg-stone-900 text-center uppercase">
+				<thead className="text-sm lg:text-base text-stone-700 dark:text-stone-200 bg-stone-200 dark:bg-stone-900 text-center uppercase">
 					{headerGroups.map((headerGroup) => {
 						const { key, ...restHeaderGroupProps } =
 							headerGroup.getHeaderGroupProps();
@@ -29,7 +29,7 @@ const DataAccountTable = ({
 									return (
 										<th
 											key={key}
-											className="p-2 flex justify-center"
+											className="p-1 lg:p-2 flex justify-center"
 											{...restHeaderProps}
 										>
 											{column.render("Header")}
@@ -48,7 +48,7 @@ const DataAccountTable = ({
 						return (
 							<tr
 								key={key}
-								className={`text-sm text-center border-b dark:border-stone-600 ${
+								className={`text-xs lg:text-sm text-center border-b dark:border-stone-600 ${
 									row.isSelected ? "bg-stone-100 dark:bg-stone-700 " : ""
 								}hover:bg-stone-100 focus-within:bg-stone-100 dark:hover:bg-stone-700 dark:focus-within:bg-stone-700`}
 								{...restRowProps}
@@ -56,7 +56,7 @@ const DataAccountTable = ({
 								{row.cells.map((cell) => {
 									const { key, ...restCellProps } = cell.getCellProps();
 									return (
-										<td key={key} className="p-2" {...restCellProps}>
+										<td key={key} className="p-1 lg:p-2" {...restCellProps}>
 											{cell.render("Cell")}
 										</td>
 									);

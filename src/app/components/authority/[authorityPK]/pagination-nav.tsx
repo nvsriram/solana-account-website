@@ -42,7 +42,7 @@ const PaginationNav = ({
 
 	return (
 		<nav
-			className="w-full px-2 flex items-center justify-between mt-4"
+			className="w-full px-0 sm:px-2 flex flex-col gap-2 sm:flex-row sm:gap-0 items-center justify-between mt-1 sm:mt-4"
 			aria-label="Table navigation"
 		>
 			<PaginationShowRows
