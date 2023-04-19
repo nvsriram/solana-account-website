@@ -1,7 +1,7 @@
 import { DataStatusOption, IDataAccountMeta } from "@/app/utils/types";
-import DataStatusActions from "../actions/data-status-actions";
-import FinalizeAction from "../actions/finalize-action";
-import CloseAction from "../actions/close-action";
+import CloseAction from "../../actions/close-action";
+import DataStatusActions from "../../actions/data-status-actions";
+import FinalizeAction from "../../actions/finalize-action";
 
 const DataStatusRow = ({
 	dataPK,

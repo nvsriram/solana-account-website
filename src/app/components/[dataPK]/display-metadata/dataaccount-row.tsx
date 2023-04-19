@@ -1,4 +1,4 @@
-import CopyToClipboard from "../helpers/copy";
+import CopyToClipboard from "../../helpers/copy";
 
 const DataAccountRow = ({
 	dataPK,

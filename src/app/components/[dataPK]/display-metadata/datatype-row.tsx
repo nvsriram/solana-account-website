@@ -1,6 +1,6 @@
 import { DataTypeOption } from "@/app/utils/types";
 import { Dispatch, SetStateAction } from "react";
-import DataTypeSelect from "../upload/datatype-select";
+import DataTypeSelect from "../../upload/datatype-select";
 
 const DataTypeRow = ({
 	data_type,
@@ -30,13 +30,11 @@ const DataTypeRow = ({
 				<span className="text-sm lg:text-base">
 					{DataTypeOption[data_type]}
 				</span>
-				{data_type != undefined && (
-					<DataTypeSelect
-						dataType={dataType}
-						setDataType={setDataType}
-						sx="ml-3"
-					/>
-				)}
+				<DataTypeSelect
+					dataType={dataType}
+					setDataType={setDataType}
+					sx="ml-3"
+				/>
 			</div>
 		</div>
 	);
