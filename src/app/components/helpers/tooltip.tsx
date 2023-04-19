@@ -3,12 +3,12 @@ import { ReactNode } from "react";
 export default function Tooltip({
 	message,
 	condition,
-	sx,
+	classes,
 	children,
 }: {
 	message: ReactNode;
 	condition: boolean;
-	sx?: string;
+	classes?: string;
 	children: ReactNode;
 }) {
 	return (
@@ -20,7 +20,7 @@ export default function Tooltip({
 			{children}
 			{condition && (
 				<span
-					className={`absolute scale-0 transition-all rounded-lg bg-violet-700 dark:bg-solana-purple p-2 text-xs md:text-sm text-stone-100 group-hover:scale-100 group-focus:scale-100 z-10 ${sx}`}
+					className={`absolute scale-0 transition-all rounded-lg bg-violet-700 dark:bg-solana-purple p-2 text-xs md:text-sm text-stone-100 group-hover:scale-100 group-focus:scale-100 z-10 ${classes}`}
 				>
 					{message}
 				</span>

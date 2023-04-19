@@ -1,13 +1,13 @@
 const DynamicRow = ({
 	is_dynamic,
-	sx,
+	classes,
 }: {
 	is_dynamic: boolean;
-	sx?: string;
+	classes?: string;
 }) => {
 	return (
 		<div
-			className={`grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12 ${sx}`}
+			className={`grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12 ${classes}`}
 		>
 			<div className="flex flex-row pb-1 sm:pb-0 col-span-3 items-center text-sm sm:font-bold sm:text-base lg:text-lg text-left text-violet-700 dark:text-solana-purple">
 				<span>Dynamic</span>

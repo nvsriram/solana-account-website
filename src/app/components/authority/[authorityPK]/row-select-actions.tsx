@@ -19,16 +19,16 @@ const RowSelectActions = ({
 		<div className="mt-1 sm:mt-4 flex flex-col gap-1 sm:flex-row sm:gap-0 items-start text-sm text-stone-500 ease-in-out duration-200">
 			<p className="mr-3">{selectedFlatRows.length} selected:</p>
 			<div className="flex w-full sm:w-auto gap-5">
-				<DataStatusActions sx="w-full" sm>
+				<DataStatusActions classes="w-full" sm>
 					<FinalizeAllAction
 						rows={selectedFlatRows.map(({ original }) => original)}
 						refresh={refresh}
-						sx="w-full"
+						classes="w-full"
 					/>
 					<CloseAllAction
 						rows={selectedFlatRows.map(({ original }) => original)}
 						refresh={refresh}
-						sx="w-full"
+						classes="w-full"
 					/>
 				</DataStatusActions>
 			</div>

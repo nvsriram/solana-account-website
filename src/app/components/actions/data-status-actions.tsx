@@ -5,11 +5,11 @@ import { useState, useRef, useEffect, useCallback, ReactNode } from "react";
 export const DataStatusActions = ({
 	children,
 	sm,
-	sx,
+	classes,
 }: {
 	children: ReactNode;
 	sm?: boolean;
-	sx?: string;
+	classes?: string;
 }) => {
 	const [open, setOpen] = useState(false);
 	const dataStatusActionRef = useRef<HTMLDivElement>(null);
@@ -39,7 +39,7 @@ export const DataStatusActions = ({
 
 	return (
 		<div
-			className={`flex flex-col items-start justify-center ${sx}`}
+			className={`flex flex-col items-start justify-center ${classes}`}
 			ref={dataStatusActionRef}
 		>
 			<button

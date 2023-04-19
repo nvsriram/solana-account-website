@@ -63,7 +63,7 @@ const DynamicRow = ({
 							</>
 						}
 						condition={true}
-						sx={`w-28 right-0 top-7 md:top-5 lg:top-0 lg:left-9`}
+						classes={`w-28 right-0 top-7 md:top-5 lg:top-0 lg:left-9`}
 					>
 						<svg
 							className="ml-2 w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:hover:text-emerald-600 group-focus:text-emerald-700 dark:focus:text-emerald-600"
@@ -142,7 +142,7 @@ const DynamicRow = ({
 							</>
 						}
 						condition={true}
-						sx={`w-28 right-0 top-7 md:top-5 lg:top-0 lg:left-9`}
+						classes={`w-28 right-0 top-7 md:top-5 lg:top-0 lg:left-9`}
 					>
 						<svg
 							className="ml-2 w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:hover:text-emerald-600 group-focus:text-emerald-700 dark:focus:text-emerald-600"

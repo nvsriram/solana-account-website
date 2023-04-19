@@ -1,17 +1,14 @@
 "use client";
 
-import "./globals.css";
-import { Search } from "./components/search";
-import ContextProviders from "./providers";
-import Navbar from "./components/navbar";
+import { ReactNode } from "react";
 import Footer from "./components/footer";
 import { ScrollToTop } from "./components/helpers/scroll-to-top";
+import Navbar from "./components/navbar";
+import { Search } from "./components/search";
+import "./globals.css";
+import ContextProviders from "./providers";
 
-export default function RootLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en" className="scroll-smooth">
 			<head />

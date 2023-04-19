@@ -2,7 +2,7 @@
 
 import { ClusterNames } from "@/app/utils/types";
 import { useCluster } from "@/app/utils/utils";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ClusterOption } from "./cluster-option";
 
 export const ClusterSelect = () => {

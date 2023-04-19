@@ -75,7 +75,7 @@ export const Search = () => {
 						</>
 					}
 					condition={search.substring(PREFIX.length) === "upload" && isUpload}
-					sx="top-11 right-0 w-24"
+					classes="top-11 right-0 w-24"
 				>
 					<button
 						type="submit"

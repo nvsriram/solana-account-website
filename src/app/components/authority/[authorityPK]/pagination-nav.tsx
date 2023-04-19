@@ -1,13 +1,13 @@
 import { DataAccountWithMeta } from "@/app/utils/types";
-import { TableInstance } from "react-table";
-import PaginationPager from "./pagination-pager";
-import { useState, useEffect, useCallback } from "react";
-import PaginationShowRows from "./pagination-show-rows";
 import {
-	START_PAGE_INDICES,
 	MAX_INACTIVE_PAGES_PER_SIDE,
 	MAX_PAGES_TO_NAVIGATE,
+	START_PAGE_INDICES,
 } from "@/app/utils/utils";
+import { useCallback, useEffect, useState } from "react";
+import { TableInstance } from "react-table";
+import PaginationPager from "./pagination-pager";
+import PaginationShowRows from "./pagination-show-rows";
 
 const PaginationNav = ({
 	table,

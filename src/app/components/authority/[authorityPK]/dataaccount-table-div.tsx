@@ -1,17 +1,17 @@
 import { DataAccountWithMeta } from "@/app/utils/types";
 import {
-	useTable,
-	usePagination,
+	Row,
 	TableOptions,
 	useFlexLayout,
-	useSortBy,
+	usePagination,
 	useRowSelect,
-	Row,
+	useSortBy,
+	useTable,
 } from "react-table";
+import DataAccountTable from "./dataaccount-table";
+import PaginationNav from "./pagination-nav";
 import RowCheckbox from "./row-checkbox";
 import RowSelectActions from "./row-select-actions";
-import PaginationNav from "./pagination-nav";
-import DataAccountTable from "./dataaccount-table";
 
 const DataAccountTableDiv = ({
 	columns,

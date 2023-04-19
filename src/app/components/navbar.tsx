@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { ClusterSelect } from "./cluster/cluster-select";
-import Image from "next/image";
-import Logo from "public/favicon.ico";
 import dynamic from "next/dynamic";
+import Image from "next/image";
+import Link from "next/link";
+import Logo from "public/favicon.ico";
+import { ClusterSelect } from "./cluster/cluster-select";
 
 const WalletButtonDynamic = dynamic(() => import("./wallet/wallet-button"), {
 	ssr: false,

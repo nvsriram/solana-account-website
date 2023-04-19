@@ -16,7 +16,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import dynamic from "next/dynamic";
 import router from "next/router";
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ReactJsonDynamic = dynamic(import("react-json-view"), { ssr: false });
 

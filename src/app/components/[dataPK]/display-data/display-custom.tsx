@@ -4,7 +4,12 @@ import {
 	DataTypeOption,
 	IDataAccountMeta,
 } from "@/app/utils/types";
+import { handleUpload, uploadDataPart, useCluster } from "@/app/utils/utils";
+import { html } from "@codemirror/lang-html";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import ReactCodeMirror from "@uiw/react-codemirror";
+import router from "next/router";
 import {
 	Dispatch,
 	SetStateAction,
@@ -13,11 +18,6 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { html } from "@codemirror/lang-html";
-import router from "next/router";
-import { handleUpload, uploadDataPart, useCluster } from "@/app/utils/utils";
-import { useWallet } from "@solana/wallet-adapter-react";
-import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 
 const CustomDisplay = ({
 	data,

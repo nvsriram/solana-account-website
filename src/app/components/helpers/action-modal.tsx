@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 
 const ActionModal = ({
 	showModal,
@@ -9,7 +9,7 @@ const ActionModal = ({
 	handleSaveChanges,
 }: {
 	showModal: boolean;
-	message: React.ReactNode;
+	message: ReactNode;
 	cancel: string;
 	confirm: string;
 	handleCloseModal: () => void;

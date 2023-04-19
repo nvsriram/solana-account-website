@@ -1,10 +1,10 @@
-import { IDataAccountMeta, ClusterNames } from "@/app/utils/types";
-import { useCluster, closeDataAccount } from "@/app/utils/utils";
+import { ClusterNames, IDataAccountMeta } from "@/app/utils/types";
+import { closeDataAccount, useCluster } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { useMemo, useState } from "react";
-import Tooltip from "../helpers/tooltip";
 import ActionModal from "../helpers/action-modal";
+import Tooltip from "../helpers/tooltip";
 
 const CloseAction = ({
 	dataPK,
@@ -140,7 +140,7 @@ const CloseAction = ({
 						</>
 					}
 					condition={true}
-					sx={`w-32 lg:w-44 top-7 right-0 md:top-5 lg:top-0 lg:left-9`}
+					classes={`w-32 lg:w-44 top-7 right-0 md:top-5 lg:top-0 lg:left-9`}
 				>
 					<svg
 						className="ml-1 lg:ml-2 w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:group-hover:text-emerald-600 group-focus:text-emerald-700 dark:group-focus:text-emerald-600"

@@ -1,7 +1,7 @@
-import { Connection, PublicKey } from "@solana/web3.js";
-import type { NextApiRequest, NextApiResponse } from "next";
 import { ApiError, ClusterNames, IDataAccountMeta } from "@/app/utils/types";
 import { isBase58, parseMetadata } from "@/app/utils/utils";
+import { Connection, PublicKey } from "@solana/web3.js";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
 	req: NextApiRequest,
@@ -12,7 +12,7 @@ export default async function handler(
 		"Access-Control-Allow-Methods",
 		"GET, PUT, POST, DELETE, HEAD, OPTIONS"
 	);
-	
+
 	if (req.method !== "GET") {
 		res.status(405).json({ error: "Unsupported method" });
 		return;

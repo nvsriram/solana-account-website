@@ -1,6 +1,6 @@
 import { useWallet } from "@solana/wallet-adapter-react";
-import Tooltip from "../helpers/tooltip";
 import CopyToClipboard from "../helpers/copy";
+import Tooltip from "../helpers/tooltip";
 
 const FeePayerRow = () => {
 	const { publicKey } = useWallet();
@@ -20,7 +20,7 @@ const FeePayerRow = () => {
 						</span>
 					}
 					condition={true}
-					sx={`block md:hidden w-28 right-0 top-7`}
+					classes={`block md:hidden w-28 right-0 top-7`}
 				>
 					<svg
 						className="block md:hidden ml-2 w-4 h-4 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:hover:text-emerald-600 group-focus:text-emerald-700 dark:focus:text-emerald-600"
@@ -61,7 +61,7 @@ const FeePayerRow = () => {
 						</button>
 						<CopyToClipboard
 							message={publicKey.toBase58()}
-							sx="hidden md:block"
+							classes="hidden md:block"
 						/>
 						<Tooltip
 							message={
@@ -71,7 +71,7 @@ const FeePayerRow = () => {
 								</>
 							}
 							condition={true}
-							sx={`hidden md:block w-28 right-0 top-7 xl:top-0 xl:left-9`}
+							classes={`hidden md:block w-28 right-0 top-7 xl:top-0 xl:left-9`}
 						>
 							<svg
 								className="hidden md:block w-4 h-4 lg:w-5 lg:h-5 text-emerald-500 dark:text-solana-green group-hover:text-emerald-700 dark:hover:text-emerald-600 group-focus:text-emerald-700 dark:focus:text-emerald-600"

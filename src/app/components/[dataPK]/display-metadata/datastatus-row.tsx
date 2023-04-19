@@ -7,16 +7,16 @@ const DataStatusRow = ({
 	dataPK,
 	meta,
 	refresh,
-	sx,
+	classes,
 }: {
 	dataPK: string | undefined;
 	meta: IDataAccountMeta;
 	refresh: () => void;
-	sx?: string;
+	classes?: string;
 }) => {
 	return (
 		<div
-			className={`grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12 ${sx}`}
+			className={`grid grid-flow-row auto-rows-min grid-cols-1 sm:grid-cols-12 ${classes}`}
 		>
 			<div className="flex flex-row pb-1 sm:pb-0 col-span-3 items-center text-sm sm:font-bold sm:text-base lg:text-lg text-left text-violet-700 dark:text-solana-purple">
 				<span>Data Status</span>
@@ -38,7 +38,7 @@ const DataStatusRow = ({
 					{DataStatusOption[meta.data_status]}
 				</span>
 				{meta.data_status != undefined && (
-					<DataStatusActions sx="hidden sm:flex ml-2 lg:ml-5">
+					<DataStatusActions classes="hidden sm:flex ml-2 lg:ml-5">
 						<div>
 							{meta.data_status != DataStatusOption.FINALIZED && (
 								<FinalizeAction dataPK={dataPK} meta={meta} refresh={refresh} />
@@ -49,7 +49,7 @@ const DataStatusRow = ({
 				)}
 			</div>
 			<div className="pb-4 flex flex-col items-center gap-2 w-full sm:hidden">
-				<DataStatusActions sx="w-full">
+				<DataStatusActions classes="w-full">
 					{meta.data_status != DataStatusOption.FINALIZED && (
 						<FinalizeAction
 							dataPK={dataPK}

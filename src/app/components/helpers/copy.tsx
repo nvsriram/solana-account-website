@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 
-const CopyToClipboard = ({ message, sx }: { message: string; sx?: string }) => {
+const CopyToClipboard = ({
+	message,
+	classes,
+}: {
+	message: string;
+	classes?: string;
+}) => {
 	const [copy, setCopy] = useState(false);
 
 	useEffect(() => setCopy(false), [message]);
@@ -13,7 +19,7 @@ const CopyToClipboard = ({ message, sx }: { message: string; sx?: string }) => {
 
 	return (
 		<button
-			className={`text-xs md:text-sm ml-1 hover:cursor-pointer focus:outline-none appearance-none text-stone-500 dark:text-stone-100 hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple ${sx}`}
+			className={`text-xs md:text-sm ml-1 hover:cursor-pointer focus:outline-none appearance-none text-stone-500 dark:text-stone-100 hover:text-solana-purple hover:dark:text-solana-purple focus:text-solana-purple focus:dark:text-solana-purple ${classes}`}
 			onClick={() => {
 				navigator.clipboard.writeText(message);
 				setCopy(true);
