@@ -236,7 +236,7 @@ const UploadPage = () => {
 						</p>
 						<Link
 							href={`/${dataAccount}?cluster=${cluster}`}
-							className="underline text-xs sm:text-sm lg:text-base"
+							className="underline text-xs sm:text-sm lg:text-base break-all"
 						>
 							{dataAccount}
 						</Link>
