@@ -54,6 +54,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
   - Alternatively, you can select multiple accounts and finalize/close them all at once by clicking on the `Actions` dropdown button and following the prompts
 
 ### 🏁 To finalize your data
+
 **NOTE: The Finalize action cannot be reverted. Once finalized, the data can no longer be updated.**
 
 - Go to the [Data Account details page](#to-view-data-account-details)
@@ -66,6 +67,7 @@ This website acts as an editor for the [Solana Data Program V0](https://github.c
 - Once the transaction goes through, the page will reload and you can see the changes being reflected
 
 ### ❌ To close your data account and associated metadata account and reclaim SOL
+
 **NOTE: The Close action cannot be reverted. Once closed, the data account and the associated metadata account will no longer exist.**
 
 - Go to the [Data Account details page](#to-view-data-account-details)
@@ -137,7 +139,7 @@ Use this API route to get the associated metadata (extracted from the PDA) for a
 
   ```javascript
   fetch(
-  	`/api/meta/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet`
+  	`/api/meta/HoyEJgwKhQG1TPRB2ziBU9uGziwy4f25kDcnKDNgsCkg?cluster=Devnet`
   ).then((res) => {
   	if (!res.ok) {
   		res.json().then(({ error }: ApiError) => {
@@ -204,7 +206,7 @@ Use this API route to get the data for a given Data Account.
 
   ```javascript
   fetch(
-  	`/api/data/AhPmpuUZg7HLqaQw2j4MTFv8ZZfDUQGNR3vUbgeCCpqm?cluster=Devnet&ext=text/html`
+  	`/api/data/HoyEJgwKhQG1TPRB2ziBU9uGziwy4f25kDcnKDNgsCkg?cluster=Devnet&ext=text/html`
   ).then((res) => {
   	if (!res.ok) {
   		res.json().then(({ error }: ApiError) => {

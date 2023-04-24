@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import { Dispatch, SetStateAction } from "react";
 import { ThemeKeys, ThemeObject } from "react-json-view";
+import { IDataAccountMeta } from "solana-data-program";
 
 const LOCALHOST = "http://localhost:8899";
 
@@ -87,40 +88,6 @@ export const EditorThemeMap = new Map<string, ThemeKeys | ThemeObject>([
 	["twilight", "twilight"],
 ]);
 export const EditorThemeKeys = Array.from(EditorThemeMap.keys());
-
-export enum DataStatusOption {
-	UNINITIALIZED,
-	INITIALIZED,
-	FINALIZED,
-}
-
-export enum SerializationStatusOption {
-	UNVERIFIED,
-	VERIFIED,
-	FAILED,
-}
-
-export enum DataTypeOption {
-	CUSTOM = 0,
-	JSON = 1,
-	IMG = 2,
-	HTML = 3,
-}
-
-export interface IDataAccountMeta {
-	data_status: DataStatusOption;
-	serialization_status: SerializationStatusOption;
-	authority: string;
-	is_dynamic: boolean;
-	data_version: number;
-	data_type: number;
-	bump_seed: number;
-}
-
-export interface IDataAccount {
-	meta: IDataAccountMeta;
-	data?: Buffer;
-}
 
 export type DataAccountWithMeta = {
 	pubkey: PublicKey;

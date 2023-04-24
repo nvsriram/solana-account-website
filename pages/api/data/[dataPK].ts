@@ -1,7 +1,8 @@
+import { ApiError, ClusterNames } from "@/app/utils/types";
+import { getMimeType, isBase58 } from "@/app/utils/utils";
 import { Connection, PublicKey } from "@solana/web3.js";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { ApiError, ClusterNames } from "@/app/utils/types";
-import { getMimeType, isBase58, parseData } from "@/app/utils/utils";
+import { DataProgram } from "solana-data-program";
 
 export default async function handler(
 	req: NextApiRequest,
@@ -33,9 +34,10 @@ export default async function handler(
 	}
 
 	try {
-		const account_data = await parseData(
+		const account_data = await DataProgram.parseData(
 			new Connection(clusterURL),
-			new PublicKey(dataPK)
+			new PublicKey(dataPK),
+			"confirmed"
 		);
 		if (!account_data) {
 			res

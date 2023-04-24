@@ -1,4 +1,3 @@
-import { DataTypeOption } from "@/app/utils/types";
 import { displaySize } from "@/app/utils/utils";
 import {
 	ChangeEvent,
@@ -7,6 +6,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { DataTypeOption } from "solana-data-program";
 import Tooltip from "../helpers/tooltip";
 
 const FileRow = ({

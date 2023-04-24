@@ -1,5 +1,5 @@
-import { DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import { useCallback, useState } from "react";
+import { DataTypeOption, IDataAccountMeta } from "solana-data-program";
 import CustomDisplay from "./display-custom";
 
 const HTMLDisplay = ({

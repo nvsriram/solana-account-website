@@ -1,12 +1,13 @@
-import {
-	ClusterNames,
-	DataStatusOption,
-	IDataAccountMeta,
-} from "@/app/utils/types";
-import { finalizeDataAccount, useCluster } from "@/app/utils/utils";
+import { ClusterNames } from "@/app/utils/types";
+import { useCluster } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { useMemo, useState } from "react";
+import {
+	DataProgram,
+	DataStatusOption,
+	IDataAccountMeta,
+} from "solana-data-program";
 import ActionModal from "../helpers/action-modal";
 import Tooltip from "../helpers/tooltip";
 
@@ -64,7 +65,7 @@ const FinalizeAction = ({
 				return;
 			}
 
-			if (meta.data_status === DataStatusOption.FINALIZED) {
+			if (meta.dataStatus === DataStatusOption.FINALIZED) {
 				setError("Data account is already finalized");
 				return;
 			}
@@ -74,7 +75,7 @@ const FinalizeAction = ({
 
 			const recentBlockhash = await clusterConnection.getLatestBlockhash();
 			const tx = new Transaction();
-			const ix = finalizeDataAccount(authority, dataAccount, null, true);
+			const ix = DataProgram.finalizeDataAccount(authority, dataAccount, true);
 			tx.add(ix);
 			tx.recentBlockhash = recentBlockhash.blockhash;
 			tx.feePayer = authority;

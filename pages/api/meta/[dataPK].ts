@@ -1,7 +1,8 @@
-import { ApiError, ClusterNames, IDataAccountMeta } from "@/app/utils/types";
-import { isBase58, parseMetadata } from "@/app/utils/utils";
+import { ApiError, ClusterNames } from "@/app/utils/types";
+import { isBase58 } from "@/app/utils/utils";
 import { Connection, PublicKey } from "@solana/web3.js";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { DataProgram, IDataAccountMeta } from "solana-data-program";
 
 export default async function handler(
 	req: NextApiRequest,
@@ -33,9 +34,10 @@ export default async function handler(
 	}
 
 	try {
-		const account_meta = await parseMetadata(
+		const account_meta = await DataProgram.parseMetadata(
 			new Connection(clusterURL),
-			new PublicKey(dataPK)
+			new PublicKey(dataPK),
+			"confirmed"
 		);
 		if (!account_meta) {
 			res

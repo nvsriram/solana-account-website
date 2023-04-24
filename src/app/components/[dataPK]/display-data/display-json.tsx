@@ -1,10 +1,7 @@
 import {
 	ClusterNames,
-	DataStatusOption,
-	DataTypeOption,
 	EditorThemeKeys,
 	EditorThemeMap,
-	IDataAccountMeta,
 } from "@/app/utils/types";
 import {
 	handleUpload,
@@ -17,6 +14,11 @@ import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import dynamic from "next/dynamic";
 import router from "next/router";
 import { useEffect, useMemo, useState } from "react";
+import {
+	DataStatusOption,
+	DataTypeOption,
+	IDataAccountMeta,
+} from "solana-data-program";
 
 const ReactJsonDynamic = dynamic(import("react-json-view"), { ssr: false });
 
@@ -110,7 +112,7 @@ const JSONDisplay = ({
 				return;
 			}
 
-			if (meta.data_status === DataStatusOption.FINALIZED) {
+			if (meta.dataStatus === DataStatusOption.FINALIZED) {
 				setError("Data account is finalized so cannot be updated");
 				return;
 			}
@@ -139,7 +141,7 @@ const JSONDisplay = ({
 				}
 				updateData = Buffer.from(updated.substring(offset, idx + 1), "ascii");
 			} else if (old.length < updated.length) {
-				if (meta.is_dynamic || updated.length <= len) {
+				if (meta.isDynamic || updated.length <= len) {
 					updateData = Buffer.from(updated.substring(offset), "ascii");
 				} else {
 					setError("Data account is static so cannot be realloced");
@@ -167,7 +169,6 @@ const JSONDisplay = ({
 				const tx = uploadDataPart(
 					authority,
 					dataAccount,
-					null,
 					DataTypeOption.JSON,
 					part,
 					offset + current * PART_SIZE
@@ -209,7 +210,6 @@ const JSONDisplay = ({
 						const tx = uploadDataPart(
 							authority,
 							dataAccount,
-							null,
 							DataTypeOption.JSON,
 							part,
 							offset + current * PART_SIZE
@@ -233,12 +233,12 @@ const JSONDisplay = ({
 	return (
 		<div className="mt-2 justify-end relative leading-3 text-[0.5rem] sm:text-xs lg:text-sm">
 			<div className="pb-3 flex gap-1 flex-col-reverse sm:gap-0 sm:flex-row sm:pb-0 sm:absolute sm:top-2 sm:z-10 sm:right-2 sm:inline-flex">
-				{meta.data_status != DataStatusOption.FINALIZED && error && (
+				{meta.dataStatus != DataStatusOption.FINALIZED && error && (
 					<p className="text-rose-500 mr-2 leading-3 text-[0.5rem] sm:text-xs lg:text-sm">
 						{error}
 					</p>
 				)}
-				{meta.data_status != DataStatusOption.FINALIZED && unsavedChanges && (
+				{meta.dataStatus != DataStatusOption.FINALIZED && unsavedChanges && (
 					<div className="flex flex-col gap-1 sm:gap-0 sm:flex-row pt-2 sm:pt-0">
 						<button
 							className="text-xs md:text-sm lg:text-base mr-1 lg:mr-2 py-0 lg:py-0.5 px-1 lg:px-2 rounded-md bg-emerald-500 dark:bg-solana-green/80 hover:bg-emerald-700 dark:hover:bg-emerald-600 focus:bg-emerald-700 dark:focus:bg-emerald-600 text-white focus:outline-none"
@@ -286,17 +286,17 @@ const JSONDisplay = ({
 				theme={EditorThemeMap.get(editorTheme)}
 				iconStyle="square"
 				onEdit={
-					meta.data_status != DataStatusOption.FINALIZED
+					meta.dataStatus != DataStatusOption.FINALIZED
 						? (e) => setData(e.updated_src)
 						: undefined
 				}
 				onAdd={
-					meta.data_status != DataStatusOption.FINALIZED
+					meta.dataStatus != DataStatusOption.FINALIZED
 						? (e) => setData(e.updated_src)
 						: undefined
 				}
 				onDelete={
-					meta.data_status != DataStatusOption.FINALIZED
+					meta.dataStatus != DataStatusOption.FINALIZED
 						? (e) => setData(e.updated_src)
 						: undefined
 				}

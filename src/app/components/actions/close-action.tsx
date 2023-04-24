@@ -1,8 +1,9 @@
-import { ClusterNames, IDataAccountMeta } from "@/app/utils/types";
-import { closeDataAccount, useCluster } from "@/app/utils/utils";
+import { ClusterNames } from "@/app/utils/types";
+import { useCluster } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import { useMemo, useState } from "react";
+import { DataProgram, IDataAccountMeta } from "solana-data-program";
 import ActionModal from "../helpers/action-modal";
 import Tooltip from "../helpers/tooltip";
 
@@ -65,7 +66,7 @@ const CloseAction = ({
 
 			const recentBlockhash = await clusterConnection.getLatestBlockhash();
 			const tx = new Transaction();
-			const ix = closeDataAccount(authority, dataAccount, null, true);
+			const ix = DataProgram.closeDataAccount(authority, dataAccount, true);
 			tx.add(ix);
 			tx.recentBlockhash = recentBlockhash.blockhash;
 			tx.feePayer = authority;

@@ -1,7 +1,7 @@
 "use client";
 
-import { DataTypeOption } from "@/app/utils/types";
 import { useRouter } from "next/navigation";
+import { DataTypeOption } from "solana-data-program";
 
 export default function Home() {
 	const dataTypeDescription = new Map<DataTypeOption, string>();

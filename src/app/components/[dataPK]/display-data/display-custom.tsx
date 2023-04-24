@@ -1,9 +1,4 @@
-import {
-	ClusterNames,
-	DataStatusOption,
-	DataTypeOption,
-	IDataAccountMeta,
-} from "@/app/utils/types";
+import { ClusterNames } from "@/app/utils/types";
 import { handleUpload, uploadDataPart, useCluster } from "@/app/utils/utils";
 import { html } from "@codemirror/lang-html";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -18,6 +13,11 @@ import {
 	useMemo,
 	useState,
 } from "react";
+import {
+	DataStatusOption,
+	DataTypeOption,
+	IDataAccountMeta,
+} from "solana-data-program";
 
 const CustomDisplay = ({
 	data,
@@ -138,7 +138,7 @@ const CustomDisplay = ({
 				return;
 			}
 
-			if (meta.data_status === DataStatusOption.FINALIZED) {
+			if (meta.dataStatus === DataStatusOption.FINALIZED) {
 				if (setError) {
 					setError("Data account is finalized so cannot be updated");
 				} else {
@@ -171,7 +171,7 @@ const CustomDisplay = ({
 				}
 				updateData = Buffer.from(updated.substring(offset, idx + 1), "ascii");
 			} else if (data.length < updated.length) {
-				if (meta.is_dynamic) {
+				if (meta.isDynamic) {
 					updateData = Buffer.from(updated.substring(offset), "ascii");
 				} else {
 					if (setError) {
@@ -204,11 +204,9 @@ const CustomDisplay = ({
 				const tx = uploadDataPart(
 					authority,
 					dataAccount,
-					null,
 					dataType,
 					part,
-					offset + current * PART_SIZE,
-					true
+					offset + current * PART_SIZE
 				);
 				tx.recentBlockhash = recentBlockhash.blockhash;
 				allTxs.push(tx);
@@ -247,7 +245,6 @@ const CustomDisplay = ({
 						const tx = uploadDataPart(
 							authority,
 							dataAccount,
-							null,
 							dataType,
 							part,
 							offset + current * PART_SIZE
@@ -274,7 +271,7 @@ const CustomDisplay = ({
 
 	return (
 		<div className="mt-2 justify-end relative">
-			{meta.data_status != DataStatusOption.FINALIZED && (
+			{meta.dataStatus != DataStatusOption.FINALIZED && (
 				<div className="pb-3 flex gap-1 flex-col-reverse sm:gap-0 sm:flex-row sm:pb-0 sm:absolute sm:top-2 sm:z-10 sm:right-2 sm:inline-flex">
 					{inlineError && (
 						<p className="text-rose-500 mr-2 leading-3 text-[0.5rem] sm:text-xs lg:text-sm">

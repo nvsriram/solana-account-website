@@ -1,26 +1,22 @@
 "use client";
 
+import CloseAction from "@/app/components/actions/close-action";
+import FinalizeAction from "@/app/components/actions/finalize-action";
+import CopyToClipboard from "@/app/components/helpers/copy";
+import Loading from "@/app/components/loading";
 import { Connection } from "@solana/web3.js";
+import dynamic from "next/dynamic";
+import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import {
-	ClusterNames,
-	DataAccountWithMeta,
-	DataStatusOption,
-	DataTypeOption,
-} from "../../utils/types";
+import { Column, Row } from "react-table";
+import { DataStatusOption, DataTypeOption } from "solana-data-program";
+import { ClusterNames, DataAccountWithMeta } from "../../utils/types";
 import {
 	getBaseURL,
 	getDataAccountsByAuthority,
 	useCluster,
 } from "../../utils/utils";
-import Link from "next/link";
-import Loading from "@/app/components/loading";
-import { Column, Row } from "react-table";
-import CopyToClipboard from "@/app/components/helpers/copy";
-import dynamic from "next/dynamic";
-import FinalizeAction from "@/app/components/actions/finalize-action";
-import CloseAction from "@/app/components/actions/close-action";
 
 const DynamicDataAccountTableDiv = dynamic(
 	() => import("@/app/components/authority/[authorityPK]/dataaccount-table-div")
@@ -77,14 +73,14 @@ const AuthorityPage = () => {
 				id: "data-type",
 				accessor: "meta",
 				Cell: ({ cell: { value: meta } }) => (
-					<p className="text-stone-500">{DataTypeOption[meta.data_type]}</p>
+					<p className="text-stone-500">{DataTypeOption[meta.dataType]}</p>
 				),
 				defaultCanSort: true,
 				sortType: (rowA, rowB, id) => {
-					if (rowA.values[id].data_type > rowB.values[id].data_type) {
+					if (rowA.values[id].dataType > rowB.values[id].dataType) {
 						return 1;
 					}
-					if (rowB.values[id].data_type > rowA.values[id].data_type) {
+					if (rowB.values[id].dataType > rowA.values[id].dataType) {
 						return -1;
 					}
 					return 0;
@@ -97,20 +93,20 @@ const AuthorityPage = () => {
 				Cell: ({ cell: { value: meta } }) => (
 					<p
 						className={
-							meta.data_status === DataStatusOption.INITIALIZED
+							meta.dataStatus === DataStatusOption.INITIALIZED
 								? "text-emerald-500 dark:text-solana-green"
 								: "text-rose-500"
 						}
 					>
-						{DataStatusOption[meta.data_status]}
+						{DataStatusOption[meta.dataStatus]}
 					</p>
 				),
 				defaultCanSort: true,
 				sortType: (rowA, rowB, id) => {
-					if (rowA.values[id].data_status > rowB.values[id].data_status) {
+					if (rowA.values[id].dataStatus > rowB.values[id].dataStatus) {
 						return 1;
 					}
-					if (rowB.values[id].data_status > rowA.values[id].data_status) {
+					if (rowB.values[id].dataStatus > rowA.values[id].dataStatus) {
 						return -1;
 					}
 					return 0;
@@ -128,7 +124,7 @@ const AuthorityPage = () => {
 					row: Row<DataAccountWithMeta>;
 				}) => (
 					<div className="w-full grid grid-cols-2 gap-x-3">
-						{meta.data_status != DataStatusOption.FINALIZED && (
+						{meta.dataStatus != DataStatusOption.FINALIZED && (
 							<FinalizeAction
 								dataPK={pubkey.toBase58()}
 								meta={meta}

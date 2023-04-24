@@ -1,12 +1,9 @@
-import {
-	ClusterNames,
-	DataAccountWithMeta,
-	DataStatusOption,
-} from "@/app/utils/types";
-import { finalizeDataAccount, useCluster } from "@/app/utils/utils";
+import { ClusterNames, DataAccountWithMeta } from "@/app/utils/types";
+import { useCluster } from "@/app/utils/utils";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, Transaction } from "@solana/web3.js";
 import { useMemo, useState } from "react";
+import { DataProgram, DataStatusOption } from "solana-data-program";
 import ActionModal from "../helpers/action-modal";
 import Tooltip from "../helpers/tooltip";
 
@@ -65,7 +62,7 @@ const FinalizeAllAction = ({
 			}
 
 			const finalizedRows = rows.filter(
-				(row) => row.meta.data_status === DataStatusOption.FINALIZED
+				(row) => row.meta.dataStatus === DataStatusOption.FINALIZED
 			);
 			if (finalizedRows.length > 0) {
 				if (finalizedRows.length === 1) {
@@ -82,7 +79,7 @@ const FinalizeAllAction = ({
 			const recentBlockhash = await clusterConnection.getLatestBlockhash();
 			const tx = new Transaction();
 			rows.forEach(({ pubkey }) => {
-				const ix = finalizeDataAccount(authority, pubkey, null, false);
+				const ix = DataProgram.finalizeDataAccount(authority, pubkey, false);
 				tx.add(ix);
 			});
 			tx.recentBlockhash = recentBlockhash.blockhash;

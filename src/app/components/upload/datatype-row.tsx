@@ -1,5 +1,5 @@
-import { DataTypeOption } from "@/app/utils/types";
 import { Dispatch, SetStateAction } from "react";
+import { DataTypeOption } from "solana-data-program";
 import DataTypeSelect from "./datatype-select";
 
 const DataTypeRow = ({

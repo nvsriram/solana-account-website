@@ -1,4 +1,4 @@
-import { SerializationStatusOption } from "@/app/utils/types";
+import { SerializationStatusOption } from "solana-data-program";
 
 const SerializationRow = ({
 	serialization_status,

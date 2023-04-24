@@ -1,7 +1,7 @@
-import { DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
 import { getBaseURL } from "@/app/utils/utils";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Dispatch, SetStateAction } from "react";
+import { DataTypeOption, IDataAccountMeta } from "solana-data-program";
 import AuthorityRow from "./authority-row";
 import DataRow from "./data-row";
 import DataAccountRow from "./dataaccount-row";
@@ -52,15 +52,12 @@ const MetadataDisplay = ({
 				classes="row-start-3 row-end-4"
 			/>
 			<SerializationRow
-				serialization_status={meta.serialization_status}
+				serialization_status={meta.serializationStatus}
 				classes="row-start-4 row-end-5"
 			/>
-			<DynamicRow
-				is_dynamic={meta.is_dynamic}
-				classes="row-start-5 row-end-6"
-			/>
+			<DynamicRow is_dynamic={meta.isDynamic} classes="row-start-5 row-end-6" />
 			<DataTypeRow
-				data_type={meta.data_type}
+				data_type={meta.dataType}
 				dataType={dataType}
 				setDataType={setDataType}
 				classes="row-start-6 row-end-7"

@@ -1,4 +1,4 @@
-import { DataStatusOption, IDataAccountMeta } from "@/app/utils/types";
+import { DataStatusOption, IDataAccountMeta } from "solana-data-program";
 import CloseAction from "../../actions/close-action";
 import DataStatusActions from "../../actions/data-status-actions";
 import FinalizeAction from "../../actions/finalize-action";
@@ -30,17 +30,17 @@ const DataStatusRow = ({
 			<div className="pb-2 sm:pb-0 flex items-center col-span-8">
 				<span
 					className={`text-sm lg:text-base ${
-						meta.data_status === DataStatusOption.INITIALIZED
+						meta.dataStatus === DataStatusOption.INITIALIZED
 							? "text-emerald-500 dark:text-solana-green"
 							: "text-rose-500"
 					}`}
 				>
-					{DataStatusOption[meta.data_status]}
+					{DataStatusOption[meta.dataStatus]}
 				</span>
-				{meta.data_status != undefined && (
+				{meta.dataStatus != undefined && (
 					<DataStatusActions classes="hidden sm:flex ml-2 lg:ml-5">
 						<div>
-							{meta.data_status != DataStatusOption.FINALIZED && (
+							{meta.dataStatus != DataStatusOption.FINALIZED && (
 								<FinalizeAction dataPK={dataPK} meta={meta} refresh={refresh} />
 							)}
 							<CloseAction dataPK={dataPK} meta={meta} refresh={refresh} />
@@ -50,7 +50,7 @@ const DataStatusRow = ({
 			</div>
 			<div className="pb-4 flex flex-col items-center gap-2 w-full sm:hidden">
 				<DataStatusActions classes="w-full">
-					{meta.data_status != DataStatusOption.FINALIZED && (
+					{meta.dataStatus != DataStatusOption.FINALIZED && (
 						<FinalizeAction
 							dataPK={dataPK}
 							meta={meta}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ClusterNames, DataTypeOption } from "@/app/utils/types";
+import { ClusterNames } from "@/app/utils/types";
 import {
 	createAndInitializeDataAccount,
 	handleUpload,
@@ -12,6 +12,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { Connection, PublicKey, Transaction } from "@solana/web3.js";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { DataTypeOption } from "solana-data-program";
 import AuthorityRow from "../components/upload/authority-row";
 import DataTypeRow from "../components/upload/datatype-row";
 import DynamicRow from "../components/upload/dynamic-row";
@@ -64,7 +65,7 @@ const UploadPage = () => {
 			const allTxs: Transaction[] = [];
 			let recentBlockhash = await clusterConnection.getLatestBlockhash();
 
-			const [cTx, dataKP, pda] = await createAndInitializeDataAccount(
+			const [cTx, dataKP] = await createAndInitializeDataAccount(
 				clusterConnection,
 				feePayer,
 				authorityPK,
@@ -83,7 +84,6 @@ const UploadPage = () => {
 				const tx = uploadDataPart(
 					feePayer,
 					dataKP.publicKey,
-					pda,
 					dataType,
 					part,
 					offset
@@ -178,7 +178,6 @@ const UploadPage = () => {
 							const tx = uploadDataPart(
 								feePayer,
 								dataKP.publicKey,
-								pda,
 								dataType,
 								part,
 								offset

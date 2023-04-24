@@ -1,11 +1,12 @@
 "use client";
 
-import { ApiError, DataTypeOption, IDataAccountMeta } from "@/app/utils/types";
+import Loading from "@/app/components/loading";
+import { ApiError } from "@/app/utils/types";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Loading from "@/app/components/loading";
-import MetadataDisplay from "../components/[dataPK]/display-metadata/display-metadata";
+import { DataTypeOption, IDataAccountMeta } from "solana-data-program";
 import DataDisplay from "../components/[dataPK]/display-data/display-data";
+import MetadataDisplay from "../components/[dataPK]/display-metadata/display-metadata";
 
 const DataAccountInfoPage = () => {
 	const pathname = usePathname();
@@ -37,7 +38,7 @@ const DataAccountInfoPage = () => {
 				} else {
 					res.json().then((account_meta: IDataAccountMeta) => {
 						setDataAccountMeta(account_meta);
-						setDataType(account_meta.data_type);
+						setDataType(account_meta.dataType);
 						setDirty(false);
 						setError(null);
 					});
