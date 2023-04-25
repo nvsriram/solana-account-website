@@ -30,7 +30,7 @@ const Navbar = () => {
 						<span className="pl-2 underline underline-offset-3 decoration-emerald-500 dark:decoration-solana-green">
 							Sol
 						</span>
-						ana URI
+						ana
 						<span className="pl-2 underline underline-offset-3 decoration-emerald-500 dark:decoration-solana-green">
 							D
 						</span>
