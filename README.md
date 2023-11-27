@@ -2,6 +2,23 @@
 
 This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-program). It allows the user to view/edit the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
 
+## 🚀 Showcase
+
+- [Quine NFT](https://solscan.io/token/5yPH4xBWNDU7h2LuFYgTJi2rbgoUk3jP3XbreZQorLKf?cluster=devnet#metadata): This NFT was uploaded and managed completely by SolD
+  
+- [Quine NFT Image](https://sold-website.vercel.app/HoyEJgwKhQG1TPRB2ziBU9uGziwy4f25kDcnKDNgsCkg?cluster=Devnet): This screen showcases the `HTML` image data of the Quine NFT [image](https://github.com/nvsriram/quine) that uploaded using SolD
+  
+  <img width="576" alt="image" src="https://github.com/nvsriram/solana-account-website/assets/50625504/f7bf567e-f361-48f5-a25b-4f3b40ff6e47">
+
+- [Quine NFT Metadata](https://sold-website.vercel.app/Hb9vkWax5AeLWvCtYSjSvWrN6gTw324gKMa28kcBsgT3?cluster=Devnet): This screen showcases the `JSON` metadata of the Quine NFT that uploaded using SolD
+  
+  <img width="556" alt="image" src="https://github.com/nvsriram/solana-account-website/assets/50625504/81ead3e9-9a3a-4df6-bbe0-bdd335d3d2fa">
+
+- [Authority page](https://sold-website.vercel.app/authority/E3tmHCiDaj4PD55ULrPzsDEcirhwYwios8RXLREGzZS6?cluster=Devnet): This screen showcases the various data accounts that belong to the authority `PublicKey`
+
+  <img width="686" alt="image" src="https://github.com/nvsriram/solana-account-website/assets/50625504/791f9c56-7368-4e86-b38d-1712f9630c07">
+
+
 ## 🧑‍💻 Getting Started
 
 ### 👀 To view Data Account details
