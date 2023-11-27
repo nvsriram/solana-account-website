@@ -1,4 +1,4 @@
-# SolD: A Solana Data Editor
+![Banner](https://github.com/nvsriram/solana-account-website/assets/50625504/ccd0251f-8781-47a8-987e-1cc0988e4844)
 
 This website acts as an editor for the [Solana Data Program V0](https://github.com/nvsriram/solana-data-program). It allows the user to view/edit the data and associated metadata for a given Data Account or upload your own file using the Solana Data Program
 
